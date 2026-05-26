@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+
+model User {
+  id          String   @id @default(uuid())
+
+  full_name   String
+  email       String   @unique
+  phone       String   @unique
+
+  password    String
+  avatar      String?
+
+  is_verified Boolean  @default(false)
+
+  status      UserStatus @default(ACTIVE)
+
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  refreshTokens RefreshToken[]
+  bookings    Booking[]
+  roles       UserRole[]
+}
+
+model Trip {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Float
+
+  bookings    Booking[]
+
+  createdAt   DateTime  @default(now())
+}
+
+model Booking {
+  id        String   @id @default(uuid())
+
+  userId    String
+  tripId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+
+  token     String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+
+  users       UserRole[]
+  permissions RolePermission[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+
+  roles       RolePermission[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+
+  userId String
+  roleId String
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model RolePermission {
+  id           String @id @default(uuid())
+
+  roleId       String
+  permissionId String
+
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+}
