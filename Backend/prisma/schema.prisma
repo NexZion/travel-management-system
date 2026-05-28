@@ -39,6 +39,7 @@ model User {
   refreshTokens RefreshToken[]
   bookings    Booking[]
   roles       UserRole[]
+  emailVerification   EmailVerification[]
 }
 
 model Trip {
@@ -67,7 +68,7 @@ model Booking {
 model RefreshToken {
   id        String   @id @default(uuid())
 
-  token     String
+  token     String  @unique
   expiresAt DateTime
   revoked   Boolean  @default(false)
 
@@ -122,4 +123,43 @@ model RolePermission {
   permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   createdAt    DateTime @default(now())
+}
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+
+  email     String
+  token     String   @unique
+
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+
+  action     String
+  userId     String?
+
+  ipAddress  String?
+  userAgent  String?
+
+  metadata   Json?
+
+  createdAt  DateTime @default(now())
 }

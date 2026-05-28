@@ -10,13 +10,27 @@ import { RedisModule } from './redis/redis.module';
 import { BullModule } from '@nestjs/bullmq';
 import { QueuesModule } from './queues/queues.module';
 import { envValidationSchema } from './config/env.validation';
+import { PrismaModule } from './database/prisma/prisma.module';
+import { APP_GUARD } from '@nestjs/core/constants';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { RolesGuard } from './modules/auth/guards/roles.guard';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import jwtConfig from './config/jwt.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ 
       isGlobal: true,
       validationSchema: envValidationSchema,
+      load: [jwtConfig],
     }), 
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
+    PrismaModule,
     AuthModule, 
     UsersModule, 
     RedisModule, 
@@ -28,7 +42,15 @@ import { envValidationSchema } from './config/env.validation';
     }), QueuesModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RolesGuard,{
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard,
+  },
+  { 
+    provide: APP_GUARD,
+    useClass: ThrottlerGuard,
+  },
   
+],
 })
 export class AppModule {}

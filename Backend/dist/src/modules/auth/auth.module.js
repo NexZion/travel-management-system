@@ -9,24 +9,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
+const prisma_module_1 = require("../../database/prisma/prisma.module");
+const token_service_1 = require("./token.service");
+const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
+const roles_guard_1 = require("./guards/roles.guard");
+const permissions_guard_1 = require("./guards/permissions.guard");
+const audit_service_1 = require("../../common/services/audit.service");
+const config_1 = require("@nestjs/config");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            jwt_1.JwtModule.register({
-                secret: process.env.JWT_SECRET,
-                signOptions: {
-                    expiresIn: '1d',
-                },
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: (config) => ({
+                    secret: config.get('jwt.secret'),
+                    signOptions: {
+                        expiresIn: config.get('jwt.expiresIn'),
+                    },
+                }),
             }),
+            prisma_module_1.PrismaModule
         ],
+        exports: [jwt_1.JwtModule, jwt_auth_guard_1.JwtAuthGuard],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        providers: [auth_service_1.AuthService, token_service_1.TokenService, jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard, permissions_guard_1.PermissionsGuard, audit_service_1.AuditService],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

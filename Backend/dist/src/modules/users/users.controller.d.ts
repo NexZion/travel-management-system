@@ -1,3 +1,3 @@
 export declare class UsersController {
-    getProfile(req: any): any;
+    getProfile(user: any): any;
 }
