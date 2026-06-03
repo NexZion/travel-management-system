@@ -15,6 +15,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./modules/auth/auth.module");
 const users_module_1 = require("./modules/users/users.module");
+const trips_module_1 = require("./modules/trips/trips.module");
 const config_1 = require("@nestjs/config");
 const redis_module_1 = require("./redis/redis.module");
 const bullmq_1 = require("@nestjs/bullmq");
@@ -25,6 +26,8 @@ const constants_1 = require("@nestjs/core/constants");
 const jwt_auth_guard_1 = require("./modules/auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("./modules/auth/guards/roles.guard");
 const throttler_1 = require("@nestjs/throttler");
+const destinations_service_1 = require("./modules/destinations/destinations.service");
+const destinations_controller_1 = require("./modules/destinations/destinations.controller");
 const jwt_config_1 = __importDefault(require("./config/jwt.config"));
 let AppModule = class AppModule {
 };
@@ -46,6 +49,7 @@ exports.AppModule = AppModule = __decorate([
             prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
+            trips_module_1.TripsModule,
             redis_module_1.RedisModule,
             bullmq_1.BullModule.forRoot({
                 connection: {
@@ -54,7 +58,7 @@ exports.AppModule = AppModule = __decorate([
                 },
             }), queues_module_1.QueuesModule
         ],
-        controllers: [app_controller_1.AppController],
+        controllers: [app_controller_1.AppController, destinations_controller_1.DestinationsController],
         providers: [app_service_1.AppService, roles_guard_1.RolesGuard, {
                 provide: constants_1.APP_GUARD,
                 useClass: jwt_auth_guard_1.JwtAuthGuard,
@@ -63,6 +67,7 @@ exports.AppModule = AppModule = __decorate([
                 provide: constants_1.APP_GUARD,
                 useClass: throttler_1.ThrottlerGuard,
             },
+            destinations_service_1.DestinationsService,
         ],
     })
 ], AppModule);

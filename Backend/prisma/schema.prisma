@@ -17,6 +17,43 @@ enum UserStatus {
   DELETED
 }
 
+enum TripStatus {
+  DRAFT
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TravelStyle {
+  SOLO
+  COUPLE
+  GROUP
+  FAMILY
+}
+
+enum Vibe {
+  ADVENTURE
+  RELAX
+  LUXURY
+  NATURE
+  CULTURAL
+}
+
+enum BudgetRange {
+  BUDGET
+  MID
+  PREMIUM
+  LUXURY
+}
+
+enum DestinationCategory {
+  BEACH
+  HILL
+  CULTURAL
+  ADVENTURE
+  WILDLIFE
+}
 
 model User {
   id          String   @id @default(uuid())
@@ -40,17 +77,70 @@ model User {
   bookings    Booking[]
   roles       UserRole[]
   emailVerification   EmailVerification[]
+  trips        Trip[]
 }
 
 model Trip {
   id          String   @id @default(uuid())
+  userId      String
   title       String
-  description String
-  price       Float
+  description String?
+  status      TripStatus @default(DRAFT)
+  travelStyle TravelStyle
+  vibe        Vibe
+  budgetRange BudgetRange
+  startDate   DateTime?
+  endDate     DateTime?
+  totalDays   Int?
+  travelerCount Int @default(1)
+  isPublic    Boolean @default(false)
+  shareToken  String? @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime @updatedAt
 
   bookings    Booking[]
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tripDestinations TripDestination[]
+  @@index([userId])
+}
 
-  createdAt   DateTime  @default(now())
+model Destination {
+
+  id          String @id @default(uuid())
+  name        String
+  slug        String @unique
+  district    String
+  province    String
+  category    DestinationCategory
+  description String?
+  coverImage  String?
+  latitude    Float
+  longitude   Float
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+
+  tripDestinations TripDestination[]
+  @@index([district])
+  @@index([province])
+  @@index([category])
+}
+
+model TripDestination {
+
+  id          String @id @default(uuid())
+  tripId      String
+  destinationId String
+  visitOrder  Int
+  arrivalDate DateTime?
+  departureDate DateTime?
+  nights      Int?
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  trip        Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  @@index([tripId])
+  @@index([destinationId])
 }
 
 model Booking {
