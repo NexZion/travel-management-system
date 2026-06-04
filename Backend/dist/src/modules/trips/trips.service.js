@@ -13,10 +13,14 @@ exports.TripsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
 const crypto_1 = require("crypto");
+const redis_service_1 = require("../../redis/redis.service");
+const trip_mapper_1 = require("./responses/trip.mapper");
 let TripsService = class TripsService {
     prisma;
-    constructor(prisma) {
+    redisService;
+    constructor(prisma, redisService) {
         this.prisma = prisma;
+        this.redisService = redisService;
     }
     async create(dto, user) {
         return this.prisma.trip.create({
@@ -32,20 +36,35 @@ let TripsService = class TripsService {
         });
     }
     async findAll(userId, filters) {
-        return this.prisma.trip.findMany({
+        const cacheKey = `trips:user:${userId}:${JSON.stringify(filters)}`;
+        const redis = this.redisService.getClient();
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            console.log('TRIPS CACHE HIT');
+            return JSON.parse(cached);
+        }
+        console.log('TRIPS CACHE MISS');
+        const trips = await this.prisma.trip.findMany({
             where: {
                 userId,
-                status: filters.status ?? undefined,
-                travelStyle: filters.travelStyle ?? undefined,
-                vibe: filters.vibe ?? undefined,
+                status: filters.status ??
+                    undefined,
+                travelStyle: filters.travelStyle ??
+                    undefined,
+                vibe: filters.vibe ??
+                    undefined,
             },
             orderBy: {
                 createdAt: 'desc',
             },
         });
+        await redis.set(cacheKey, JSON.stringify(trips), {
+            EX: 600,
+        });
+        return trips.map(trip_mapper_1.mapTrip);
     }
     async findOne(tripId, userId) {
-        return this.prisma.trip.findFirst({
+        const trip = await this.prisma.trip.findFirst({
             where: {
                 id: tripId,
                 userId,
@@ -61,6 +80,7 @@ let TripsService = class TripsService {
                 },
             },
         });
+        return (0, trip_mapper_1.mapTrip)(trip);
     }
     async addDestination(tripId, userId, dto) {
         const trip = await this.prisma.trip.findFirst({
@@ -354,6 +374,7 @@ let TripsService = class TripsService {
 exports.TripsService = TripsService;
 exports.TripsService = TripsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        redis_service_1.RedisService])
 ], TripsService);
 //# sourceMappingURL=trips.service.js.map

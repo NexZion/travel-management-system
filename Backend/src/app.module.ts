@@ -18,6 +18,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { DestinationsService } from './modules/destinations/destinations.service';
 import { DestinationsController } from './modules/destinations/destinations.controller';
+import { DestinationsModule } from './modules/destinations/destinations.module';
 import jwtConfig from './config/jwt.config';
 
 @Module({
@@ -43,7 +44,7 @@ import jwtConfig from './config/jwt.config';
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
-    }), QueuesModule
+    }), QueuesModule, DestinationsModule
   ],
   controllers: [AppController, DestinationsController],
   providers: [AppService, RolesGuard,{

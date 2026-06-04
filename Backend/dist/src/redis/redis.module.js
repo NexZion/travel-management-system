@@ -14,7 +14,8 @@ let RedisModule = class RedisModule {
 exports.RedisModule = RedisModule;
 exports.RedisModule = RedisModule = __decorate([
     (0, common_1.Module)({
-        providers: [redis_service_1.RedisService]
+        providers: [redis_service_1.RedisService],
+        exports: [redis_service_1.RedisService],
     })
 ], RedisModule);
 //# sourceMappingURL=redis.module.js.map

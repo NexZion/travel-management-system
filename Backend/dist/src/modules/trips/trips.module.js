@@ -12,6 +12,7 @@ const trips_controller_1 = require("./trips.controller");
 const trips_service_1 = require("./trips.service");
 const prisma_module_1 = require("../../database/prisma/prisma.module");
 const auth_module_1 = require("../auth/auth.module");
+const redis_module_1 = require("../../redis/redis.module");
 let TripsModule = class TripsModule {
 };
 exports.TripsModule = TripsModule;
@@ -20,6 +21,7 @@ exports.TripsModule = TripsModule = __decorate([
         imports: [
             prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
+            redis_module_1.RedisModule,
         ],
         controllers: [trips_controller_1.TripsController],
         providers: [trips_service_1.TripsService],

@@ -4,11 +4,16 @@ import { CreateTripDto } from './dto/create-trip.dto';
 import { randomBytes } from 'crypto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { UpdateTripDestinationDto } from './dto/update-trip-destination.dto';
+import { RedisService } from 'src/redis/redis.service';
+import { mapTrip } from './responses/trip.mapper';
 
 @Injectable()
 export class TripsService {
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async create(dto: CreateTripDto, user: any) {
 
@@ -25,24 +30,51 @@ export class TripsService {
     });
   }
 
-  async findAll(userId: string, filters: any) {
-    return this.prisma.trip.findMany({
-      where: {
-        userId,
+  async findAll( userId: string, filters: any, ) {
+    const cacheKey = `trips:user:${userId}:${JSON.stringify(filters)}`;
+    const redis = this.redisService.getClient();
+    const cached = await redis.get(cacheKey);
 
-        status: filters.status ?? undefined,
-        travelStyle: filters.travelStyle ?? undefined,
-        vibe: filters.vibe ?? undefined,
-      },
+    if (cached) {
+      console.log(
+        'TRIPS CACHE HIT',
+      );
+      return JSON.parse(cached);
+    }
 
-      orderBy: {
-        createdAt: 'desc',
+    console.log('TRIPS CACHE MISS',);
+
+    const trips = await this.prisma.trip.findMany({
+        where: {
+          userId,
+          status:
+            filters.status ??
+            undefined,
+
+          travelStyle:
+            filters.travelStyle ??
+            undefined,
+
+          vibe:
+            filters.vibe ??
+            undefined,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+    await redis.set(cacheKey, JSON.stringify(trips),
+      {
+        EX: 600,
       },
-    });
+    );
+
+    return trips.map(mapTrip);
   }
 
   async findOne(tripId: string, userId: string) {
-    return this.prisma.trip.findFirst({
+    const trip = await this.prisma.trip.findFirst({
       where: {
         id: tripId,
         userId, // ownership check
@@ -60,6 +92,7 @@ export class TripsService {
         },
       },
     });
+    return mapTrip(trip);
   }
 
   async addDestination(tripId: string, userId: string, dto: any) {

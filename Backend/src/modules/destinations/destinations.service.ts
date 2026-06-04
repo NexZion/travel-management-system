@@ -1,11 +1,15 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { GetDestinationsDto } from './dto/get-destinations.dto';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class DestinationsService {
 
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly redisService: RedisService,
+    ) {}
 
     private calculateDistance(
         lat1: number,
@@ -43,31 +47,64 @@ export class DestinationsService {
     filters: GetDestinationsDto,
     ) {
 
-    return this.prisma.destination.findMany({
+    const cacheKey =
+        `destinations:${JSON.stringify(filters)}`;
+
+    const redis =
+        this.redisService.getClient();
+
+    const cached =
+        await redis.get(cacheKey);
+
+    if (cached) {
+
+        console.log(
+        'DESTINATIONS CACHE HIT',
+        );
+
+        return JSON.parse(cached);
+    }
+
+    console.log(
+        'DESTINATIONS CACHE MISS',
+    );
+
+    const destinations =
+        await this.prisma.destination.findMany({
 
         where: {
 
-        isActive: true,
+            isActive: true,
 
-        ...(filters.category && {
+            ...(filters.category && {
             category: filters.category,
-        }),
+            }),
 
-        ...(filters.district && {
+            ...(filters.district && {
             district: filters.district,
-        }),
+            }),
 
-        ...(filters.province && {
+            ...(filters.province && {
             province: filters.province,
-        }),
+            }),
 
         },
 
         orderBy: {
-        name: 'asc',
+            name: 'asc',
         },
 
-    });
+        });
+
+    await redis.set(
+        cacheKey,
+        JSON.stringify(destinations),
+        {
+        EX: 21600,
+        },
+    );
+
+    return destinations;
     }
 
     async findOne(id: string) {

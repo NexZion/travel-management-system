@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DestinationsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
+const redis_service_1 = require("../../redis/redis.service");
 let DestinationsService = class DestinationsService {
     prisma;
-    constructor(prisma) {
+    redisService;
+    constructor(prisma, redisService) {
         this.prisma = prisma;
+        this.redisService = redisService;
     }
     calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371000;
@@ -31,7 +34,15 @@ let DestinationsService = class DestinationsService {
         return R * c;
     }
     async findAll(filters) {
-        return this.prisma.destination.findMany({
+        const cacheKey = `destinations:${JSON.stringify(filters)}`;
+        const redis = this.redisService.getClient();
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            console.log('DESTINATIONS CACHE HIT');
+            return JSON.parse(cached);
+        }
+        console.log('DESTINATIONS CACHE MISS');
+        const destinations = await this.prisma.destination.findMany({
             where: {
                 isActive: true,
                 ...(filters.category && {
@@ -48,6 +59,10 @@ let DestinationsService = class DestinationsService {
                 name: 'asc',
             },
         });
+        await redis.set(cacheKey, JSON.stringify(destinations), {
+            EX: 21600,
+        });
+        return destinations;
     }
     async findOne(id) {
         const destination = await this.prisma.destination.findUnique({
@@ -83,6 +98,7 @@ let DestinationsService = class DestinationsService {
 exports.DestinationsService = DestinationsService;
 exports.DestinationsService = DestinationsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        redis_service_1.RedisService])
 ], DestinationsService);
 //# sourceMappingURL=destinations.service.js.map

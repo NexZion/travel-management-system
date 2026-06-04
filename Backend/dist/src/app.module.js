@@ -28,6 +28,7 @@ const roles_guard_1 = require("./modules/auth/guards/roles.guard");
 const throttler_1 = require("@nestjs/throttler");
 const destinations_service_1 = require("./modules/destinations/destinations.service");
 const destinations_controller_1 = require("./modules/destinations/destinations.controller");
+const destinations_module_1 = require("./modules/destinations/destinations.module");
 const jwt_config_1 = __importDefault(require("./config/jwt.config"));
 let AppModule = class AppModule {
 };
@@ -56,7 +57,7 @@ exports.AppModule = AppModule = __decorate([
                     host: process.env.REDIS_HOST,
                     port: parseInt(process.env.REDIS_PORT || '6379'),
                 },
-            }), queues_module_1.QueuesModule
+            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule
         ],
         controllers: [app_controller_1.AppController, destinations_controller_1.DestinationsController],
         providers: [app_service_1.AppService, roles_guard_1.RolesGuard, {
