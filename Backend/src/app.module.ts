@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 //import { TripsModule } from './trips/trips.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { TripsModule } from './modules/trips/trips.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from './redis/redis.module';
 import { BullModule } from '@nestjs/bullmq';
@@ -15,6 +16,9 @@ import { APP_GUARD } from '@nestjs/core/constants';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { DestinationsService } from './modules/destinations/destinations.service';
+import { DestinationsController } from './modules/destinations/destinations.controller';
+import { DestinationsModule } from './modules/destinations/destinations.module';
 import jwtConfig from './config/jwt.config';
 
 @Module({
@@ -33,15 +37,16 @@ import jwtConfig from './config/jwt.config';
     PrismaModule,
     AuthModule, 
     UsersModule, 
+    TripsModule,
     RedisModule, 
     BullModule.forRoot({
       connection: {
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
-    }), QueuesModule
+    }), QueuesModule, DestinationsModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, DestinationsController],
   providers: [AppService, RolesGuard,{
     provide: APP_GUARD,
     useClass: JwtAuthGuard,
@@ -50,6 +55,7 @@ import jwtConfig from './config/jwt.config';
     provide: APP_GUARD,
     useClass: ThrottlerGuard,
   },
+  DestinationsService,
   
 ],
 })

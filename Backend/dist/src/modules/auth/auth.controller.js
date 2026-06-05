@@ -64,6 +64,7 @@ __decorate([
             ttl: 60000,
         },
     }),
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -71,6 +72,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -78,6 +80,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('refresh'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -85,6 +88,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refresh", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('logout'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -92,6 +96,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('verify-email'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -99,6 +104,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "verifyEmail", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('forgot-password'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -106,6 +112,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "forgotPassword", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('reset-password'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

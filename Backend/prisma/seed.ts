@@ -12,6 +12,24 @@ async function main() {
       //name: 'Admin',
     },
   });
+
+  await prisma.role.createMany({
+  data: [
+    {
+      name: 'ADMIN',
+      description: 'System administrator',
+    },
+    {
+      name: 'TRAVELER',
+      description: 'Traveler role',
+    },
+    {
+      name: 'VENDOR',
+      description: 'Vendor role',
+    },
+  ],
+  skipDuplicates: true,
+});
 }
 
 main()
