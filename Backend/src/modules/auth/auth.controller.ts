@@ -29,21 +29,25 @@ export class AuthController {
     },
   })
 
+  @Public()
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
+  @Public()
   @Post('login')
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
+  @Public()
   @Post('refresh')
   refresh(@Body() body: { refresh_token: string }) {
     return this.authService.refresh(body.refresh_token);
   } 
 
+  @Public()
   @Post('logout')
   async logout(@Body() body: { refresh_token: string }) {
 
@@ -55,11 +59,13 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
+  @Public()
   @Post('verify-email')
   verifyEmail(@Body() body: { token: string }) {
     return this.authService.verifyEmail(body.token);
   }
 
+  @Public()
   @Post('forgot-password')
   forgotPassword(
     @Body() dto: ForgotPasswordDto,
@@ -67,6 +73,7 @@ export class AuthController {
     return this.authService.forgotPassword(dto);
   }
 
+  @Public()
   @Post('reset-password')
   resetPassword(
     @Body() dto: ResetPasswordDto,
