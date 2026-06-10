@@ -1,7 +1,7 @@
-import { TripStatus, TravelStyle, Vibe, BudgetRange } from '@prisma/client';
+import { TripStatus, BudgetRange } from '@prisma/client';
 export declare class FilterTripsDto {
     status?: TripStatus;
-    travelStyle?: TravelStyle;
-    vibe?: Vibe;
+    travelStyleId: string;
+    vibeId: string;
     budgetRange?: BudgetRange;
 }

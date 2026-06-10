@@ -76,8 +76,10 @@ export class DestinationsService {
 
             isActive: true,
 
-            ...(filters.category && {
-            category: filters.category,
+            ...(filters.categoryID && {
+            category: {
+                id: filters.categoryID,
+            },
             }),
 
             ...(filters.district && {

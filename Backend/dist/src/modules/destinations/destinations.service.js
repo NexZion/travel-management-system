@@ -45,8 +45,10 @@ let DestinationsService = class DestinationsService {
         const destinations = await this.prisma.destination.findMany({
             where: {
                 isActive: true,
-                ...(filters.category && {
-                    category: filters.category,
+                ...(filters.categoryID && {
+                    category: {
+                        id: filters.categoryID,
+                    },
                 }),
                 ...(filters.district && {
                     district: filters.district,

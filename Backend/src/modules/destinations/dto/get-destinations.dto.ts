@@ -1,12 +1,12 @@
-import { IsOptional, IsString, IsEnum } from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsUUID } from 'class-validator';
 
 import { DestinationCategory } from '@prisma/client';
 
 export class GetDestinationsDto {
 
   @IsOptional()
-  @IsEnum(DestinationCategory)
-  category?: DestinationCategory;
+  @IsUUID()
+  categoryID?: string;
 
   @IsOptional()
   @IsString()

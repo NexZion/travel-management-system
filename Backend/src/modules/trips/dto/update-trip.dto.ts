@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsInt, Min, IsDateString, IsEnum, } from 'class-validator';
+import { IsOptional, IsString, IsInt, Min, IsDateString, IsEnum, IsUUID, } from 'class-validator';
 import { TripStatus, TravelStyle, Vibe, BudgetRange, } from '@prisma/client';
 
 export class UpdateTripDto {
@@ -16,12 +16,12 @@ export class UpdateTripDto {
   status?: TripStatus;
 
   @IsOptional()
-  @IsEnum(TravelStyle)
-  travelStyle?: TravelStyle;
+  @IsUUID()
+  travelStyleId?: string;
 
   @IsOptional()
-  @IsEnum(Vibe)
-  vibe?: Vibe;
+  @IsUUID()
+  vibeId?: string;
 
   @IsOptional()
   @IsEnum(BudgetRange)

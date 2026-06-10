@@ -25,19 +25,26 @@ enum TripStatus {
   CANCELLED
 }
 
-enum TravelStyle {
-  SOLO
-  COUPLE
-  GROUP
-  FAMILY
+model TravelStyle {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  trips Trip[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-enum Vibe {
-  ADVENTURE
-  RELAX
-  LUXURY
-  NATURE
-  CULTURAL
+model Vibe {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  trips Trip[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum BudgetRange {
@@ -47,192 +54,264 @@ enum BudgetRange {
   LUXURY
 }
 
-enum DestinationCategory {
-  BEACH
-  HILL
-  CULTURAL
-  ADVENTURE
-  WILDLIFE
+model DestinationCategory {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  destinations DestinationCategoryMapping[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
-  id          String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  full_name   String
-  email       String   @unique
-  phone       String   @unique
+  full_name String
+  email     String @unique
+  phone     String @unique
 
-  password    String
-  avatar      String?
+  password String
+  avatar   String?
 
-  is_verified Boolean  @default(false)
+  is_verified Boolean @default(false)
 
-  status      UserStatus @default(ACTIVE)
+  status UserStatus @default(ACTIVE)
 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
-
-  refreshTokens RefreshToken[]
-  bookings    Booking[]
-  roles       UserRole[]
-  emailVerification   EmailVerification[]
-  trips        Trip[]
+  refreshTokens     RefreshToken[]
+  bookings          Booking[]
+  roles             UserRole[]
+  emailVerification EmailVerification[]
+  trips             Trip[]
 }
 
 model Trip {
-  id          String   @id @default(uuid())
-  userId      String
-  title       String
-  description String?
-  status      TripStatus @default(DRAFT)
-  travelStyle TravelStyle
-  vibe        Vibe
-  budgetRange BudgetRange
-  startDate   DateTime?
-  endDate     DateTime?
-  totalDays   Int?
-  travelerCount Int @default(1)
-  isPublic    Boolean @default(false)
-  shareToken  String? @unique
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String      @id @default(uuid())
+  userId        String
+  title         String
+  description   String?
+  status        TripStatus  @default(DRAFT)
+  travelStyleId String
+  vibeId        String
+  budgetRange   BudgetRange
+  startDate     DateTime?
+  endDate       DateTime?
+  totalDays     Int?
+  travelerCount Int         @default(1)
+  isPublic      Boolean     @default(false)
+  shareToken    String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
-  bookings    Booking[]
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings         Booking[]
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   tripDestinations TripDestination[]
+  vibe             Vibe              @relation(fields: [vibeId], references: [id], onDelete: Restrict)
+  travelStyle      TravelStyle       @relation(fields: [travelStyleId], references: [id], onDelete: Restrict)
+
   @@index([userId])
+  @@index([travelStyleId])
+  @@index([vibeId])
 }
 
 model Destination {
-
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  slug        String @unique
+  slug        String   @unique
   district    String
   province    String
-  category    DestinationCategory
   description String?
   coverImage  String?
   latitude    Float
   longitude   Float
-  isActive    Boolean @default(true)
+  isActive    Boolean  @default(true)
+  placeId     String?  @unique   // Google Places ID
+  address     String?
+  rating      Float?
+  reviewCount Int?
+  source      String   @default("manual") // google_places | manual
   createdAt   DateTime @default(now())
 
+  categories       DestinationCategoryMapping[]
   tripDestinations TripDestination[]
+  images           DestinationImage[]
+  tags             DestinationTag[]
+
   @@index([district])
   @@index([province])
-  @@index([category])
+}
+
+model DestinationImage {
+  id            String @id @default(uuid())
+  destinationId String
+  url           String
+  width         Int?
+  height        Int?
+  isPrimary     Boolean @default(false)
+  source        String @default("google")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  @@index([destinationId])
+}
+
+model DestinationTag {
+  id            String @id @default(uuid())
+  destinationId String
+  tag           String
+  confidence    Float @default(0.0)
+  source        String @default("ai")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([destinationId])
+  @@index([tag])
+}
+
+
+
+model UserDestinationInteraction {
+  id            String @id @default(uuid())
+  userId        String
+  destinationId String
+
+  action        String // view | click | save | book
+  weight        Int    @default(1)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([destinationId])
 }
 
 model TripDestination {
-
-  id          String @id @default(uuid())
-  tripId      String
+  id            String    @id @default(uuid())
+  tripId        String
   destinationId String
-  visitOrder  Int
-  arrivalDate DateTime?
+  visitOrder    Int
+  arrivalDate   DateTime?
   departureDate DateTime?
-  nights      Int?
-  notes       String?
-  createdAt   DateTime @default(now())
+  nights        Int?
+  notes         String?
+  createdAt     DateTime  @default(now())
 
-  trip        Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  trip        Trip        @relation(fields: [tripId], references: [id], onDelete: Cascade)
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
   @@index([tripId])
   @@index([destinationId])
 }
 
+model DestinationCategoryMapping {
+  id            String @id @default(uuid())
+  destinationId String
+  categoryId    String
+
+  destination Destination         @relation(fields: [destinationId], references: [id])
+  category    DestinationCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([destinationId, categoryId])
+  @@index([destinationId])
+  @@index([categoryId])
+}
+
 model Booking {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  userId    String
-  tripId    String
+  userId String
+  tripId String
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  token     String  @unique
+  token     String   @unique
   expiresAt DateTime
   revoked   Boolean  @default(false)
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
 
 model Role {
-  id          String   @id @default(uuid())
-  name        String   @unique
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String?
 
   users       UserRole[]
   permissions RolePermission[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Permission {
-  id          String   @id @default(uuid())
-  name        String   @unique
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String?
 
-  roles       RolePermission[]
+  roles RolePermission[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model UserRole {
-  id     String @id @default(uuid())
+  id String @id @default(uuid())
 
   userId String
   roleId String
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
 
 model RolePermission {
-  id           String @id @default(uuid())
+  id String @id @default(uuid())
 
   roleId       String
   permissionId String
 
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model EmailVerification {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   token     String   @unique
   userId    String
   expiresAt DateTime
   verified  Boolean  @default(false)
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
 
 model PasswordReset {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  email     String
-  token     String   @unique
+  email String
+  token String @unique
 
   expiresAt DateTime
   used      Boolean  @default(false)
@@ -241,15 +320,15 @@ model PasswordReset {
 }
 
 model AuditLog {
-  id         String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  action     String
-  userId     String?
+  action String
+  userId String?
 
-  ipAddress  String?
-  userAgent  String?
+  ipAddress String?
+  userAgent String?
 
-  metadata   Json?
+  metadata Json?
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 }

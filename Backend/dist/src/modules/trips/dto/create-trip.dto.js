@@ -15,8 +15,8 @@ const client_1 = require("@prisma/client");
 class CreateTripDto {
     title;
     description;
-    travelStyle;
-    vibe;
+    travelStyleId;
+    vibeId;
     budgetRange;
     travelerCount;
 }
@@ -31,13 +31,13 @@ __decorate([
     __metadata("design:type", String)
 ], CreateTripDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(client_1.TravelStyle),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], CreateTripDto.prototype, "travelStyle", void 0);
+], CreateTripDto.prototype, "travelStyleId", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(client_1.Vibe),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], CreateTripDto.prototype, "vibe", void 0);
+], CreateTripDto.prototype, "vibeId", void 0);
 __decorate([
     (0, class_validator_1.IsEnum)(client_1.BudgetRange),
     __metadata("design:type", String)
@@ -45,6 +45,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
 ], CreateTripDto.prototype, "travelerCount", void 0);
 //# sourceMappingURL=create-trip.dto.js.map
