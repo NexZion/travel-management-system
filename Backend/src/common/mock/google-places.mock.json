@@ -1,0 +1,48 @@
+[
+  {
+    "place_id": "place_001",
+    "name": "Mirissa Beach",
+    "district": "Matara",
+    "province": "Southern",
+    "description": "Beautiful tropical beach famous for sunsets and whale watching.",
+    "rating": 4.7,
+    "reviewCount": 12500,
+    "latitude": 5.9483,
+    "longitude": 80.4716,
+    "address": "Mirissa, Sri Lanka",
+    "images": [
+      "https://example.com/mirissa1.jpg",
+      "https://example.com/mirissa2.jpg"
+    ]
+  },
+  {
+    "place_id": "place_002",
+    "name": "Ella Rock",
+    "district": "Badulla",
+    "province": "Uva",
+    "description": "Popular hiking destination with amazing mountain views.",
+    "rating": 4.8,
+    "reviewCount": 9800,
+    "latitude": 6.8667,
+    "longitude": 81.0466,
+    "address": "Ella, Sri Lanka",
+    "images": [
+      "https://example.com/ella1.jpg"
+    ]
+  },
+  {
+    "place_id": "place_003",
+    "name": "Galle Fort",
+    "district": "Galle",
+    "province": "Southern",
+    "description": "Historic Dutch fort with colonial architecture.",
+    "rating": 4.6,
+    "reviewCount": 21000,
+    "latitude": 6.026,
+    "longitude": 80.217,
+    "address": "Galle, Sri Lanka",
+    "images": [
+      "https://example.com/galle1.jpg"
+    ]
+  }
+]

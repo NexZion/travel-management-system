@@ -1,10 +1,10 @@
-import { TripStatus, TravelStyle, Vibe, BudgetRange } from '@prisma/client';
+import { TripStatus, BudgetRange } from '@prisma/client';
 export declare class UpdateTripDto {
     title?: string;
     description?: string;
     status?: TripStatus;
-    travelStyle?: TravelStyle;
-    vibe?: Vibe;
+    travelStyleId?: string;
+    vibeId?: string;
     budgetRange?: BudgetRange;
     startDate?: string;
     endDate?: string;

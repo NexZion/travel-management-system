@@ -6,12 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DestinatiosModule = void 0;
+exports.VibesModule = void 0;
 const common_1 = require("@nestjs/common");
-let DestinatiosModule = class DestinatiosModule {
+const prisma_module_1 = require("../../database/prisma/prisma.module");
+const vibes_controller_1 = require("./vibes.controller");
+const vibes_service_1 = require("./vibes.service");
+let VibesModule = class VibesModule {
 };
-exports.DestinatiosModule = DestinatiosModule;
-exports.DestinatiosModule = DestinatiosModule = __decorate([
-    (0, common_1.Module)({})
-], DestinatiosModule);
-//# sourceMappingURL=destinatios.module.js.map
+exports.VibesModule = VibesModule;
+exports.VibesModule = VibesModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [vibes_controller_1.VibesController],
+        providers: [vibes_service_1.VibesService],
+    })
+], VibesModule);
+//# sourceMappingURL=vibes.module.js.map

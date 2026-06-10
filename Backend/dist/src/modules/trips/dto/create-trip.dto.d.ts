@@ -1,9 +1,9 @@
-import { TravelStyle, Vibe, BudgetRange } from '@prisma/client';
+import { BudgetRange } from '@prisma/client';
 export declare class CreateTripDto {
     title: string;
     description?: string;
-    travelStyle: TravelStyle;
-    vibe: Vibe;
+    travelStyleId: string;
+    vibeId: string;
     budgetRange: BudgetRange;
-    travelerCount?: number;
+    travelerCount: number;
 }

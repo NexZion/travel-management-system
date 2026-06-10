@@ -29,7 +29,12 @@ const throttler_1 = require("@nestjs/throttler");
 const destinations_service_1 = require("./modules/destinations/destinations.service");
 const destinations_controller_1 = require("./modules/destinations/destinations.controller");
 const destinations_module_1 = require("./modules/destinations/destinations.module");
+const travel_styles_module_1 = require("./modules/travel-styles/travel-styles.module");
+const vibes_service_1 = require("./modules/vibes/vibes.service");
+const vibes_module_1 = require("./modules/vibes/vibes.module");
+const destination_categories_module_1 = require("./modules/destination-categories/destination-categories.module");
 const jwt_config_1 = __importDefault(require("./config/jwt.config"));
+const places_module_1 = require("./modules/places/places.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -50,6 +55,7 @@ exports.AppModule = AppModule = __decorate([
             prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
+            places_module_1.PlacesModule,
             trips_module_1.TripsModule,
             redis_module_1.RedisModule,
             bullmq_1.BullModule.forRoot({
@@ -57,7 +63,7 @@ exports.AppModule = AppModule = __decorate([
                     host: process.env.REDIS_HOST,
                     port: parseInt(process.env.REDIS_PORT || '6379'),
                 },
-            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule
+            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule, travel_styles_module_1.TravelStylesModule, vibes_module_1.VibesModule, destination_categories_module_1.DestinationCategoriesModule
         ],
         controllers: [app_controller_1.AppController, destinations_controller_1.DestinationsController],
         providers: [app_service_1.AppService, roles_guard_1.RolesGuard, {
@@ -69,6 +75,7 @@ exports.AppModule = AppModule = __decorate([
                 useClass: throttler_1.ThrottlerGuard,
             },
             destinations_service_1.DestinationsService,
+            vibes_service_1.VibesService,
         ],
     })
 ], AppModule);

@@ -11,18 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetDestinationsDto = void 0;
 const class_validator_1 = require("class-validator");
-const client_1 = require("@prisma/client");
 class GetDestinationsDto {
-    category;
+    categoryID;
     district;
     province;
 }
 exports.GetDestinationsDto = GetDestinationsDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.DestinationCategory),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], GetDestinationsDto.prototype, "category", void 0);
+], GetDestinationsDto.prototype, "categoryID", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
