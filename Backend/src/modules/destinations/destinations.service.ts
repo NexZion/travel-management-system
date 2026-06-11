@@ -169,4 +169,60 @@ export class DestinationsService {
 
     return results;
     }
+
+    async searchDestinations(filters: GetDestinationsDto) {
+    const {
+        q,
+        province,
+        district,
+        minRating = 0,
+        page = 1,
+        limit = 10,
+    } = filters;
+
+    const data = await this.prisma.destination.findMany({
+        where: {
+        isActive: true,
+        province,
+        district,
+        rating: {
+            gte: minRating,
+        },
+        },
+    });
+
+    let results = data;
+
+    // 🔍 1. Keyword scoring (IMPORTANT PART)
+    if (q) {
+        const query = q.toLowerCase();
+
+        results = results
+        .map((place) => {
+            let score = 0;
+
+            if (place.name.toLowerCase() === query) score += 100;
+            if (place.name.toLowerCase().includes(query)) score += 70;
+            if (place.district.toLowerCase().includes(query)) score += 30;
+            if (place.province.toLowerCase().includes(query)) score += 20;
+            if ((place.description || '').toLowerCase().includes(query))
+            score += 10;
+
+            return { ...place, score };
+        })
+        .filter((p) => p.score > 0)
+        .sort((a, b) => b.score - a.score);
+    }
+
+    // 📄 2. Pagination
+    const start = (page - 1) * limit;
+    const paginated = results.slice(start, start + limit);
+
+    return {
+        total: results.length,
+        page,
+        limit,
+        data: paginated,
+    };
+    }
 }

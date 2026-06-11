@@ -8,13 +8,12 @@ export declare class DestinationsService {
     private calculateDistance;
     findAll(filters: GetDestinationsDto): Promise<any>;
     findOne(id: string): Promise<{
-        id: string;
-        name: string;
-        createdAt: Date;
-        description: string | null;
         district: string;
         province: string;
+        id: string;
+        name: string;
         slug: string;
+        description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
@@ -24,16 +23,16 @@ export declare class DestinationsService {
         rating: number | null;
         reviewCount: number | null;
         source: string;
+        createdAt: Date;
     }>;
     nearby(lat: number, lng: number, radius: number): Promise<{
         distanceMeters: number;
-        id: string;
-        name: string;
-        createdAt: Date;
-        description: string | null;
         district: string;
         province: string;
+        id: string;
+        name: string;
         slug: string;
+        description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
@@ -43,5 +42,29 @@ export declare class DestinationsService {
         rating: number | null;
         reviewCount: number | null;
         source: string;
+        createdAt: Date;
     }[]>;
+    searchDestinations(filters: GetDestinationsDto): Promise<{
+        total: number;
+        page: number;
+        limit: number;
+        data: {
+            district: string;
+            province: string;
+            id: string;
+            name: string;
+            slug: string;
+            description: string | null;
+            coverImage: string | null;
+            latitude: number;
+            longitude: number;
+            isActive: boolean;
+            placeId: string | null;
+            address: string | null;
+            rating: number | null;
+            reviewCount: number | null;
+            source: string;
+            createdAt: Date;
+        }[];
+    }>;
 }
