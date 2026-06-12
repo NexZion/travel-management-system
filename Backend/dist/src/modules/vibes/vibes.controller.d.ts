@@ -5,38 +5,38 @@ export declare class VibesController {
     private readonly vibesService;
     constructor(vibesService: VibesService);
     create(dto: CreateVibeDto): Promise<{
-        name: string;
-        description: string | null;
         id: string;
+        name: string;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
     }>;
     findAll(): Promise<{
-        name: string;
-        description: string | null;
         id: string;
+        name: string;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
     }[]>;
     findOne(id: string): Promise<{
-        name: string;
-        description: string | null;
         id: string;
+        name: string;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
     }>;
     update(id: string, dto: UpdateVibeDto): Promise<{
-        name: string;
-        description: string | null;
         id: string;
+        name: string;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
     }>;
     remove(id: string): Promise<{
-        name: string;
-        description: string | null;
         id: string;
+        name: string;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
     }>;
 }

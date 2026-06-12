@@ -29,6 +29,11 @@ export class DestinationsController {
     );
     }
 
+    @Get('search')
+    search(@Query() filters: GetDestinationsDto) {
+    return this.destinationsService.searchDestinations(filters);
+    }
+
     @Get(':id')
     findOne(
     @Param('id') id: string,
@@ -37,4 +42,6 @@ export class DestinationsController {
         id,
     );
     }
+
+    
 }

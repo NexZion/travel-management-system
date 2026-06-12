@@ -9,11 +9,10 @@ export declare class DestinationsController {
         distanceMeters: number;
         id: string;
         name: string;
-        createdAt: Date;
-        description: string | null;
+        slug: string;
         district: string;
         province: string;
-        slug: string;
+        description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
@@ -23,15 +22,16 @@ export declare class DestinationsController {
         rating: number | null;
         reviewCount: number | null;
         source: string;
+        createdAt: Date;
     }[]>;
+    search(filters: GetDestinationsDto): Promise<any>;
     findOne(id: string): Promise<{
         id: string;
         name: string;
-        createdAt: Date;
-        description: string | null;
+        slug: string;
         district: string;
         province: string;
-        slug: string;
+        description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
@@ -41,5 +41,6 @@ export declare class DestinationsController {
         rating: number | null;
         reviewCount: number | null;
         source: string;
+        createdAt: Date;
     }>;
 }

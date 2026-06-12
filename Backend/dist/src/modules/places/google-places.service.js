@@ -97,6 +97,30 @@ let GooglePlacesService = class GooglePlacesService {
                     source: 'google_places',
                 },
             });
+            if (place.categories) {
+                for (const categoryName of place.categories) {
+                    const category = await this.prisma.destinationCategory.findFirst({
+                        where: {
+                            name: categoryName,
+                        },
+                    });
+                    if (!category)
+                        continue;
+                    await this.prisma.destinationCategoryMapping.upsert({
+                        where: {
+                            destinationId_categoryId: {
+                                destinationId: destination.id,
+                                categoryId: category.id,
+                            },
+                        },
+                        update: {},
+                        create: {
+                            destinationId: destination.id,
+                            categoryId: category.id,
+                        },
+                    });
+                }
+            }
             for (const image of place.images) {
                 await this.prisma.destinationImage.create({
                     data: {
