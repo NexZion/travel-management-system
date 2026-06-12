@@ -26,6 +26,9 @@ import { DestinationCategoriesModule } from './modules/destination-categories/de
 import jwtConfig from './config/jwt.config';
 import { platform } from 'os';
 import { PlacesModule } from './modules/places/places.module';
+import { VendorCategoriesModule } from './modules/vendor-categories/vendor-categories.module';
+import { FieldSetsModule } from './modules/field-sets/field-sets.module';
+import { FieldsModule } from './modules/fields/fields.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ 
@@ -50,7 +53,7 @@ import { PlacesModule } from './modules/places/places.module';
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
-    }), QueuesModule, DestinationsModule, TravelStylesModule, VibesModule, DestinationCategoriesModule
+    }), QueuesModule, DestinationsModule, TravelStylesModule, VibesModule, DestinationCategoriesModule, VendorCategoriesModule, FieldSetsModule, FieldsModule
   ],
   controllers: [AppController, DestinationsController],
   providers: [AppService, RolesGuard,{

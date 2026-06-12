@@ -35,6 +35,9 @@ const vibes_module_1 = require("./modules/vibes/vibes.module");
 const destination_categories_module_1 = require("./modules/destination-categories/destination-categories.module");
 const jwt_config_1 = __importDefault(require("./config/jwt.config"));
 const places_module_1 = require("./modules/places/places.module");
+const vendor_categories_module_1 = require("./modules/vendor-categories/vendor-categories.module");
+const field_sets_module_1 = require("./modules/field-sets/field-sets.module");
+const fields_module_1 = require("./modules/fields/fields.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -63,7 +66,7 @@ exports.AppModule = AppModule = __decorate([
                     host: process.env.REDIS_HOST,
                     port: parseInt(process.env.REDIS_PORT || '6379'),
                 },
-            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule, travel_styles_module_1.TravelStylesModule, vibes_module_1.VibesModule, destination_categories_module_1.DestinationCategoriesModule
+            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule, travel_styles_module_1.TravelStylesModule, vibes_module_1.VibesModule, destination_categories_module_1.DestinationCategoriesModule, vendor_categories_module_1.VendorCategoriesModule, field_sets_module_1.FieldSetsModule, fields_module_1.FieldsModule
         ],
         controllers: [app_controller_1.AppController, destinations_controller_1.DestinationsController],
         providers: [app_service_1.AppService, roles_guard_1.RolesGuard, {

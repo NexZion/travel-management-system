@@ -25,13 +25,31 @@ enum TripStatus {
   CANCELLED
 }
 
+enum FieldDataType {
+  TEXT
+  NUMBER
+  TEXTAREA
+  SELECT
+  RADIO
+  CHECKBOX
+  DATE
+  EMAIL
+  PHONE
+}
+
+enum BudgetRange {
+  BUDGET
+  MID
+  PREMIUM
+  LUXURY
+}
+
 model TravelStyle {
   id          String  @id @default(uuid())
   name        String  @unique
   description String?
 
-  trips Trip[]
-
+  trips     Trip[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -41,17 +59,9 @@ model Vibe {
   name        String  @unique
   description String?
 
-  trips Trip[]
-
+  trips     Trip[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum BudgetRange {
-  BUDGET
-  MID
-  PREMIUM
-  LUXURY
 }
 
 model DestinationCategory {
@@ -129,7 +139,7 @@ model Destination {
   latitude    Float
   longitude   Float
   isActive    Boolean  @default(true)
-  placeId     String?  @unique   // Google Places ID
+  placeId     String?  @unique // Google Places ID
   address     String?
   rating      Float?
   reviewCount Int?
@@ -146,17 +156,18 @@ model Destination {
 }
 
 model DestinationImage {
-  id            String @id @default(uuid())
+  id            String  @id @default(uuid())
   destinationId String
   url           String
   width         Int?
   height        Int?
   isPrimary     Boolean @default(false)
-  source        String @default("google")
+  source        String  @default("google")
 
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
   @@index([destinationId])
 }
 
@@ -164,7 +175,7 @@ model DestinationTag {
   id            String @id @default(uuid())
   destinationId String
   tag           String
-  confidence    Float @default(0.0)
+  confidence    Float  @default(0.0)
   source        String @default("ai")
 
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
@@ -175,15 +186,13 @@ model DestinationTag {
   @@index([tag])
 }
 
-
-
 model UserDestinationInteraction {
   id            String @id @default(uuid())
   userId        String
   destinationId String
 
-  action        String // view | click | save | book
-  weight        Int    @default(1)
+  action String // view | click | save | book
+  weight Int    @default(1)
 
   createdAt DateTime @default(now())
 
@@ -331,4 +340,84 @@ model AuditLog {
   metadata Json?
 
   createdAt DateTime @default(now())
+}
+
+model VendorCategory {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  code        String  @unique
+  description String?
+  fieldSetId  String
+  isActive    Boolean @default(true)
+
+  fieldSet FieldSet @relation(fields: [fieldSetId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fieldSetId])
+}
+
+model FieldSet {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  isActive    Boolean @default(true)
+
+  vendorCategories VendorCategory[]
+  fields           FieldSetField[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Field {
+  id           String        @id @default(uuid())
+  name         String
+  label        String
+  dataType     FieldDataType
+  placeholder  String?
+  helpText     String?
+  defaultValue String?
+  isActive     Boolean       @default(true)
+
+  fieldSets FieldSetField[]
+  options   FieldOption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FieldSetField {
+  id           String  @id @default(uuid())
+  fieldSetId   String
+  fieldId      String
+  displayOrder Int
+  isRequired   Boolean @default(false)
+  readOnly     Boolean @default(false)
+
+  fieldSet FieldSet @relation(fields: [fieldSetId], references: [id], onDelete: Cascade)
+  field    Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([fieldSetId, fieldId])
+  @@index([fieldSetId])
+  @@index([fieldId])
+}
+
+model FieldOption {
+  id           String @id @default(uuid())
+  fieldId      String
+  label        String
+  value        String
+  displayOrder Int    @default(0)
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fieldId])
 }
