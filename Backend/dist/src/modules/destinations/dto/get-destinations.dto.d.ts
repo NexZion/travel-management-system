@@ -1,6 +1,5 @@
-import { DestinationCategory } from '@prisma/client';
 export declare class GetDestinationsDto {
-    category?: DestinationCategory;
+    categoryID?: string;
     district?: string;
     province?: string;
 }

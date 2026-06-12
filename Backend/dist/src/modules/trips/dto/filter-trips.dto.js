@@ -14,8 +14,8 @@ const class_validator_1 = require("class-validator");
 const client_1 = require("@prisma/client");
 class FilterTripsDto {
     status;
-    travelStyle;
-    vibe;
+    travelStyleId;
+    vibeId;
     budgetRange;
 }
 exports.FilterTripsDto = FilterTripsDto;
@@ -26,14 +26,14 @@ __decorate([
 ], FilterTripsDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.TravelStyle),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], FilterTripsDto.prototype, "travelStyle", void 0);
+], FilterTripsDto.prototype, "travelStyleId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.Vibe),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], FilterTripsDto.prototype, "vibe", void 0);
+], FilterTripsDto.prototype, "vibeId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(client_1.BudgetRange),

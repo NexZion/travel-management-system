@@ -10,30 +10,38 @@ export declare class DestinationsService {
     findOne(id: string): Promise<{
         id: string;
         name: string;
-        slug: string;
+        createdAt: Date;
+        description: string | null;
         district: string;
         province: string;
-        category: import("@prisma/client").$Enums.DestinationCategory;
-        description: string | null;
+        slug: string;
         coverImage: string | null;
         latitude: number;
         longitude: number;
         isActive: boolean;
-        createdAt: Date;
+        placeId: string | null;
+        address: string | null;
+        rating: number | null;
+        reviewCount: number | null;
+        source: string;
     }>;
     nearby(lat: number, lng: number, radius: number): Promise<{
         distanceMeters: number;
         id: string;
         name: string;
-        slug: string;
+        createdAt: Date;
+        description: string | null;
         district: string;
         province: string;
-        category: import("@prisma/client").$Enums.DestinationCategory;
-        description: string | null;
+        slug: string;
         coverImage: string | null;
         latitude: number;
         longitude: number;
         isActive: boolean;
-        createdAt: Date;
+        placeId: string | null;
+        address: string | null;
+        rating: number | null;
+        reviewCount: number | null;
+        source: string;
     }[]>;
 }

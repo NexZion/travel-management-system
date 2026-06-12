@@ -16,8 +16,8 @@ class UpdateTripDto {
     title;
     description;
     status;
-    travelStyle;
-    vibe;
+    travelStyleId;
+    vibeId;
     budgetRange;
     startDate;
     endDate;
@@ -41,14 +41,14 @@ __decorate([
 ], UpdateTripDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.TravelStyle),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], UpdateTripDto.prototype, "travelStyle", void 0);
+], UpdateTripDto.prototype, "travelStyleId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.Vibe),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], UpdateTripDto.prototype, "vibe", void 0);
+], UpdateTripDto.prototype, "vibeId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(client_1.BudgetRange),
