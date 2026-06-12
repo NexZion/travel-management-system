@@ -45,8 +45,10 @@ let DestinationsService = class DestinationsService {
         const destinations = await this.prisma.destination.findMany({
             where: {
                 isActive: true,
-                ...(filters.category && {
-                    category: filters.category,
+                ...(filters.categoryID && {
+                    category: {
+                        id: filters.categoryID,
+                    },
                 }),
                 ...(filters.district && {
                     district: filters.district,
@@ -93,6 +95,74 @@ let DestinationsService = class DestinationsService {
             .sort((a, b) => a.distanceMeters -
             b.distanceMeters);
         return results;
+    }
+    async searchDestinations(filters) {
+        const redis = this.redisService.getClient();
+        const cacheKey = `destination-search:${JSON.stringify(filters)}`;
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            console.log('SEARCH CACHE HIT');
+            return JSON.parse(cached);
+        }
+        console.log('SEARCH CACHE MISS');
+        const { q, province, district, categoryID, minRating = 0, page = 1, limit = 10, } = filters;
+        const data = await this.prisma.destination.findMany({
+            where: {
+                isActive: true,
+                province,
+                district,
+                rating: {
+                    gte: minRating,
+                },
+                ...(categoryID && {
+                    categories: {
+                        some: {
+                            categoryId: categoryID,
+                        },
+                    },
+                }),
+            },
+            include: {
+                categories: {
+                    include: {
+                        category: true,
+                    },
+                },
+            },
+        });
+        let results = data;
+        if (q) {
+            const query = q.toLowerCase();
+            results = results
+                .map((place) => {
+                let score = 0;
+                if (place.name.toLowerCase() === query)
+                    score += 100;
+                if (place.name.toLowerCase().includes(query))
+                    score += 70;
+                if (place.district.toLowerCase().includes(query))
+                    score += 30;
+                if (place.province.toLowerCase().includes(query))
+                    score += 20;
+                if ((place.description || '').toLowerCase().includes(query))
+                    score += 10;
+                return { ...place, score };
+            })
+                .filter((p) => p.score > 0)
+                .sort((a, b) => b.score - a.score);
+        }
+        const start = (page - 1) * limit;
+        const paginated = results.slice(start, start + limit);
+        const response = {
+            total: results.length,
+            page,
+            limit,
+            data: paginated,
+        };
+        await redis.set(cacheKey, JSON.stringify(response), {
+            EX: 21600,
+        });
+        return response;
     }
 };
 exports.DestinationsService = DestinationsService;

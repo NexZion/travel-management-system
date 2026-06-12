@@ -19,8 +19,13 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { DestinationsService } from './modules/destinations/destinations.service';
 import { DestinationsController } from './modules/destinations/destinations.controller';
 import { DestinationsModule } from './modules/destinations/destinations.module';
+import { TravelStylesModule } from './modules/travel-styles/travel-styles.module';
+import { VibesService } from './modules/vibes/vibes.service';
+import { VibesModule } from './modules/vibes/vibes.module';
+import { DestinationCategoriesModule } from './modules/destination-categories/destination-categories.module';
 import jwtConfig from './config/jwt.config';
-
+import { platform } from 'os';
+import { PlacesModule } from './modules/places/places.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ 
@@ -37,6 +42,7 @@ import jwtConfig from './config/jwt.config';
     PrismaModule,
     AuthModule, 
     UsersModule, 
+    PlacesModule,
     TripsModule,
     RedisModule, 
     BullModule.forRoot({
@@ -44,7 +50,7 @@ import jwtConfig from './config/jwt.config';
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
-    }), QueuesModule, DestinationsModule
+    }), QueuesModule, DestinationsModule, TravelStylesModule, VibesModule, DestinationCategoriesModule
   ],
   controllers: [AppController, DestinationsController],
   providers: [AppService, RolesGuard,{
@@ -56,6 +62,7 @@ import jwtConfig from './config/jwt.config';
     useClass: ThrottlerGuard,
   },
   DestinationsService,
+  VibesService,
   
 ],
 })

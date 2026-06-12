@@ -13,12 +13,16 @@ export declare class DestinationsService {
         slug: string;
         district: string;
         province: string;
-        category: import("@prisma/client").$Enums.DestinationCategory;
         description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
         isActive: boolean;
+        placeId: string | null;
+        address: string | null;
+        rating: number | null;
+        reviewCount: number | null;
+        source: string;
         createdAt: Date;
     }>;
     nearby(lat: number, lng: number, radius: number): Promise<{
@@ -28,12 +32,17 @@ export declare class DestinationsService {
         slug: string;
         district: string;
         province: string;
-        category: import("@prisma/client").$Enums.DestinationCategory;
         description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
         isActive: boolean;
+        placeId: string | null;
+        address: string | null;
+        rating: number | null;
+        reviewCount: number | null;
+        source: string;
         createdAt: Date;
     }[]>;
+    searchDestinations(filters: GetDestinationsDto): Promise<any>;
 }

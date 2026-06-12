@@ -12,26 +12,35 @@ export declare class DestinationsController {
         slug: string;
         district: string;
         province: string;
-        category: import("@prisma/client").$Enums.DestinationCategory;
         description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
         isActive: boolean;
+        placeId: string | null;
+        address: string | null;
+        rating: number | null;
+        reviewCount: number | null;
+        source: string;
         createdAt: Date;
     }[]>;
+    search(filters: GetDestinationsDto): Promise<any>;
     findOne(id: string): Promise<{
         id: string;
         name: string;
         slug: string;
         district: string;
         province: string;
-        category: import("@prisma/client").$Enums.DestinationCategory;
         description: string | null;
         coverImage: string | null;
         latitude: number;
         longitude: number;
         isActive: boolean;
+        placeId: string | null;
+        address: string | null;
+        rating: number | null;
+        reviewCount: number | null;
+        source: string;
         createdAt: Date;
     }>;
 }

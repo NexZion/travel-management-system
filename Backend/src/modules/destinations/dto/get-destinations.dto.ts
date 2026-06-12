@@ -1,12 +1,13 @@
-import { IsOptional, IsString, IsEnum } from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsUUID, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 import { DestinationCategory } from '@prisma/client';
 
 export class GetDestinationsDto {
 
   @IsOptional()
-  @IsEnum(DestinationCategory)
-  category?: DestinationCategory;
+  @IsUUID()
+  categoryID?: string;
 
   @IsOptional()
   @IsString()
@@ -15,4 +16,23 @@ export class GetDestinationsDto {
   @IsOptional()
   @IsString()
   province?: string;
+
+  @IsOptional()
+  @IsString()
+  q?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  minRating?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  page?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  limit?: number;
 }

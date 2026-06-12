@@ -28,6 +28,9 @@ let DestinationsController = class DestinationsController {
     findNearby(query) {
         return this.destinationsService.nearby(Number(query.lat), Number(query.lng), Number(query.radius));
     }
+    search(filters) {
+        return this.destinationsService.searchDestinations(filters);
+    }
     findOne(id) {
         return this.destinationsService.findOne(id);
     }
@@ -47,6 +50,13 @@ __decorate([
     __metadata("design:paramtypes", [nearby_destinations_dto_1.NearbyDestinationDto]),
     __metadata("design:returntype", void 0)
 ], DestinationsController.prototype, "findNearby", null);
+__decorate([
+    (0, common_1.Get)('search'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [get_destinations_dto_1.GetDestinationsDto]),
+    __metadata("design:returntype", void 0)
+], DestinationsController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

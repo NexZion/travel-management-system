@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEnum, IsInt } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsInt, IsUUID, Min } from 'class-validator';
 import { TripStatus, TravelStyle, Vibe, BudgetRange } from '@prisma/client';
 
 export class CreateTripDto {
@@ -10,16 +10,17 @@ export class CreateTripDto {
   @IsString()
   description?: string;
 
-  @IsEnum(TravelStyle)
-  travelStyle!: TravelStyle;
+  @IsUUID()
+  travelStyleId!: string;
 
-  @IsEnum(Vibe)
-  vibe!: Vibe;
+  @IsUUID()
+  vibeId!: string;
 
   @IsEnum(BudgetRange)
   budgetRange!: BudgetRange;
 
   @IsOptional()
   @IsInt()
-  travelerCount?: number;
+  @Min(1)
+  travelerCount!: number;
 }

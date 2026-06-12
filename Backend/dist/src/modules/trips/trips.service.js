@@ -26,12 +26,12 @@ let TripsService = class TripsService {
         return this.prisma.trip.create({
             data: {
                 title: dto.title,
-                description: dto.description || null,
-                travelStyle: dto.travelStyle,
-                vibe: dto.vibe,
+                description: dto.description,
+                userId: user.sub,
+                travelStyleId: dto.travelStyleId,
+                vibeId: dto.vibeId,
                 budgetRange: dto.budgetRange,
                 travelerCount: dto.travelerCount ?? 1,
-                userId: user.sub,
             },
         });
     }
@@ -49,9 +49,9 @@ let TripsService = class TripsService {
                 userId,
                 status: filters.status ??
                     undefined,
-                travelStyle: filters.travelStyle ??
+                travelStyleId: filters.travelStyleId ??
                     undefined,
-                vibe: filters.vibe ??
+                vibeId: filters.vibeId ??
                     undefined,
             },
             orderBy: {
@@ -143,8 +143,8 @@ let TripsService = class TripsService {
                 title: trip.title + ' (Copy)',
                 description: trip.description,
                 status: 'DRAFT',
-                travelStyle: trip.travelStyle,
-                vibe: trip.vibe,
+                travelStyleId: trip.travelStyleId,
+                vibeId: trip.vibeId,
                 budgetRange: trip.budgetRange,
                 startDate: trip.startDate,
                 endDate: trip.endDate,
