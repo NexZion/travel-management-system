@@ -8,11 +8,11 @@ export declare class DestinationsService {
     private calculateDistance;
     findAll(filters: GetDestinationsDto): Promise<any>;
     findOne(id: string): Promise<{
-        district: string;
-        province: string;
         id: string;
         name: string;
         slug: string;
+        district: string;
+        province: string;
         description: string | null;
         coverImage: string | null;
         latitude: number;
@@ -27,11 +27,11 @@ export declare class DestinationsService {
     }>;
     nearby(lat: number, lng: number, radius: number): Promise<{
         distanceMeters: number;
-        district: string;
-        province: string;
         id: string;
         name: string;
         slug: string;
+        district: string;
+        province: string;
         description: string | null;
         coverImage: string | null;
         latitude: number;
@@ -44,27 +44,5 @@ export declare class DestinationsService {
         source: string;
         createdAt: Date;
     }[]>;
-    searchDestinations(filters: GetDestinationsDto): Promise<{
-        total: number;
-        page: number;
-        limit: number;
-        data: {
-            district: string;
-            province: string;
-            id: string;
-            name: string;
-            slug: string;
-            description: string | null;
-            coverImage: string | null;
-            latitude: number;
-            longitude: number;
-            isActive: boolean;
-            placeId: string | null;
-            address: string | null;
-            rating: number | null;
-            reviewCount: number | null;
-            source: string;
-            createdAt: Date;
-        }[];
-    }>;
+    searchDestinations(filters: GetDestinationsDto): Promise<any>;
 }

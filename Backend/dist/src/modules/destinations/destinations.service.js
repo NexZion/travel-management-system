@@ -97,7 +97,15 @@ let DestinationsService = class DestinationsService {
         return results;
     }
     async searchDestinations(filters) {
-        const { q, province, district, minRating = 0, page = 1, limit = 10, } = filters;
+        const redis = this.redisService.getClient();
+        const cacheKey = `destination-search:${JSON.stringify(filters)}`;
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            console.log('SEARCH CACHE HIT');
+            return JSON.parse(cached);
+        }
+        console.log('SEARCH CACHE MISS');
+        const { q, province, district, categoryID, minRating = 0, page = 1, limit = 10, } = filters;
         const data = await this.prisma.destination.findMany({
             where: {
                 isActive: true,
@@ -105,6 +113,20 @@ let DestinationsService = class DestinationsService {
                 district,
                 rating: {
                     gte: minRating,
+                },
+                ...(categoryID && {
+                    categories: {
+                        some: {
+                            categoryId: categoryID,
+                        },
+                    },
+                }),
+            },
+            include: {
+                categories: {
+                    include: {
+                        category: true,
+                    },
                 },
             },
         });
@@ -131,12 +153,16 @@ let DestinationsService = class DestinationsService {
         }
         const start = (page - 1) * limit;
         const paginated = results.slice(start, start + limit);
-        return {
+        const response = {
             total: results.length,
             page,
             limit,
             data: paginated,
         };
+        await redis.set(cacheKey, JSON.stringify(response), {
+            EX: 21600,
+        });
+        return response;
     }
 };
 exports.DestinationsService = DestinationsService;

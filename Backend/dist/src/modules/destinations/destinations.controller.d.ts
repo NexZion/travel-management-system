@@ -7,11 +7,11 @@ export declare class DestinationsController {
     findAll(filters: GetDestinationsDto): Promise<any>;
     findNearby(query: NearbyDestinationDto): Promise<{
         distanceMeters: number;
-        district: string;
-        province: string;
         id: string;
         name: string;
         slug: string;
+        district: string;
+        province: string;
         description: string | null;
         coverImage: string | null;
         latitude: number;
@@ -24,35 +24,13 @@ export declare class DestinationsController {
         source: string;
         createdAt: Date;
     }[]>;
-    search(filters: GetDestinationsDto): Promise<{
-        total: number;
-        page: number;
-        limit: number;
-        data: {
-            district: string;
-            province: string;
-            id: string;
-            name: string;
-            slug: string;
-            description: string | null;
-            coverImage: string | null;
-            latitude: number;
-            longitude: number;
-            isActive: boolean;
-            placeId: string | null;
-            address: string | null;
-            rating: number | null;
-            reviewCount: number | null;
-            source: string;
-            createdAt: Date;
-        }[];
-    }>;
+    search(filters: GetDestinationsDto): Promise<any>;
     findOne(id: string): Promise<{
-        district: string;
-        province: string;
         id: string;
         name: string;
         slug: string;
+        district: string;
+        province: string;
         description: string | null;
         coverImage: string | null;
         latitude: number;
