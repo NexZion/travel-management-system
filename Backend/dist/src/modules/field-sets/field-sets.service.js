@@ -45,6 +45,47 @@ let FieldSetsService = class FieldSetsService {
             },
         });
     }
+    async getForm(fieldSetId) {
+        const fieldSet = await this.prisma.fieldSet.findUnique({
+            where: { id: fieldSetId },
+            include: {
+                fields: {
+                    include: {
+                        field: {
+                            include: {
+                                options: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        displayOrder: 'asc',
+                    },
+                },
+            },
+        });
+        if (!fieldSet) {
+            throw new common_1.NotFoundException('FieldSet not found');
+        }
+        return {
+            id: fieldSet.id,
+            name: fieldSet.name,
+            description: fieldSet.description,
+            fields: fieldSet.fields.map((fsField) => ({
+                id: fsField.field.id,
+                name: fsField.field.name,
+                label: fsField.field.label,
+                dataType: fsField.field.dataType,
+                isRequired: fsField.isRequired,
+                readOnly: fsField.readOnly,
+                options: fsField.field.options
+                    .sort((a, b) => a.displayOrder - b.displayOrder)
+                    .map((opt) => ({
+                    label: opt.label,
+                    value: opt.value,
+                })),
+            })),
+        };
+    }
 };
 exports.FieldSetsService = FieldSetsService;
 exports.FieldSetsService = FieldSetsService = __decorate([

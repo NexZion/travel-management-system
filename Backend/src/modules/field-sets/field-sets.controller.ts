@@ -32,4 +32,9 @@ export class FieldSetsController {
     ) {
     return this.fieldSetsService.attachField(dto);
     }
+
+    @Get(':id/form')
+    getForm(@Param('id') id: string) {
+    return this.fieldSetsService.getForm(id);
+    }
 }

@@ -25,6 +25,13 @@ enum TripStatus {
   CANCELLED
 }
 
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
 enum FieldDataType {
   TEXT
   NUMBER
@@ -95,6 +102,7 @@ model User {
   refreshTokens     RefreshToken[]
   bookings          Booking[]
   roles             UserRole[]
+  vendors           Vendor[]
   emailVerification EmailVerification[]
   trips             Trip[]
 }
@@ -342,6 +350,27 @@ model AuditLog {
   createdAt DateTime @default(now())
 }
 
+model Vendor {
+  id         String @id @default(uuid())
+  userId     String
+  categoryId String
+  name       String
+  description  String?
+  status     VendorStatus @default(PENDING)
+  isActive   Boolean @default(true)
+
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  category VendorCategory @relation(fields:[categoryId],references:[id])
+
+  fields VendorFieldValue[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([categoryId])
+
+}
+
 model VendorCategory {
   id          String  @id @default(uuid())
   name        String  @unique
@@ -354,6 +383,8 @@ model VendorCategory {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  vendors     Vendor[]
 
   @@index([fieldSetId])
 }
@@ -383,6 +414,7 @@ model Field {
 
   fieldSets FieldSetField[]
   options   FieldOption[]
+  vendorValues VendorFieldValue[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -420,4 +452,20 @@ model FieldOption {
   updatedAt DateTime @updatedAt
 
   @@index([fieldId])
+}
+
+model VendorFieldValue {
+  id       String @id @default(uuid())
+  vendorId String
+  fieldId  String
+  value    String
+
+  vendor Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
+  field Field @relation(fields:[fieldId],references:[id])
+
+  createdAt DateTime @default(now())
+
+  @@index([vendorId])
+  @@index([fieldId])
+
 }

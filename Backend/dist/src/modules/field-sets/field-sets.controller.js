@@ -34,6 +34,9 @@ let FieldSetsController = class FieldSetsController {
     attachField(dto) {
         return this.fieldSetsService.attachField(dto);
     }
+    getForm(id) {
+        return this.fieldSetsService.getForm(id);
+    }
 };
 exports.FieldSetsController = FieldSetsController;
 __decorate([
@@ -63,6 +66,13 @@ __decorate([
     __metadata("design:paramtypes", [create_field_set_field_dto_1.CreateFieldSetFieldDto]),
     __metadata("design:returntype", void 0)
 ], FieldSetsController.prototype, "attachField", null);
+__decorate([
+    (0, common_1.Get)(':id/form'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], FieldSetsController.prototype, "getForm", null);
 exports.FieldSetsController = FieldSetsController = __decorate([
     (0, common_1.Controller)('field-sets'),
     __metadata("design:paramtypes", [field_sets_service_1.FieldSetsService])

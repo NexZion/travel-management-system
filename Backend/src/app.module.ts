@@ -29,6 +29,7 @@ import { PlacesModule } from './modules/places/places.module';
 import { VendorCategoriesModule } from './modules/vendor-categories/vendor-categories.module';
 import { FieldSetsModule } from './modules/field-sets/field-sets.module';
 import { FieldsModule } from './modules/fields/fields.module';
+import { VendorsModule } from './modules/vendors/vendors.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ 
@@ -53,7 +54,7 @@ import { FieldsModule } from './modules/fields/fields.module';
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
-    }), QueuesModule, DestinationsModule, TravelStylesModule, VibesModule, DestinationCategoriesModule, VendorCategoriesModule, FieldSetsModule, FieldsModule
+    }), QueuesModule, DestinationsModule, TravelStylesModule, VibesModule, DestinationCategoriesModule, VendorCategoriesModule, FieldSetsModule, FieldsModule, VendorsModule
   ],
   controllers: [AppController, DestinationsController],
   providers: [AppService, RolesGuard,{
