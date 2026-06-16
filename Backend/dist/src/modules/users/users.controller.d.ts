@@ -7,32 +7,32 @@ export declare class UsersController {
     private usersService;
     constructor(usersService: UsersService);
     getProfile(user: any): Promise<{
-        status: import("@prisma/client").$Enums.UserStatus;
         id: string;
+        full_name: string;
         email: string;
         phone: string;
-        full_name: string;
         avatar: string | null;
         is_verified: boolean;
+        status: import("@prisma/client").$Enums.UserStatus;
         created_at: Date;
     } | null>;
     updateProfile(user: any, dto: UpdateProfileDto): Promise<{
         id: string;
+        full_name: string;
         email: string;
         phone: string;
-        full_name: string;
         avatar: string | null;
     }>;
     changePassword(user: any, dto: ChangePasswordDto): Promise<{
         id: string;
-        email: string;
         full_name: string;
+        email: string;
     }>;
     updateStatus(id: string, dto: UpdateUserStatusDto): Promise<{
-        status: import("@prisma/client").$Enums.UserStatus;
         id: string;
-        email: string;
         full_name: string;
+        email: string;
+        status: import("@prisma/client").$Enums.UserStatus;
     }>;
     getAllUsers(query: GetUsersDto): Promise<{
         data: ({
@@ -40,25 +40,25 @@ export declare class UsersController {
                 role: {
                     id: string;
                     name: string;
-                    description: string | null;
                     createdAt: Date;
+                    description: string | null;
                     updatedAt: Date;
                 };
             } & {
                 id: string;
-                createdAt: Date;
                 userId: string;
+                createdAt: Date;
                 roleId: string;
             })[];
         } & {
-            status: import("@prisma/client").$Enums.UserStatus;
             id: string;
+            full_name: string;
             email: string;
             phone: string;
-            full_name: string;
             password: string;
             avatar: string | null;
             is_verified: boolean;
+            status: import("@prisma/client").$Enums.UserStatus;
             created_at: Date;
             updated_at: Date;
         })[];

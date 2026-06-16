@@ -11,19 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateVendorStatusDto = void 0;
 const class_validator_1 = require("class-validator");
-var VendorStatus;
-(function (VendorStatus) {
-    VendorStatus[VendorStatus["PENDING"] = 0] = "PENDING";
-    VendorStatus[VendorStatus["APPROVED"] = 1] = "APPROVED";
-    VendorStatus[VendorStatus["REJECTED"] = 2] = "REJECTED";
-    VendorStatus[VendorStatus["SUSPENDED"] = 3] = "SUSPENDED";
-})(VendorStatus || (VendorStatus = {}));
+const client_1 = require("@prisma/client");
 class UpdateVendorStatusDto {
     status;
 }
 exports.UpdateVendorStatusDto = UpdateVendorStatusDto;
 __decorate([
-    (0, class_validator_1.IsEnum)(VendorStatus),
-    __metadata("design:type", Number)
+    (0, class_validator_1.IsEnum)(client_1.VendorStatus),
+    __metadata("design:type", String)
 ], UpdateVendorStatusDto.prototype, "status", void 0);
 //# sourceMappingURL=update-vendor-status.dto.js.map

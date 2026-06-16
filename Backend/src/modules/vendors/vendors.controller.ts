@@ -6,6 +6,8 @@ import { UpdateVendorStatusDto } from './dto/update-vendor-status.dto';
 import { VendorStatus } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('vendors')
 export class VendorsController {
@@ -32,20 +34,33 @@ export class VendorsController {
         return this.vendorsService.findOne(id);
     }
 
-    @Put(':id')
-    update(
-        @Param('id') id:string,
-        @Body() dto:UpdateVendorDto
-    ){
-        return this.vendorsService.update( id, dto );
-    }
-
     @Patch(':id/status')
+    @UseGuards(
+        JwtAuthGuard,
+        RolesGuard
+    )
+    @Roles('ADMIN')
     updateStatus(
         @Param('id') id:string,
-        @Body() dto:UpdateVendorStatusDto
+        @Body() dto:UpdateVendorStatusDto,
     ){
-        return this.vendorsService.updateStatus( id, VendorStatus[dto.status] );
+        return this.vendorsService.updateStatus(
+            id,
+            dto.status,
+        );
+    }
+
+    @Patch(':id')
+    @UseGuards(JwtAuthGuard)
+    update(
+        @Param('id') id:string,
+        @Body() dto:UpdateVendorDto,
+
+    ){
+        return this.vendorsService.update(
+            id,
+            dto,
+        );
     }
 
 }

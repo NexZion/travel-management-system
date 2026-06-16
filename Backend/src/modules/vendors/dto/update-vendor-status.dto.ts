@@ -1,17 +1,9 @@
 import { IsEnum } from 'class-validator';
-
-enum VendorStatus {
-
-    PENDING,
-    APPROVED,
-    REJECTED,
-    SUSPENDED
-
-}
+import { VendorStatus } from '@prisma/client';
 
 export class UpdateVendorStatusDto {
 
     @IsEnum(VendorStatus)
-    status!:VendorStatus;
+    status!: VendorStatus;
 
 }

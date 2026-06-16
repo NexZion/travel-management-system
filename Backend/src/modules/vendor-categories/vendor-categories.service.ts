@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateVendorCategoryDto } from './dto/create-vendor-category.dto';
 
@@ -14,6 +14,18 @@ export class VendorCategoriesService {
   async create(
     dto: CreateVendorCategoryDto,
   ) {
+
+    const existingCategory = await this.prisma.vendorCategory.findUnique({
+      where: {
+        name: dto.name,
+      },
+    });
+
+    if (existingCategory) {
+      throw new ConflictException(
+        'Vendor category name already exists',
+      );
+    }
 
     return this.prisma.vendorCategory.create({
 

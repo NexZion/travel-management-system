@@ -6,37 +6,29 @@ export declare class VendorsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(dto: CreateVendorDto, userId: string): Promise<{
-        fields: {
-            id: string;
-            createdAt: Date;
-            value: string;
-            fieldId: string;
-            vendorId: string;
-        }[];
-    } & {
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
         categoryId: string;
     }>;
     findAll(): Promise<({
         user: {
             id: string;
-            email: string;
             full_name: string;
+            email: string;
         };
         category: {
             id: string;
             name: string;
-            description: string | null;
-            isActive: boolean;
             createdAt: Date;
+            description: string | null;
             updatedAt: Date;
+            isActive: boolean;
             code: string;
             fieldSetId: string;
         };
@@ -44,9 +36,9 @@ export declare class VendorsService {
             field: {
                 id: string;
                 name: string;
-                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -62,28 +54,28 @@ export declare class VendorsService {
         })[];
     } & {
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
         categoryId: string;
     })[]>;
     findOne(id: string): Promise<{
         user: {
             id: string;
-            email: string;
             full_name: string;
+            email: string;
         };
         category: {
             id: string;
             name: string;
-            description: string | null;
-            isActive: boolean;
             createdAt: Date;
+            description: string | null;
             updatedAt: Date;
+            isActive: boolean;
             code: string;
             fieldSetId: string;
         };
@@ -91,9 +83,9 @@ export declare class VendorsService {
             field: {
                 id: string;
                 name: string;
-                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -109,35 +101,35 @@ export declare class VendorsService {
         })[];
     } & {
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        categoryId: string;
-    }>;
-    update(id: string, dto: UpdateVendorDto): Promise<{
-        id: string;
         name: string;
-        description: string | null;
-        status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
         categoryId: string;
     }>;
     updateStatus(id: string, status: VendorStatus): Promise<{
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
+        categoryId: string;
+    }>;
+    update(id: string, dto: UpdateVendorDto): Promise<{
+        id: string;
+        status: import("@prisma/client").$Enums.VendorStatus;
+        name: string;
+        userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
         categoryId: string;
     }>;
 }

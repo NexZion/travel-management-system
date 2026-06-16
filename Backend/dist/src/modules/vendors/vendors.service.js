@@ -18,34 +18,76 @@ let VendorsService = class VendorsService {
         this.prisma = prisma;
     }
     async create(dto, userId) {
-        return this.prisma.vendor.create({
-            data: {
-                user: {
-                    connect: {
-                        id: userId,
-                    }
-                },
-                category: {
-                    connect: {
-                        id: dto.categoryId
-                    }
-                },
-                name: dto.name,
-                description: dto.description,
-                fields: {
-                    create: dto.fields.map(field => ({
-                        field: {
-                            connect: {
-                                id: field.fieldId
-                            }
-                        },
-                        value: field.value
-                    }))
-                }
+        const category = await this.prisma.vendorCategory.findUnique({
+            where: {
+                id: dto.categoryId,
             },
             include: {
-                fields: true
+                fieldSet: {
+                    include: {
+                        fields: {
+                            include: {
+                                field: {
+                                    include: {
+                                        options: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (!category) {
+            throw new common_1.NotFoundException('Category not found');
+        }
+        if (!category.fieldSet) {
+            throw new common_1.BadRequestException('Category field configuration missing');
+        }
+        const fieldMap = new Map();
+        for (const fsField of category.fieldSet.fields) {
+            fieldMap.set(fsField.field.id, fsField);
+        }
+        for (const input of dto.fields) {
+            const fieldConfig = fieldMap.get(input.fieldId);
+            if (!fieldConfig) {
+                throw new common_1.BadRequestException(`Field ${input.fieldId} is not allowed for this category`);
             }
+            if (fieldConfig.isRequired &&
+                !input.value) {
+                throw new common_1.BadRequestException(`${fieldConfig.field.name} is required`);
+            }
+            switch (fieldConfig.field.dataType) {
+                case 'NUMBER':
+                    if (isNaN(Number(input.value))) {
+                        throw new common_1.BadRequestException(`${fieldConfig.field.name} must be a number`);
+                    }
+                    break;
+                case 'SELECTION':
+                    const validOption = fieldConfig.field.options.some(option => option.value === input.value);
+                    if (!validOption) {
+                        throw new common_1.BadRequestException(`Invalid option for ${fieldConfig.field.name}`);
+                    }
+                    break;
+            }
+        }
+        return this.prisma.$transaction(async (tx) => {
+            const vendor = await tx.vendor.create({
+                data: {
+                    userId: userId,
+                    categoryId: dto.categoryId,
+                    name: dto.name,
+                    description: dto.description,
+                },
+            });
+            await tx.vendorFieldValue.createMany({
+                data: dto.fields.map((field) => ({
+                    vendorId: vendor.id,
+                    fieldId: field.fieldId,
+                    value: field.value,
+                })),
+            });
+            return vendor;
         });
     }
     async findAll() {
@@ -96,23 +138,40 @@ let VendorsService = class VendorsService {
         }
         return vendor;
     }
-    async update(id, dto) {
-        return this.prisma.vendor.update({
+    async updateStatus(id, status) {
+        const vendor = await this.prisma.vendor.findUnique({
             where: {
                 id,
             },
-            data: {
-                ...dto,
-            }
         });
-    }
-    async updateStatus(id, status) {
+        if (!vendor) {
+            throw new common_1.NotFoundException('Vendor not found');
+        }
         return this.prisma.vendor.update({
             where: {
                 id,
             },
             data: {
                 status,
+            },
+        });
+    }
+    async update(id, dto) {
+        const vendor = await this.prisma.vendor.findUnique({
+            where: {
+                id,
+            },
+        });
+        if (!vendor) {
+            throw new common_1.NotFoundException('Vendor not found');
+        }
+        return this.prisma.vendor.update({
+            where: {
+                id,
+            },
+            data: {
+                name: dto.name,
+                description: dto.description,
             }
         });
     }

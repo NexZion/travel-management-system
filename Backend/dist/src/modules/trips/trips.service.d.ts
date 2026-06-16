@@ -12,9 +12,10 @@ export declare class TripsService {
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
         isPublic: boolean;
         title: string;
-        description: string | null;
         travelStyleId: string;
         vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
@@ -23,7 +24,6 @@ export declare class TripsService {
         endDate: Date | null;
         totalDays: number | null;
         shareToken: string | null;
-        updatedAt: Date;
     }>;
     findAll(userId: string, filters: any): Promise<any>;
     findOne(tripId: string, userId: string): Promise<import("./responses/trip.response").TripResponse>;
@@ -83,9 +83,10 @@ export declare class TripsService {
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
         isPublic: boolean;
         title: string;
-        description: string | null;
         travelStyleId: string;
         vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
@@ -94,16 +95,16 @@ export declare class TripsService {
         endDate: Date | null;
         totalDays: number | null;
         shareToken: string | null;
-        updatedAt: Date;
     }>;
     updateTrip(tripId: string, dto: UpdateTripDto, userId: string): Promise<{
         id: string;
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
         isPublic: boolean;
         title: string;
-        description: string | null;
         travelStyleId: string;
         vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
@@ -112,7 +113,6 @@ export declare class TripsService {
         endDate: Date | null;
         totalDays: number | null;
         shareToken: string | null;
-        updatedAt: Date;
     }>;
     deleteTrip(tripId: string, userId: string): Promise<{
         message: string;

@@ -18,6 +18,14 @@ let VendorCategoriesService = class VendorCategoriesService {
         this.prisma = prisma;
     }
     async create(dto) {
+        const existingCategory = await this.prisma.vendorCategory.findUnique({
+            where: {
+                name: dto.name,
+            },
+        });
+        if (existingCategory) {
+            throw new common_1.ConflictException('Vendor category name already exists');
+        }
         return this.prisma.vendorCategory.create({
             data: {
                 name: dto.name,

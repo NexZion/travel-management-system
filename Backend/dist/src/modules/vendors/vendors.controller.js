@@ -18,9 +18,10 @@ const vendors_service_1 = require("./vendors.service");
 const create_vendor_dto_1 = require("./dto/create-vendor.dto");
 const update_vendor_dto_1 = require("./dto/update-vendor.dto");
 const update_vendor_status_dto_1 = require("./dto/update-vendor-status.dto");
-const client_1 = require("@prisma/client");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
+const roles_guard_1 = require("../auth/guards/roles.guard");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 let VendorsController = class VendorsController {
     vendorsService;
     constructor(vendorsService) {
@@ -35,11 +36,11 @@ let VendorsController = class VendorsController {
     findOne(id) {
         return this.vendorsService.findOne(id);
     }
+    updateStatus(id, dto) {
+        return this.vendorsService.updateStatus(id, dto.status);
+    }
     update(id, dto) {
         return this.vendorsService.update(id, dto);
-    }
-    updateStatus(id, dto) {
-        return this.vendorsService.updateStatus(id, client_1.VendorStatus[dto.status]);
     }
 };
 exports.VendorsController = VendorsController;
@@ -66,21 +67,24 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], VendorsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_vendor_dto_1.UpdateVendorDto]),
-    __metadata("design:returntype", void 0)
-], VendorsController.prototype, "update", null);
-__decorate([
     (0, common_1.Patch)(':id/status'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_vendor_status_dto_1.UpdateVendorStatusDto]),
     __metadata("design:returntype", void 0)
 ], VendorsController.prototype, "updateStatus", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_vendor_dto_1.UpdateVendorDto]),
+    __metadata("design:returntype", void 0)
+], VendorsController.prototype, "update", null);
 exports.VendorsController = VendorsController = __decorate([
     (0, common_1.Controller)('vendors'),
     __metadata("design:paramtypes", [vendors_service_1.VendorsService])
