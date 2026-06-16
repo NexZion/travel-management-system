@@ -3,7 +3,6 @@ declare class VendorFieldDto {
     value: string;
 }
 export declare class CreateVendorDto {
-    userId: string;
     categoryId: string;
     name: string;
     description?: string;

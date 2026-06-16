@@ -10,14 +10,14 @@ export class VendorsService {
 
     constructor( private readonly prisma: PrismaService, ){}
 
-    async create( dto: CreateVendorDto, ){
+    async create( dto: CreateVendorDto, userId: string ){
         return this.prisma.vendor.create({
             
         data:{
 
             user:{
                 connect:{
-                id:dto.userId
+                id: userId,
                 }
             },
 

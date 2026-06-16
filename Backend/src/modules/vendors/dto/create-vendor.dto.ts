@@ -14,10 +14,6 @@ class VendorFieldDto {
 export class CreateVendorDto {
 
   @IsString()
-  userId!: string;
-
-
-  @IsString()
   categoryId!: string;
 
 

@@ -17,12 +17,12 @@ let VendorsService = class VendorsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(dto) {
+    async create(dto, userId) {
         return this.prisma.vendor.create({
             data: {
                 user: {
                     connect: {
-                        id: dto.userId
+                        id: userId,
                     }
                 },
                 category: {

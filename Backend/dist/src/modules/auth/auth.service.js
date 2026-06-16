@@ -34,6 +34,14 @@ let AuthService = class AuthService {
             throw new common_1.BadRequestException('Email already exists');
         }
         const hashedPassword = await password_util_1.PasswordUtil.hashPassword(dto.password);
+        const userRole = await this.prisma.role.findUnique({
+            where: {
+                name: 'USER',
+            },
+        });
+        if (!userRole) {
+            throw new Error('USER role not found');
+        }
         const user = await this.prisma.user.create({
             data: {
                 full_name: dto.full_name,

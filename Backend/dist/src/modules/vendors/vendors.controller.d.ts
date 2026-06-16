@@ -5,7 +5,7 @@ import { UpdateVendorStatusDto } from './dto/update-vendor-status.dto';
 export declare class VendorsController {
     private readonly vendorsService;
     constructor(vendorsService: VendorsService);
-    create(dto: CreateVendorDto): Promise<{
+    create(dto: CreateVendorDto, user: any): Promise<{
         fields: {
             id: string;
             createdAt: Date;

@@ -53,7 +53,11 @@ export class JwtAuthGuard implements CanActivate {
           secret: process.env.JWT_SECRET,
         });
 
-      request.user = payload;
+      request.user = {
+        ...payload,
+        id: payload.sub ?? payload.id,
+        sub: payload.sub ?? payload.id,
+      };
 
       return true;
 

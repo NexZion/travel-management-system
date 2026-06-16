@@ -24,17 +24,12 @@ __decorate([
     __metadata("design:type", String)
 ], VendorFieldDto.prototype, "value", void 0);
 class CreateVendorDto {
-    userId;
     categoryId;
     name;
     description;
     fields;
 }
 exports.CreateVendorDto = CreateVendorDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateVendorDto.prototype, "userId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

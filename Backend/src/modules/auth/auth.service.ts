@@ -35,6 +35,16 @@ export class AuthService {
       // 2. Hash password
       const hashedPassword = await PasswordUtil.hashPassword(dto.password);
   
+      const userRole = await this.prisma.role.findUnique({
+        where: {
+          name: 'USER',
+        },
+      });
+
+      if (!userRole) {
+        throw new Error('USER role not found');
+      }
+
       // 3. Create user
       const user = await this.prisma.user.create({
         data: {

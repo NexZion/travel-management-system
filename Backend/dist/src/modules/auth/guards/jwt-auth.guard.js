@@ -39,7 +39,11 @@ let JwtAuthGuard = class JwtAuthGuard {
             const payload = this.jwtService.verify(token, {
                 secret: process.env.JWT_SECRET,
             });
-            request.user = payload;
+            request.user = {
+                ...payload,
+                id: payload.sub ?? payload.id,
+                sub: payload.sub ?? payload.id,
+            };
             return true;
         }
         catch {

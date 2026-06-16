@@ -5,7 +5,7 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 export declare class VendorsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(dto: CreateVendorDto): Promise<{
+    create(dto: CreateVendorDto, userId: string): Promise<{
         fields: {
             id: string;
             createdAt: Date;

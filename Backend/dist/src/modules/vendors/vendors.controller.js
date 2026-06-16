@@ -19,13 +19,15 @@ const create_vendor_dto_1 = require("./dto/create-vendor.dto");
 const update_vendor_dto_1 = require("./dto/update-vendor.dto");
 const update_vendor_status_dto_1 = require("./dto/update-vendor-status.dto");
 const client_1 = require("@prisma/client");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
 let VendorsController = class VendorsController {
     vendorsService;
     constructor(vendorsService) {
         this.vendorsService = vendorsService;
     }
-    create(dto) {
-        return this.vendorsService.create(dto);
+    create(dto, user) {
+        return this.vendorsService.create(dto, user.id ?? user.sub);
     }
     findAll() {
         return this.vendorsService.findAll();
@@ -42,10 +44,12 @@ let VendorsController = class VendorsController {
 };
 exports.VendorsController = VendorsController;
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_vendor_dto_1.CreateVendorDto]),
+    __metadata("design:paramtypes", [create_vendor_dto_1.CreateVendorDto, Object]),
     __metadata("design:returntype", void 0)
 ], VendorsController.prototype, "create", null);
 __decorate([

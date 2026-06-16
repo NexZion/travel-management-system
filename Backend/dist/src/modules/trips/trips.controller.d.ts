@@ -8,35 +8,35 @@ export declare class TripsController {
     private readonly tripsService;
     constructor(tripsService: TripsService);
     createTrip(dto: CreateTripDto, req: any, user: any): Promise<{
+        isPublic: boolean;
         id: string;
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
-        isPublic: boolean;
         title: string;
         description: string | null;
-        travelStyleId: string;
-        vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
-        travelerCount: number;
         startDate: Date | null;
         endDate: Date | null;
         totalDays: number | null;
+        travelerCount: number;
         shareToken: string | null;
         updatedAt: Date;
+        travelStyleId: string;
+        vibeId: string;
     }>;
     getUserTrips(user: any, filters: FilterTripsDto): Promise<any>;
     getTripById(id: string, user: any): Promise<import("./responses/trip.response").TripResponse>;
     addDestination(tripId: string, dto: AddTripDestinationDto, user: any): Promise<{
         id: string;
         createdAt: Date;
+        visitOrder: number;
         arrivalDate: Date | null;
         departureDate: Date | null;
+        nights: number | null;
         notes: string | null;
-        visitOrder: number;
         tripId: string;
         destinationId: string;
-        nights: number | null;
     }>;
     reorder(tripId: string, body: {
         orderedIds: string[];
@@ -56,9 +56,9 @@ export declare class TripsController {
                 name: string;
                 createdAt: Date;
                 description: string | null;
+                slug: string;
                 district: string;
                 province: string;
-                slug: string;
                 coverImage: string | null;
                 latitude: number;
                 longitude: number;
@@ -72,49 +72,49 @@ export declare class TripsController {
         } & {
             id: string;
             createdAt: Date;
+            visitOrder: number;
             arrivalDate: Date | null;
             departureDate: Date | null;
+            nights: number | null;
             notes: string | null;
-            visitOrder: number;
             tripId: string;
             destinationId: string;
-            nights: number | null;
         })[];
     } & {
+        isPublic: boolean;
         id: string;
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
-        isPublic: boolean;
         title: string;
         description: string | null;
-        travelStyleId: string;
-        vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
-        travelerCount: number;
         startDate: Date | null;
         endDate: Date | null;
         totalDays: number | null;
+        travelerCount: number;
         shareToken: string | null;
         updatedAt: Date;
+        travelStyleId: string;
+        vibeId: string;
     }>;
     updateTrip(tripId: string, dto: UpdateTripDto, user: any): Promise<{
+        isPublic: boolean;
         id: string;
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
-        isPublic: boolean;
         title: string;
         description: string | null;
-        travelStyleId: string;
-        vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
-        travelerCount: number;
         startDate: Date | null;
         endDate: Date | null;
         totalDays: number | null;
+        travelerCount: number;
         shareToken: string | null;
         updatedAt: Date;
+        travelStyleId: string;
+        vibeId: string;
     }>;
     deleteTrip(tripId: string, user: any): Promise<{
         message: string;
@@ -122,13 +122,13 @@ export declare class TripsController {
     updateTripDestination(tripId: string, stopId: string, dto: UpdateTripDestinationDto, user: any): Promise<{
         id: string;
         createdAt: Date;
+        visitOrder: number;
         arrivalDate: Date | null;
         departureDate: Date | null;
+        nights: number | null;
         notes: string | null;
-        visitOrder: number;
         tripId: string;
         destinationId: string;
-        nights: number | null;
     }>;
     removeTripDestination(tripId: string, stopId: string, user: any): Promise<{
         message: string;
