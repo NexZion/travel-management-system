@@ -111,10 +111,39 @@ let VendorsService = class VendorsService {
                 id,
             },
             include: {
-                category: true,
+                category: {
+                    include: {
+                        fieldSet: {
+                            include: {
+                                fields: {
+                                    include: {
+                                        field: {
+                                            include: {
+                                                options: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                fieldSet: {
+                    include: {
+                        fields: {
+                            include: {
+                                field: {
+                                    include: {
+                                        options: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 fields: {
                     include: {
-                        field: true,
+                        field: true
                     }
                 }
             }
@@ -122,15 +151,14 @@ let VendorsService = class VendorsService {
         if (!vendor) {
             throw new common_1.NotFoundException('Vendor not found');
         }
+        const activeFieldSet = vendor.fieldSet ? vendor.fieldSet : vendor.category.fieldSet;
         return {
-            ...vendor,
-            fields: vendor.fields.map(item => ({
-                fieldId: item.fieldId,
-                name: item.field.name,
-                label: item.field.label,
-                dataType: item.field.dataType,
-                value: item.value
-            }))
+            id: vendor.id,
+            name: vendor.name,
+            description: vendor.description,
+            category: vendor.category.name,
+            fields: activeFieldSet.fields,
+            values: vendor.fields
         };
     }
     async updateStatus(id, dto) {
@@ -274,6 +302,93 @@ let VendorsService = class VendorsService {
             limit,
             total
         };
+    }
+    async addCustomField(vendorId, dto) {
+        const vendor = await this.prisma.vendor.findUnique({
+            where: {
+                id: vendorId
+            },
+            include: {
+                category: {
+                    include: {
+                        fieldSet: {
+                            include: {
+                                fields: {
+                                    include: {
+                                        field: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                fieldSet: {
+                    include: {
+                        fields: {
+                            include: {
+                                field: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        if (!vendor) {
+            throw new common_1.NotFoundException("Vendor not found");
+        }
+        return this.prisma.$transaction(async (tx) => {
+            let customFieldSetId = vendor.fieldSetId;
+            if (!customFieldSetId) {
+                const newFieldSet = await tx.fieldSet.create({
+                    data: {
+                        name: `${vendor.name} Custom Fields`,
+                        description: "Vendor customized fields",
+                        isCustom: true
+                    }
+                });
+                customFieldSetId = newFieldSet.id;
+                const defaultFields = vendor.category.fieldSet.fields;
+                for (const item of defaultFields) {
+                    await tx.fieldSetField.create({
+                        data: {
+                            fieldSetId: customFieldSetId,
+                            fieldId: item.fieldId,
+                            displayOrder: item.displayOrder,
+                            isRequired: item.isRequired,
+                            readOnly: item.readOnly
+                        }
+                    });
+                }
+                await tx.vendor.update({
+                    where: {
+                        id: vendorId
+                    },
+                    data: {
+                        fieldSetId: customFieldSetId
+                    }
+                });
+            }
+            const field = await tx.field.create({
+                data: {
+                    name: dto.name,
+                    label: dto.label,
+                    dataType: dto.dataType,
+                    placeholder: dto.placeholder,
+                    helpText: dto.helpText,
+                    defaultValue: dto.defaultValue
+                }
+            });
+            await tx.fieldSetField.create({
+                data: {
+                    fieldSetId: customFieldSetId,
+                    fieldId: field.id,
+                    displayOrder: 999,
+                    isRequired: false,
+                    readOnly: false
+                }
+            });
+            return field;
+        });
     }
 };
 exports.VendorsService = VendorsService;

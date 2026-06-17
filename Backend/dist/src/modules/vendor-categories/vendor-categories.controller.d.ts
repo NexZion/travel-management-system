@@ -21,6 +21,7 @@ export declare class VendorCategoriesController {
             description: string | null;
             updatedAt: Date;
             isActive: boolean;
+            isCustom: boolean;
         };
     } & {
         id: string;
@@ -55,6 +56,7 @@ export declare class VendorCategoriesController {
             description: string | null;
             updatedAt: Date;
             isActive: boolean;
+            isCustom: boolean;
         };
     } & {
         id: string;

@@ -5,6 +5,7 @@ import { CreateVendorDto, } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { UpdateVendorStatusDto } from './dto/update-vendor-status.dto';
 import { SearchVendorDto } from './dto/search-vendor.dto';
+import { AddVendorFieldDto } from './dto/add-vendor-field.dto';
 
 @Injectable()
 export class VendorsService {
@@ -164,37 +165,63 @@ export class VendorsService {
                 id,
             },
             include:{
-                category:true,
+                category:{
+                    include:{
+                        fieldSet:{
+                            include:{
+                                fields:{
+                                    include:{
+                                        field:{
+                                            include:{
+                                                options:true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                },
+
+                fieldSet:{
+                    include:{
+                        fields:{
+                            include:{
+                                field:{
+                                    include:{
+                                        options:true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+
                 fields:{
                     include:{
-                        field:true,
+                        field:true
                     }
                 }
-                
             }
-
         });
 
         if(!vendor){
             throw new NotFoundException( 'Vendor not found' );
         }
 
+        // Decide FieldSet
+
+        const activeFieldSet = vendor.fieldSet? vendor.fieldSet : vendor.category.fieldSet;
+
         return {
-            ...vendor,
 
-            fields: vendor.fields.map(item=>({
-
-                fieldId:item.fieldId,
-
-                name:item.field.name,
-
-                label:item.field.label,
-
-                dataType:item.field.dataType,
-
-                value:item.value
-
-            }))
+            id:vendor.id,
+            name:vendor.name,
+            description:vendor.description,
+            category:vendor.category.name,
+            fields:activeFieldSet.fields,
+            values:vendor.fields
         };
     }
 
@@ -390,5 +417,127 @@ export class VendorsService {
             limit,
             total
         };
+    }
+
+    async addCustomField( vendorId:string, dto:AddVendorFieldDto ){
+
+        const vendor = await this.prisma.vendor.findUnique({
+            where:{
+                id:vendorId
+            },
+            include:{
+                category:{
+                    include:{
+                        fieldSet:{
+                            include:{
+                                fields:{
+                                    include:{
+                                        field:true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                fieldSet:{
+                    include:{
+                        fields:{
+                            include:{
+                                field:true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if(!vendor){
+            throw new NotFoundException(
+                "Vendor not found"
+            );
+        }
+
+        return this.prisma.$transaction(async(tx)=>{
+
+        let customFieldSetId = vendor.fieldSetId;
+
+        /*
+        Create custom FieldSet
+        if vendor does not have one
+        */
+        if(!customFieldSetId){
+
+            const newFieldSet = await tx.fieldSet.create({
+                data:{
+                    name: `${vendor.name} Custom Fields`,
+                    description: "Vendor customized fields",
+                    isCustom: true
+                }
+            });
+
+            customFieldSetId = newFieldSet.id;
+
+            // Copy existing category fields
+
+            const defaultFields = vendor.category.fieldSet.fields;
+
+            for(const item of defaultFields){
+
+                await tx.fieldSetField.create({
+
+                    data:{
+                        fieldSetId: customFieldSetId,
+                        fieldId: item.fieldId,
+                        displayOrder: item.displayOrder,
+                        isRequired: item.isRequired,
+                        readOnly: item.readOnly
+                    }
+                });
+            }
+
+            // assign custom fieldset to vendor
+            await tx.vendor.update({
+
+                where:{
+                    id: vendorId
+                },
+                data:{
+                    fieldSetId: customFieldSetId
+                }
+            });
+        }
+
+        /*
+        Create new Field
+        */
+        const field = await tx.field.create({
+
+            data:{
+                name:dto.name,
+                label:dto.label,
+                dataType:dto.dataType,
+                placeholder:dto.placeholder,
+                helpText:dto.helpText,
+                defaultValue:dto.defaultValue
+            }
+        });
+
+        /*
+        Attach field to custom FieldSet
+        */
+        await tx.fieldSetField.create({
+
+            data:{
+                fieldSetId: customFieldSetId,
+                fieldId: field.id,
+                displayOrder: 999,
+                isRequired: false,
+                readOnly: false
+            }
+        });
+
+        return field;
+
+        });
     }
 }

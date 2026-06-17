@@ -9,6 +9,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { SearchVendorDto } from './dto/search-vendor.dto';
+import { AddVendorFieldDto } from './dto/add-vendor-field.dto';
 
 @Controller('vendors')
 export class VendorsController {
@@ -68,6 +69,17 @@ export class VendorsController {
         return this.vendorsService.update(
             id,
             dto,
+        );
+    }
+
+    @Post(':id/custom-fields')
+    addCustomField(
+    @Param('id') id:string,
+    @Body() dto:AddVendorFieldDto
+    ){
+        return this.vendorsService.addCustomField(
+            id,
+            dto
         );
     }
 

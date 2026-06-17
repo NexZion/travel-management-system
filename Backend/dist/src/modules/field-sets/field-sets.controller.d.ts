@@ -11,6 +11,7 @@ export declare class FieldSetsController {
         description: string | null;
         updatedAt: Date;
         isActive: boolean;
+        isCustom: boolean;
     }>;
     findAll(): Promise<{
         id: string;
@@ -19,6 +20,7 @@ export declare class FieldSetsController {
         description: string | null;
         updatedAt: Date;
         isActive: boolean;
+        isCustom: boolean;
     }[]>;
     findOne(id: string): Promise<{
         id: string;
@@ -27,6 +29,7 @@ export declare class FieldSetsController {
         description: string | null;
         updatedAt: Date;
         isActive: boolean;
+        isCustom: boolean;
     } | null>;
     attachField(dto: CreateFieldSetFieldDto): Promise<{
         id: string;
