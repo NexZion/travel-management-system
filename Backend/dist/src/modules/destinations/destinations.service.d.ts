@@ -10,10 +10,11 @@ export declare class DestinationsService {
     findOne(id: string): Promise<{
         id: string;
         name: string;
-        slug: string;
+        createdAt: Date;
+        description: string | null;
         district: string;
         province: string;
-        description: string | null;
+        slug: string;
         coverImage: string | null;
         latitude: number;
         longitude: number;
@@ -23,16 +24,16 @@ export declare class DestinationsService {
         rating: number | null;
         reviewCount: number | null;
         source: string;
-        createdAt: Date;
     }>;
     nearby(lat: number, lng: number, radius: number): Promise<{
         distanceMeters: number;
         id: string;
         name: string;
-        slug: string;
+        createdAt: Date;
+        description: string | null;
         district: string;
         province: string;
-        description: string | null;
+        slug: string;
         coverImage: string | null;
         latitude: number;
         longitude: number;
@@ -42,7 +43,6 @@ export declare class DestinationsService {
         rating: number | null;
         reviewCount: number | null;
         source: string;
-        createdAt: Date;
     }[]>;
     searchDestinations(filters: GetDestinationsDto): Promise<any>;
 }

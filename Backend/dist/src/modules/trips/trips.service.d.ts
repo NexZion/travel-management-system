@@ -12,9 +12,10 @@ export declare class TripsService {
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
         isPublic: boolean;
         title: string;
-        description: string | null;
         travelStyleId: string;
         vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
@@ -23,20 +24,19 @@ export declare class TripsService {
         endDate: Date | null;
         totalDays: number | null;
         shareToken: string | null;
-        updatedAt: Date;
     }>;
     findAll(userId: string, filters: any): Promise<any>;
     findOne(tripId: string, userId: string): Promise<import("./responses/trip.response").TripResponse>;
     addDestination(tripId: string, userId: string, dto: any): Promise<{
         id: string;
         createdAt: Date;
-        arrivalDate: Date | null;
-        departureDate: Date | null;
-        notes: string | null;
         visitOrder: number;
         tripId: string;
         destinationId: string;
+        arrivalDate: Date | null;
+        departureDate: Date | null;
         nights: number | null;
+        notes: string | null;
     }>;
     reorder(tripId: string, orderedIds: string[], userId: string): Promise<void>;
     duplicateTrip(tripId: string, userId: string): Promise<{
@@ -70,22 +70,23 @@ export declare class TripsService {
         } & {
             id: string;
             createdAt: Date;
-            arrivalDate: Date | null;
-            departureDate: Date | null;
-            notes: string | null;
             visitOrder: number;
             tripId: string;
             destinationId: string;
+            arrivalDate: Date | null;
+            departureDate: Date | null;
             nights: number | null;
+            notes: string | null;
         })[];
     } & {
         id: string;
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
         isPublic: boolean;
         title: string;
-        description: string | null;
         travelStyleId: string;
         vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
@@ -94,16 +95,16 @@ export declare class TripsService {
         endDate: Date | null;
         totalDays: number | null;
         shareToken: string | null;
-        updatedAt: Date;
     }>;
     updateTrip(tripId: string, dto: UpdateTripDto, userId: string): Promise<{
         id: string;
         status: import("@prisma/client").$Enums.TripStatus;
         userId: string;
         createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
         isPublic: boolean;
         title: string;
-        description: string | null;
         travelStyleId: string;
         vibeId: string;
         budgetRange: import("@prisma/client").$Enums.BudgetRange;
@@ -112,7 +113,6 @@ export declare class TripsService {
         endDate: Date | null;
         totalDays: number | null;
         shareToken: string | null;
-        updatedAt: Date;
     }>;
     deleteTrip(tripId: string, userId: string): Promise<{
         message: string;
@@ -120,13 +120,13 @@ export declare class TripsService {
     updateTripDestination(tripId: string, stopId: string, dto: UpdateTripDestinationDto, userId: string): Promise<{
         id: string;
         createdAt: Date;
-        arrivalDate: Date | null;
-        departureDate: Date | null;
-        notes: string | null;
         visitOrder: number;
         tripId: string;
         destinationId: string;
+        arrivalDate: Date | null;
+        departureDate: Date | null;
         nights: number | null;
+        notes: string | null;
     }>;
     removeTripDestination(tripId: string, stopId: string, userId: string): Promise<{
         message: string;
