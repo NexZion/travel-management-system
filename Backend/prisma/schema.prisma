@@ -358,6 +358,7 @@ model Vendor {
   description  String?
   status     VendorStatus @default(PENDING)
   isActive   Boolean @default(true)
+  statusReason String?
 
   user User @relation(fields:[userId],references:[id],onDelete:Cascade)
   category VendorCategory @relation(fields:[categoryId],references:[id])
@@ -465,6 +466,7 @@ model VendorFieldValue {
 
   createdAt DateTime @default(now())
 
+  @@unique([vendorId, fieldId])
   @@index([vendorId])
   @@index([fieldId])
 

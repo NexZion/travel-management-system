@@ -1,14 +1,27 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
+
+
+class UpdateVendorFieldDto {
+
+    @IsString()
+    fieldId!: string;
+
+    @IsString()
+    value!: string;
+}
+
 
 export class UpdateVendorDto {
 
     @IsOptional()
     @IsString()
-    name!:string;
-
+    name?: string;
 
     @IsOptional()
     @IsString()
-    description?:string;
+    description?: string;
 
+    @IsOptional()
+    @IsArray()
+    fields?: UpdateVendorFieldDto[];
 }

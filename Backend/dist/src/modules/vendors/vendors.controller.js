@@ -22,6 +22,7 @@ const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const search_vendor_dto_1 = require("./dto/search-vendor.dto");
 let VendorsController = class VendorsController {
     vendorsService;
     constructor(vendorsService) {
@@ -33,11 +34,14 @@ let VendorsController = class VendorsController {
     findAll() {
         return this.vendorsService.findAll();
     }
+    search(dto) {
+        return this.vendorsService.search(dto);
+    }
     findOne(id) {
         return this.vendorsService.findOne(id);
     }
     updateStatus(id, dto) {
-        return this.vendorsService.updateStatus(id, dto.status);
+        return this.vendorsService.updateStatus(id, dto);
     }
     update(id, dto) {
         return this.vendorsService.update(id, dto);
@@ -59,6 +63,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], VendorsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)('search'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [search_vendor_dto_1.SearchVendorDto]),
+    __metadata("design:returntype", void 0)
+], VendorsController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

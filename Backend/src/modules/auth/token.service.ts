@@ -14,7 +14,7 @@ export class TokenService {
     };
 
     return this.jwtService.sign(payload, {
-      expiresIn: '15m',
+      expiresIn: '7d',
     });
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Put, Patch, UseGuards, } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Patch, UseGuards, Query } from '@nestjs/common';
 import { VendorsService, } from './vendors.service';
 import { CreateVendorDto, } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
@@ -8,6 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { SearchVendorDto } from './dto/search-vendor.dto';
 
 @Controller('vendors')
 export class VendorsController {
@@ -29,6 +30,13 @@ export class VendorsController {
         return this.vendorsService.findAll();
     }
 
+    @Post('search')
+    search(
+        @Query() dto:SearchVendorDto
+    ){
+        return this.vendorsService.search(dto);
+    }
+
     @Get(':id')
     findOne(@Param('id') id:string){
         return this.vendorsService.findOne(id);
@@ -46,7 +54,7 @@ export class VendorsController {
     ){
         return this.vendorsService.updateStatus(
             id,
-            dto.status,
+            dto,
         );
     }
 

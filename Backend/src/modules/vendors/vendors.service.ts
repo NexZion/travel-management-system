@@ -4,6 +4,7 @@ import { VendorStatus } from '@prisma/client';
 import { CreateVendorDto, } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { UpdateVendorStatusDto } from './dto/update-vendor-status.dto';
+import { SearchVendorDto } from './dto/search-vendor.dto';
 
 @Injectable()
 export class VendorsService {
@@ -142,18 +143,12 @@ export class VendorsService {
 
             include: {
                 category: true,
-                user: {
-                    select:{
-                    id:true,
-                    full_name:true,
-                    email:true,
-                    }
-                },
                 fields: {
                     include:{
                     field:true,
                     }
                 }
+                
             },
 
             orderBy:{
@@ -170,18 +165,12 @@ export class VendorsService {
             },
             include:{
                 category:true,
-                user:{
-                    select:{
-                        id:true,
-                        full_name:true,
-                        email:true,
-                    }
-                },
                 fields:{
                     include:{
                         field:true,
                     }
                 }
+                
             }
 
         });
@@ -190,10 +179,26 @@ export class VendorsService {
             throw new NotFoundException( 'Vendor not found' );
         }
 
-        return vendor;
+        return {
+            ...vendor,
+
+            fields: vendor.fields.map(item=>({
+
+                fieldId:item.fieldId,
+
+                name:item.field.name,
+
+                label:item.field.label,
+
+                dataType:item.field.dataType,
+
+                value:item.value
+
+            }))
+        };
     }
 
-    async updateStatus( id:string, status:VendorStatus){
+    async updateStatus( id:string, dto:UpdateVendorStatusDto){
 
         const vendor =
             await this.prisma.vendor.findUnique({
@@ -219,7 +224,8 @@ export class VendorsService {
             },
 
             data:{
-                status,
+                status:dto.status,
+                statusReason:dto.reason,
             },
 
         });
@@ -228,12 +234,29 @@ export class VendorsService {
 
     async update( id:string, dto:UpdateVendorDto ){
 
-        const vendor =
-            await this.prisma.vendor.findUnique({
-                where:{
-                    id,
-                },
-            });
+        const vendor = await this.prisma.vendor.findUnique({
+
+            where:{
+                id,
+            },
+
+            include:{
+                category:{
+                    include:{
+                        fieldSet:{
+                            include:{
+                                fields:{
+                                    include:{
+                                        field:true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        });
 
 
         if(!vendor){
@@ -242,20 +265,130 @@ export class VendorsService {
             );
         }
 
+        return this.prisma.$transaction(async(tx)=>{
 
-        return this.prisma.vendor.update({
+            // update basic data
+            await tx.vendor.update({
 
-            where:{
-                id,
-            },
+                where:{
+                    id,
+                },
 
-            data:{
-                name:dto.name,
-                description:dto.description,
+                data:{
+                    name:dto.name,
+                    description:dto.description,
+                }
+            });
+
+            // update dynamic fields
+            if(dto.fields){
+                for(const field of dto.fields){
+                    await tx.vendorFieldValue.upsert({
+
+                        where:{
+                            vendorId_fieldId:{
+                                vendorId:id,
+                                fieldId:field.fieldId,
+                            }
+                        },
+
+                        update:{
+                            value:field.value,
+                        },
+
+                        create:{
+                            vendorId:id,
+                            fieldId:field.fieldId,
+                            value:field.value,
+                        }
+                    });
+                }
             }
 
-        });
+            return tx.vendor.findUnique({
+                where:{
+                    id,
+                },
 
+                include:{
+                    fields:{
+                        include:{
+                            field:true,
+                        }
+                    }
+                }
+            });
+        });
     }
 
+    async search(dto: SearchVendorDto){
+
+        const page = dto.page || 1;
+        const limit = dto.limit || 10;
+        const skip = (page - 1) * limit;
+        const where:any = {
+
+            status:'APPROVED',
+            isActive:true,
+
+        };
+
+
+        if(dto.categoryId){
+            where.categoryId = dto.categoryId;
+        }
+
+        if(dto.name){
+            where.name = {
+                contains:dto.name,
+                mode:'insensitive',
+            };
+        }
+
+        if(dto.fields && dto.fields.length > 0){
+            where.fields = {
+                some:{
+                    OR:
+                    dto.fields.map(field=>({
+                        fieldId:
+                            field.fieldId,
+                        value:
+                            field.value,
+                    }))
+                }
+            };
+        }
+
+        const [ data, total ] = await this.prisma.$transaction([
+
+            this.prisma.vendor.findMany({
+
+                where,
+                skip,
+                take:limit,
+                include:{
+                    category:true,
+                    fields:{
+                        include:{
+                            field:true
+                        }
+                    }
+                },
+                orderBy:{
+                    createdAt:'desc'
+                }
+            }),
+
+            this.prisma.vendor.count({
+                where
+            })
+        ]);
+
+        return {
+            data,
+            page,
+            limit,
+            total
+        };
+    }
 }

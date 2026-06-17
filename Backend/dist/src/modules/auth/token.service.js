@@ -25,7 +25,7 @@ let TokenService = class TokenService {
             permissions: user.permissions || [],
         };
         return this.jwtService.sign(payload, {
-            expiresIn: '15m',
+            expiresIn: '7d',
         });
     }
     generateRefreshToken(user) {

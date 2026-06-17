@@ -11,9 +11,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateVendorDto = void 0;
 const class_validator_1 = require("class-validator");
+class UpdateVendorFieldDto {
+    fieldId;
+    value;
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateVendorFieldDto.prototype, "fieldId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateVendorFieldDto.prototype, "value", void 0);
 class UpdateVendorDto {
     name;
     description;
+    fields;
 }
 exports.UpdateVendorDto = UpdateVendorDto;
 __decorate([
@@ -26,4 +39,9 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateVendorDto.prototype, "description", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], UpdateVendorDto.prototype, "fields", void 0);
 //# sourceMappingURL=update-vendor.dto.js.map
