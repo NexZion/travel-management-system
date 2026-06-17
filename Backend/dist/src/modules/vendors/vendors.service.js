@@ -53,8 +53,7 @@ let VendorsService = class VendorsService {
             if (!fieldConfig) {
                 throw new common_1.BadRequestException(`Field ${input.fieldId} is not allowed for this category`);
             }
-            if (fieldConfig.isRequired &&
-                !input.value) {
+            if (fieldConfig.isRequired && !input.value) {
                 throw new common_1.BadRequestException(`${fieldConfig.field.name} is required`);
             }
             switch (fieldConfig.field.dataType) {
@@ -64,7 +63,7 @@ let VendorsService = class VendorsService {
                     }
                     break;
                 case 'SELECTION':
-                    const validOption = fieldConfig.field.options.some(option => option.value === input.value);
+                    const validOption = fieldConfig.field.options.some((option) => option.value === input.value);
                     if (!validOption) {
                         throw new common_1.BadRequestException(`Invalid option for ${fieldConfig.field.name}`);
                     }
@@ -97,12 +96,12 @@ let VendorsService = class VendorsService {
                 fields: {
                     include: {
                         field: true,
-                    }
-                }
+                    },
+                },
             },
             orderBy: {
-                createdAt: 'desc'
-            }
+                createdAt: 'desc',
+            },
         });
     }
     async findOne(id) {
@@ -119,64 +118,88 @@ let VendorsService = class VendorsService {
                                     include: {
                                         field: {
                                             include: {
-                                                options: true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                                options: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
+                media: true,
                 fieldSet: {
                     include: {
                         fields: {
                             include: {
                                 field: {
                                     include: {
-                                        options: true
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                        options: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
                 fields: {
                     include: {
-                        field: true
-                    }
-                }
-            }
+                        field: true,
+                    },
+                },
+            },
         });
         if (!vendor) {
             throw new common_1.NotFoundException('Vendor not found');
         }
-        const activeFieldSet = vendor.fieldSet ? vendor.fieldSet : vendor.category.fieldSet;
+        const activeFieldSet = vendor.fieldSet
+            ? vendor.fieldSet
+            : vendor.category.fieldSet;
         return {
             id: vendor.id,
             name: vendor.name,
             description: vendor.description,
             category: vendor.category.name,
             fields: activeFieldSet.fields,
-            values: vendor.fields
+            values: vendor.fields,
         };
     }
-    async updateStatus(id, dto) {
-        const vendor = await this.prisma.vendor.findUnique({
-            where: {
-                id,
-            },
+    async updateStatus(id, dto, adminId) {
+        return this.prisma.$transaction(async (tx) => {
+            const vendor = await tx.vendor.findUnique({
+                where: {
+                    id,
+                },
+            });
+            if (!vendor) {
+                throw new common_1.NotFoundException('Vendor not found');
+            }
+            const updatedVendor = await tx.vendor.update({
+                where: {
+                    id,
+                },
+                data: {
+                    status: dto.status,
+                },
+            });
+            await tx.vendorStatusHistory.create({
+                data: {
+                    vendorId: id,
+                    previousStatus: vendor.status,
+                    newStatus: dto.status,
+                    reason: dto.reason,
+                    changedBy: adminId,
+                },
+            });
+            return updatedVendor;
         });
-        if (!vendor) {
-            throw new common_1.NotFoundException('Vendor not found');
-        }
-        return this.prisma.vendor.update({
+    }
+    async getStatusHistory(id) {
+        return this.prisma.vendorStatusHistory.findMany({
             where: {
-                id,
+                vendorId: id,
             },
-            data: {
-                status: dto.status,
-                statusReason: dto.reason,
+            orderBy: {
+                changedAt: 'desc',
             },
         });
     }
@@ -192,14 +215,14 @@ let VendorsService = class VendorsService {
                             include: {
                                 fields: {
                                     include: {
-                                        field: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        field: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         });
         if (!vendor) {
             throw new common_1.NotFoundException('Vendor not found');
@@ -212,7 +235,7 @@ let VendorsService = class VendorsService {
                 data: {
                     name: dto.name,
                     description: dto.description,
-                }
+                },
             });
             if (dto.fields) {
                 for (const field of dto.fields) {
@@ -221,7 +244,7 @@ let VendorsService = class VendorsService {
                             vendorId_fieldId: {
                                 vendorId: id,
                                 fieldId: field.fieldId,
-                            }
+                            },
                         },
                         update: {
                             value: field.value,
@@ -230,7 +253,7 @@ let VendorsService = class VendorsService {
                             vendorId: id,
                             fieldId: field.fieldId,
                             value: field.value,
-                        }
+                        },
                     });
                 }
             }
@@ -242,9 +265,9 @@ let VendorsService = class VendorsService {
                     fields: {
                         include: {
                             field: true,
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             });
         });
     }
@@ -268,11 +291,11 @@ let VendorsService = class VendorsService {
         if (dto.fields && dto.fields.length > 0) {
             where.fields = {
                 some: {
-                    OR: dto.fields.map(field => ({
+                    OR: dto.fields.map((field) => ({
                         fieldId: field.fieldId,
                         value: field.value,
-                    }))
-                }
+                    })),
+                },
             };
         }
         const [data, total] = await this.prisma.$transaction([
@@ -284,29 +307,29 @@ let VendorsService = class VendorsService {
                     category: true,
                     fields: {
                         include: {
-                            field: true
-                        }
-                    }
+                            field: true,
+                        },
+                    },
                 },
                 orderBy: {
-                    createdAt: 'desc'
-                }
+                    createdAt: 'desc',
+                },
             }),
             this.prisma.vendor.count({
-                where
-            })
+                where,
+            }),
         ]);
         return {
             data,
             page,
             limit,
-            total
+            total,
         };
     }
     async addCustomField(vendorId, dto) {
         const vendor = await this.prisma.vendor.findUnique({
             where: {
-                id: vendorId
+                id: vendorId,
             },
             include: {
                 category: {
@@ -315,26 +338,26 @@ let VendorsService = class VendorsService {
                             include: {
                                 fields: {
                                     include: {
-                                        field: true
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                        field: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
                 fieldSet: {
                     include: {
                         fields: {
                             include: {
-                                field: true
-                            }
-                        }
-                    }
-                }
-            }
+                                field: true,
+                            },
+                        },
+                    },
+                },
+            },
         });
         if (!vendor) {
-            throw new common_1.NotFoundException("Vendor not found");
+            throw new common_1.NotFoundException('Vendor not found');
         }
         return this.prisma.$transaction(async (tx) => {
             let customFieldSetId = vendor.fieldSetId;
@@ -342,9 +365,9 @@ let VendorsService = class VendorsService {
                 const newFieldSet = await tx.fieldSet.create({
                     data: {
                         name: `${vendor.name} Custom Fields`,
-                        description: "Vendor customized fields",
-                        isCustom: true
-                    }
+                        description: 'Vendor customized fields',
+                        isCustom: true,
+                    },
                 });
                 customFieldSetId = newFieldSet.id;
                 const defaultFields = vendor.category.fieldSet.fields;
@@ -355,17 +378,17 @@ let VendorsService = class VendorsService {
                             fieldId: item.fieldId,
                             displayOrder: item.displayOrder,
                             isRequired: item.isRequired,
-                            readOnly: item.readOnly
-                        }
+                            readOnly: item.readOnly,
+                        },
                     });
                 }
                 await tx.vendor.update({
                     where: {
-                        id: vendorId
+                        id: vendorId,
                     },
                     data: {
-                        fieldSetId: customFieldSetId
-                    }
+                        fieldSetId: customFieldSetId,
+                    },
                 });
             }
             const field = await tx.field.create({
@@ -375,8 +398,8 @@ let VendorsService = class VendorsService {
                     dataType: dto.dataType,
                     placeholder: dto.placeholder,
                     helpText: dto.helpText,
-                    defaultValue: dto.defaultValue
-                }
+                    defaultValue: dto.defaultValue,
+                },
             });
             await tx.fieldSetField.create({
                 data: {
@@ -384,10 +407,158 @@ let VendorsService = class VendorsService {
                     fieldId: field.id,
                     displayOrder: 999,
                     isRequired: false,
-                    readOnly: false
-                }
+                    readOnly: false,
+                },
             });
             return field;
+        });
+    }
+    async updateCustomField(vendorId, fieldId, dto) {
+        const vendor = await this.prisma.vendor.findUnique({
+            where: {
+                id: vendorId,
+            },
+        });
+        if (!vendor) {
+            throw new common_1.NotFoundException('Vendor not found');
+        }
+        if (!vendor.fieldSetId) {
+            throw new common_1.NotFoundException('Vendor does not have custom fields');
+        }
+        const fieldSetField = await this.prisma.fieldSetField.findFirst({
+            where: {
+                fieldSetId: vendor.fieldSetId,
+                fieldId,
+            },
+        });
+        if (!fieldSetField) {
+            throw new common_1.NotFoundException('Custom field not found');
+        }
+        return this.prisma.field.update({
+            where: {
+                id: fieldId,
+            },
+            data: {
+                ...dto,
+            },
+        });
+    }
+    async deleteCustomField(vendorId, fieldId) {
+        const vendor = await this.prisma.vendor.findUnique({
+            where: {
+                id: vendorId,
+            },
+        });
+        if (!vendor?.fieldSetId) {
+            throw new common_1.NotFoundException('Custom FieldSet not found');
+        }
+        await this.prisma.fieldSetField.delete({
+            where: {
+                fieldSetId_fieldId: {
+                    fieldSetId: vendor.fieldSetId,
+                    fieldId,
+                },
+            },
+        });
+        const usage = await this.prisma.fieldSetField.count({
+            where: {
+                fieldId,
+            },
+        });
+        if (usage === 0) {
+            await this.prisma.field.delete({
+                where: {
+                    id: fieldId,
+                },
+            });
+        }
+        return {
+            message: 'Field deleted',
+        };
+    }
+    async updateFieldOrder(vendorId, fieldId, order) {
+        const vendor = await this.prisma.vendor.findUnique({
+            where: {
+                id: vendorId,
+            },
+        });
+        if (!vendor?.fieldSetId) {
+            throw new common_1.NotFoundException();
+        }
+        return this.prisma.fieldSetField.update({
+            where: {
+                fieldSetId_fieldId: { fieldSetId: vendor.fieldSetId, fieldId },
+            },
+            data: {
+                displayOrder: order,
+            },
+        });
+    }
+    async addMedia(vendorId, dto) {
+        const vendor = await this.prisma.vendor.findUnique({
+            where: {
+                id: vendorId,
+            },
+        });
+        if (!vendor) {
+            throw new common_1.NotFoundException('Vendor not found');
+        }
+        return this.prisma.vendorMedia.create({
+            data: {
+                vendorId,
+                type: dto.type,
+                url: dto.url,
+                fileName: dto.fileName,
+            },
+        });
+    }
+    async deleteMedia(id) {
+        return this.prisma.vendorMedia.delete({
+            where: {
+                id,
+            },
+        });
+    }
+    async createReview(vendorId, userId, dto) {
+        return this.prisma.$transaction(async (tx) => {
+            const review = await tx.vendorReview.create({
+                data: {
+                    vendorId,
+                    userId,
+                    rating: dto.rating,
+                    comment: dto.comment,
+                },
+            });
+            const stats = await tx.vendorReview.aggregate({
+                where: { vendorId },
+                _avg: { rating: true },
+                _count: { rating: true },
+            });
+            await tx.vendor.update({
+                where: { id: vendorId },
+                data: {
+                    averageRating: stats._avg.rating || 0,
+                    reviewCount: stats._count.rating,
+                },
+            });
+            return review;
+        });
+    }
+    async getReviews(vendorId) {
+        return this.prisma.vendorReview.findMany({
+            where: { vendorId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        full_name: true,
+                        avatar: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
         });
     }
 };

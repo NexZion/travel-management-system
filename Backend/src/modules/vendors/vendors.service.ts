@@ -1,543 +1,687 @@
-import { Injectable, NotFoundException, BadRequestException, } from '@nestjs/common';
-import { PrismaService, } from 'src/database/prisma/prisma.service';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 import { VendorStatus } from '@prisma/client';
-import { CreateVendorDto, } from './dto/create-vendor.dto';
+import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { UpdateVendorStatusDto } from './dto/update-vendor-status.dto';
 import { SearchVendorDto } from './dto/search-vendor.dto';
 import { AddVendorFieldDto } from './dto/add-vendor-field.dto';
+import { UpdateVendorFieldDto } from './dto/update-vendor-field.dto';
+import { CreateVendorMediaDto } from './dto/create-vendor-media.dto';
+import { CreateReviewDto } from './dto/create-review.dto';
 
 @Injectable()
 export class VendorsService {
+  constructor(private readonly prisma: PrismaService) {}
 
-    constructor( private readonly prisma: PrismaService, ){}
-
-    async create(dto: CreateVendorDto, userId: string) {
-
-        const category =
-            await this.prisma.vendorCategory.findUnique({
-            where: {
-                id: dto.categoryId,
-            },
-            include: {
-                fieldSet: {
-                    include: {
-                        fields: {
-                            include: {
-                                field: {
-                                    include: {
-                                        options: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
+  async create(dto: CreateVendorDto, userId: string) {
+    const category = await this.prisma.vendorCategory.findUnique({
+      where: {
+        id: dto.categoryId,
+      },
+      include: {
+        fieldSet: {
+          include: {
+            fields: {
+              include: {
+                field: {
+                  include: {
+                    options: true,
+                  },
                 },
+              },
             },
+          },
+        },
+      },
+    });
 
-        });
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
 
-        if (!category) {
-            throw new NotFoundException(
-                'Category not found',
-            );
-        }
+    if (!category.fieldSet) {
+      throw new BadRequestException('Category field configuration missing');
+    }
 
-        if (!category.fieldSet) {
+    // Create field map
+    const fieldMap = new Map();
+
+    for (const fsField of category.fieldSet.fields) {
+      fieldMap.set(fsField.field.id, fsField);
+    }
+
+    // Validate fields
+    for (const input of dto.fields) {
+      const fieldConfig = fieldMap.get(input.fieldId);
+
+      if (!fieldConfig) {
+        throw new BadRequestException(
+          `Field ${input.fieldId} is not allowed for this category`,
+        );
+      }
+
+      // Required validation
+      if (fieldConfig.isRequired && !input.value) {
+        throw new BadRequestException(`${fieldConfig.field.name} is required`);
+      }
+
+      // Data type validation
+      switch (fieldConfig.field.dataType) {
+        case 'NUMBER':
+          if (isNaN(Number(input.value))) {
             throw new BadRequestException(
-                'Category field configuration missing',
+              `${fieldConfig.field.name} must be a number`,
             );
-        }
+          }
+          break;
 
-        // Create field map
-        const fieldMap = new Map();
-
-        for (const fsField of category.fieldSet.fields) {
-            fieldMap.set(
-                fsField.field.id,
-                fsField,
+        case 'SELECTION':
+          const validOption = fieldConfig.field.options.some(
+            (option) => option.value === input.value,
+          );
+          if (!validOption) {
+            throw new BadRequestException(
+              `Invalid option for ${fieldConfig.field.name}`,
             );
-        }
-
-        // Validate fields
-        for (const input of dto.fields) {
-            const fieldConfig =
-                fieldMap.get(input.fieldId);
-
-            if (!fieldConfig) {
-                throw new BadRequestException(
-                    `Field ${input.fieldId} is not allowed for this category`,
-                );
-            }
-
-            // Required validation
-            if (
-                fieldConfig.isRequired &&
-                !input.value
-            ) {
-
-                throw new BadRequestException(
-                    `${fieldConfig.field.name} is required`,
-                );
-
-            }
-
-            // Data type validation
-            switch(fieldConfig.field.dataType){
-                case 'NUMBER':
-                    if(isNaN(Number(input.value))){
-                        throw new BadRequestException(
-                            `${fieldConfig.field.name} must be a number`,
-                        );
-                    }
-                    break;
-
-                case 'SELECTION':
-                    const validOption =
-                        fieldConfig.field.options.some(
-                            option =>
-                            option.value === input.value,
-                        );
-                    if(!validOption){
-                        throw new BadRequestException(
-                            `Invalid option for ${fieldConfig.field.name}`,
-                        );
-                    }
-                    break;
-            }
-        }
-
-        // Save data safely
-        return this.prisma.$transaction(async (tx)=>{
-            const vendor =
-                await tx.vendor.create({
-                data: {
-                    userId: userId,
-                    categoryId:
-                        dto.categoryId,
-                    name:
-                        dto.name,
-                    description:
-                        dto.description,
-                },
-            });
-
-            await tx.vendorFieldValue.createMany({
-                data:
-                dto.fields.map((field)=>({
-                    vendorId:
-                        vendor.id,
-                    fieldId:
-                        field.fieldId,
-                    value:
-                        field.value,
-                })),
-            });
-
-            return vendor;
-        });
+          }
+          break;
+      }
     }
 
-    async findAll() {
+    // Save data safely
+    return this.prisma.$transaction(async (tx) => {
+      const vendor = await tx.vendor.create({
+        data: {
+          userId: userId,
+          categoryId: dto.categoryId,
+          name: dto.name,
+          description: dto.description,
+        },
+      });
 
-        return this.prisma.vendor.findMany({
+      await tx.vendorFieldValue.createMany({
+        data: dto.fields.map((field) => ({
+          vendorId: vendor.id,
+          fieldId: field.fieldId,
+          value: field.value,
+        })),
+      });
 
-            include: {
-                category: true,
+      return vendor;
+    });
+  }
+
+  async findAll() {
+    return this.prisma.vendor.findMany({
+      include: {
+        category: true,
+        fields: {
+          include: {
+            field: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async findOne(id: string) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        category: {
+          include: {
+            fieldSet: {
+              include: {
                 fields: {
-                    include:{
-                    field:true,
-                    }
-                }
-                
+                  include: {
+                    field: {
+                      include: {
+                        options: true,
+                      },
+                    },
+                  },
+                },
+              },
             },
+          },
+        },
 
-            orderBy:{
-                createdAt:'desc'
-            }
-        });
+        media: true,
+
+        fieldSet: {
+          include: {
+            fields: {
+              include: {
+                field: {
+                  include: {
+                    options: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        fields: {
+          include: {
+            field: true,
+          },
+        },
+      },
+    });
+
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
     }
 
-    async findOne(id:string){
+    // Decide FieldSet
 
-        const vendor = await this.prisma.vendor.findUnique({
-            where:{
-                id,
+    const activeFieldSet = vendor.fieldSet
+      ? vendor.fieldSet
+      : vendor.category.fieldSet;
+
+    return {
+      id: vendor.id,
+      name: vendor.name,
+      description: vendor.description,
+      category: vendor.category.name,
+      fields: activeFieldSet.fields,
+      values: vendor.fields,
+    };
+  }
+
+  async updateStatus(id: string, dto: UpdateVendorStatusDto, adminId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const vendor = await tx.vendor.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!vendor) {
+        throw new NotFoundException('Vendor not found');
+      }
+
+      const updatedVendor = await tx.vendor.update({
+        where: {
+          id,
+        },
+        data: {
+          status: dto.status,
+        },
+      });
+
+      await tx.vendorStatusHistory.create({
+        data: {
+          vendorId: id,
+          previousStatus: vendor.status,
+          newStatus: dto.status,
+          reason: dto.reason,
+          changedBy: adminId,
+        },
+      });
+
+      return updatedVendor;
+    });
+  }
+
+  async getStatusHistory(id: string) {
+    return this.prisma.vendorStatusHistory.findMany({
+      where: {
+        vendorId: id,
+      },
+
+      orderBy: {
+        changedAt: 'desc',
+      },
+    });
+  }
+
+  async update(id: string, dto: UpdateVendorDto) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id,
+      },
+
+      include: {
+        category: {
+          include: {
+            fieldSet: {
+              include: {
+                fields: {
+                  include: {
+                    field: true,
+                  },
+                },
+              },
             },
-            include:{
-                category:{
-                    include:{
-                        fieldSet:{
-                            include:{
-                                fields:{
-                                    include:{
-                                        field:{
-                                            include:{
-                                                options:true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+          },
+        },
+      },
+    });
 
-                    }
-                },
-
-                fieldSet:{
-                    include:{
-                        fields:{
-                            include:{
-                                field:{
-                                    include:{
-                                        options:true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-
-                fields:{
-                    include:{
-                        field:true
-                    }
-                }
-            }
-        });
-
-        if(!vendor){
-            throw new NotFoundException( 'Vendor not found' );
-        }
-
-        // Decide FieldSet
-
-        const activeFieldSet = vendor.fieldSet? vendor.fieldSet : vendor.category.fieldSet;
-
-        return {
-
-            id:vendor.id,
-            name:vendor.name,
-            description:vendor.description,
-            category:vendor.category.name,
-            fields:activeFieldSet.fields,
-            values:vendor.fields
-        };
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
     }
 
-    async updateStatus( id:string, dto:UpdateVendorStatusDto){
+    return this.prisma.$transaction(async (tx) => {
+      // update basic data
+      await tx.vendor.update({
+        where: {
+          id,
+        },
 
-        const vendor =
-            await this.prisma.vendor.findUnique({
+        data: {
+          name: dto.name,
+          description: dto.description,
+        },
+      });
 
-            where:{
-                id,
+      // update dynamic fields
+      if (dto.fields) {
+        for (const field of dto.fields) {
+          await tx.vendorFieldValue.upsert({
+            where: {
+              vendorId_fieldId: {
+                vendorId: id,
+                fieldId: field.fieldId,
+              },
             },
 
-        });
+            update: {
+              value: field.value,
+            },
 
-        if(!vendor){
-
-            throw new NotFoundException(
-                'Vendor not found'
-            );
-
+            create: {
+              vendorId: id,
+              fieldId: field.fieldId,
+              value: field.value,
+            },
+          });
         }
+      }
 
-        return this.prisma.vendor.update({
+      return tx.vendor.findUnique({
+        where: {
+          id,
+        },
 
-            where:{
-                id,
+        include: {
+          fields: {
+            include: {
+              field: true,
             },
+          },
+        },
+      });
+    });
+  }
 
-            data:{
-                status:dto.status,
-                statusReason:dto.reason,
-            },
+  async search(dto: SearchVendorDto) {
+    const page = dto.page || 1;
+    const limit = dto.limit || 10;
+    const skip = (page - 1) * limit;
+    const where: any = {
+      status: 'APPROVED',
+      isActive: true,
+    };
 
-        });
-
+    if (dto.categoryId) {
+      where.categoryId = dto.categoryId;
     }
 
-    async update( id:string, dto:UpdateVendorDto ){
-
-        const vendor = await this.prisma.vendor.findUnique({
-
-            where:{
-                id,
-            },
-
-            include:{
-                category:{
-                    include:{
-                        fieldSet:{
-                            include:{
-                                fields:{
-                                    include:{
-                                        field:true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        });
-
-
-        if(!vendor){
-            throw new NotFoundException(
-                'Vendor not found'
-            );
-        }
-
-        return this.prisma.$transaction(async(tx)=>{
-
-            // update basic data
-            await tx.vendor.update({
-
-                where:{
-                    id,
-                },
-
-                data:{
-                    name:dto.name,
-                    description:dto.description,
-                }
-            });
-
-            // update dynamic fields
-            if(dto.fields){
-                for(const field of dto.fields){
-                    await tx.vendorFieldValue.upsert({
-
-                        where:{
-                            vendorId_fieldId:{
-                                vendorId:id,
-                                fieldId:field.fieldId,
-                            }
-                        },
-
-                        update:{
-                            value:field.value,
-                        },
-
-                        create:{
-                            vendorId:id,
-                            fieldId:field.fieldId,
-                            value:field.value,
-                        }
-                    });
-                }
-            }
-
-            return tx.vendor.findUnique({
-                where:{
-                    id,
-                },
-
-                include:{
-                    fields:{
-                        include:{
-                            field:true,
-                        }
-                    }
-                }
-            });
-        });
+    if (dto.name) {
+      where.name = {
+        contains: dto.name,
+        mode: 'insensitive',
+      };
     }
 
-    async search(dto: SearchVendorDto){
-
-        const page = dto.page || 1;
-        const limit = dto.limit || 10;
-        const skip = (page - 1) * limit;
-        const where:any = {
-
-            status:'APPROVED',
-            isActive:true,
-
-        };
-
-
-        if(dto.categoryId){
-            where.categoryId = dto.categoryId;
-        }
-
-        if(dto.name){
-            where.name = {
-                contains:dto.name,
-                mode:'insensitive',
-            };
-        }
-
-        if(dto.fields && dto.fields.length > 0){
-            where.fields = {
-                some:{
-                    OR:
-                    dto.fields.map(field=>({
-                        fieldId:
-                            field.fieldId,
-                        value:
-                            field.value,
-                    }))
-                }
-            };
-        }
-
-        const [ data, total ] = await this.prisma.$transaction([
-
-            this.prisma.vendor.findMany({
-
-                where,
-                skip,
-                take:limit,
-                include:{
-                    category:true,
-                    fields:{
-                        include:{
-                            field:true
-                        }
-                    }
-                },
-                orderBy:{
-                    createdAt:'desc'
-                }
-            }),
-
-            this.prisma.vendor.count({
-                where
-            })
-        ]);
-
-        return {
-            data,
-            page,
-            limit,
-            total
-        };
+    if (dto.fields && dto.fields.length > 0) {
+      where.fields = {
+        some: {
+          OR: dto.fields.map((field) => ({
+            fieldId: field.fieldId,
+            value: field.value,
+          })),
+        },
+      };
     }
 
-    async addCustomField( vendorId:string, dto:AddVendorFieldDto ){
-
-        const vendor = await this.prisma.vendor.findUnique({
-            where:{
-                id:vendorId
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.vendor.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          category: true,
+          fields: {
+            include: {
+              field: true,
             },
-            include:{
-                category:{
-                    include:{
-                        fieldSet:{
-                            include:{
-                                fields:{
-                                    include:{
-                                        field:true
-                                    }
-                                }
-                            }
-                        }
-                    }
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+
+      this.prisma.vendor.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+    };
+  }
+
+  async addCustomField(vendorId: string, dto: AddVendorFieldDto) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id: vendorId,
+      },
+      include: {
+        category: {
+          include: {
+            fieldSet: {
+              include: {
+                fields: {
+                  include: {
+                    field: true,
+                  },
                 },
-                fieldSet:{
-                    include:{
-                        fields:{
-                            include:{
-                                field:true
-                            }
-                        }
-                    }
-                }
-            }
-        });
+              },
+            },
+          },
+        },
+        fieldSet: {
+          include: {
+            fields: {
+              include: {
+                field: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
-        if(!vendor){
-            throw new NotFoundException(
-                "Vendor not found"
-            );
-        }
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
+    }
 
-        return this.prisma.$transaction(async(tx)=>{
+    return this.prisma.$transaction(async (tx) => {
+      let customFieldSetId = vendor.fieldSetId;
 
-        let customFieldSetId = vendor.fieldSetId;
-
-        /*
+      /*
         Create custom FieldSet
         if vendor does not have one
         */
-        if(!customFieldSetId){
+      if (!customFieldSetId) {
+        const newFieldSet = await tx.fieldSet.create({
+          data: {
+            name: `${vendor.name} Custom Fields`,
+            description: 'Vendor customized fields',
+            isCustom: true,
+          },
+        });
 
-            const newFieldSet = await tx.fieldSet.create({
-                data:{
-                    name: `${vendor.name} Custom Fields`,
-                    description: "Vendor customized fields",
-                    isCustom: true
-                }
-            });
+        customFieldSetId = newFieldSet.id;
 
-            customFieldSetId = newFieldSet.id;
+        // Copy existing category fields
 
-            // Copy existing category fields
+        const defaultFields = vendor.category.fieldSet.fields;
 
-            const defaultFields = vendor.category.fieldSet.fields;
-
-            for(const item of defaultFields){
-
-                await tx.fieldSetField.create({
-
-                    data:{
-                        fieldSetId: customFieldSetId,
-                        fieldId: item.fieldId,
-                        displayOrder: item.displayOrder,
-                        isRequired: item.isRequired,
-                        readOnly: item.readOnly
-                    }
-                });
-            }
-
-            // assign custom fieldset to vendor
-            await tx.vendor.update({
-
-                where:{
-                    id: vendorId
-                },
-                data:{
-                    fieldSetId: customFieldSetId
-                }
-            });
+        for (const item of defaultFields) {
+          await tx.fieldSetField.create({
+            data: {
+              fieldSetId: customFieldSetId,
+              fieldId: item.fieldId,
+              displayOrder: item.displayOrder,
+              isRequired: item.isRequired,
+              readOnly: item.readOnly,
+            },
+          });
         }
 
-        /*
+        // assign custom fieldset to vendor
+        await tx.vendor.update({
+          where: {
+            id: vendorId,
+          },
+          data: {
+            fieldSetId: customFieldSetId,
+          },
+        });
+      }
+
+      /*
         Create new Field
         */
-        const field = await tx.field.create({
+      const field = await tx.field.create({
+        data: {
+          name: dto.name,
+          label: dto.label,
+          dataType: dto.dataType,
+          placeholder: dto.placeholder,
+          helpText: dto.helpText,
+          defaultValue: dto.defaultValue,
+        },
+      });
 
-            data:{
-                name:dto.name,
-                label:dto.label,
-                dataType:dto.dataType,
-                placeholder:dto.placeholder,
-                helpText:dto.helpText,
-                defaultValue:dto.defaultValue
-            }
-        });
-
-        /*
+      /*
         Attach field to custom FieldSet
         */
-        await tx.fieldSetField.create({
+      await tx.fieldSetField.create({
+        data: {
+          fieldSetId: customFieldSetId,
+          fieldId: field.id,
+          displayOrder: 999,
+          isRequired: false,
+          readOnly: false,
+        },
+      });
 
-            data:{
-                fieldSetId: customFieldSetId,
-                fieldId: field.id,
-                displayOrder: 999,
-                isRequired: false,
-                readOnly: false
-            }
-        });
+      return field;
+    });
+  }
 
-        return field;
+  async updateCustomField(
+    vendorId: string,
+    fieldId: string,
+    dto: UpdateVendorFieldDto,
+  ) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id: vendorId,
+      },
+    });
 
-        });
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
     }
+
+    if (!vendor.fieldSetId) {
+      throw new NotFoundException('Vendor does not have custom fields');
+    }
+
+    // Check field belongs to vendor custom fieldset
+
+    const fieldSetField = await this.prisma.fieldSetField.findFirst({
+      where: {
+        fieldSetId: vendor.fieldSetId,
+        fieldId,
+      },
+    });
+
+    if (!fieldSetField) {
+      throw new NotFoundException('Custom field not found');
+    }
+
+    return this.prisma.field.update({
+      where: {
+        id: fieldId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+  }
+
+  async deleteCustomField(vendorId: string, fieldId: string) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id: vendorId,
+      },
+    });
+
+    if (!vendor?.fieldSetId) {
+      throw new NotFoundException('Custom FieldSet not found');
+    }
+
+    await this.prisma.fieldSetField.delete({
+      where: {
+        fieldSetId_fieldId: {
+          fieldSetId: vendor.fieldSetId,
+          fieldId,
+        },
+      },
+    });
+
+    // Delete field only if no longer used
+
+    const usage = await this.prisma.fieldSetField.count({
+      where: {
+        fieldId,
+      },
+    });
+
+    if (usage === 0) {
+      await this.prisma.field.delete({
+        where: {
+          id: fieldId,
+        },
+      });
+    }
+
+    return {
+      message: 'Field deleted',
+    };
+  }
+
+  async updateFieldOrder(vendorId: string, fieldId: string, order: number) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id: vendorId,
+      },
+    });
+
+    if (!vendor?.fieldSetId) {
+      throw new NotFoundException();
+    }
+
+    return this.prisma.fieldSetField.update({
+      where: {
+        fieldSetId_fieldId: { fieldSetId: vendor.fieldSetId, fieldId },
+      },
+
+      data: {
+        displayOrder: order,
+      },
+    });
+  }
+
+  async addMedia(vendorId: string, dto: CreateVendorMediaDto) {
+    const vendor = await this.prisma.vendor.findUnique({
+      where: {
+        id: vendorId,
+      },
+    });
+
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
+    }
+
+    return this.prisma.vendorMedia.create({
+      data: {
+        vendorId,
+        type: dto.type,
+        url: dto.url,
+        fileName: dto.fileName,
+      },
+    });
+  }
+
+  async deleteMedia(id: string) {
+    return this.prisma.vendorMedia.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async createReview(vendorId: string, userId: string, dto: CreateReviewDto) {
+    return this.prisma.$transaction(async (tx) => {
+      const review = await tx.vendorReview.create({
+        data: {
+          vendorId,
+          userId,
+          rating: dto.rating,
+          comment: dto.comment,
+        },
+      });
+
+      // Recalculate rating
+      const stats = await tx.vendorReview.aggregate({
+        where: { vendorId },
+        _avg: { rating: true },
+        _count: { rating: true },
+      });
+
+      await tx.vendor.update({
+        where: { id: vendorId },
+        data: {
+          averageRating: stats._avg.rating || 0,
+          reviewCount: stats._count.rating,
+        },
+      });
+
+      return review;
+    });
+  }
+
+  async getReviews(vendorId: string) {
+    return this.prisma.vendorReview.findMany({
+      where: { vendorId },
+
+      include: {
+        user: {
+          select: {
+            id: true,
+            full_name: true,
+            avatar: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

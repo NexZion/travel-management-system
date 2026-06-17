@@ -32,6 +32,13 @@ enum VendorStatus {
   SUSPENDED
 }
 
+enum VendorMediaType {
+  LOGO
+  IMAGE
+  DOCUMENT
+  CERTIFICATE
+}
+
 enum FieldDataType {
   TEXT
   NUMBER
@@ -105,6 +112,7 @@ model User {
   vendors           Vendor[]
   emailVerification EmailVerification[]
   trips             Trip[]
+  reviews VendorReview[]
 }
 
 model Trip {
@@ -366,9 +374,15 @@ model Vendor {
   fieldSet FieldSet? @relation(fields:[fieldSetId],references:[id],onDelete:Cascade)
 
   fields VendorFieldValue[]
+  media  VendorMedia[]
+  statusHistory VendorStatusHistory[]
+  reviews VendorReview[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  reviewCount Int @default(0)
+  averageRating Float @default(0)
   @@index([userId])
   @@index([categoryId])
 
@@ -390,6 +404,35 @@ model VendorCategory {
   vendors     Vendor[]
 
   @@index([fieldSetId])
+}
+
+model VendorMedia {
+  id        String @id @default(uuid())
+  vendorId  String
+
+  vendor Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
+
+  type      VendorMediaType
+  url       String
+  fileName  String?
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VendorReview {
+  id        String @id @default(uuid())
+  vendorId  String
+  userId    String
+
+  vendor    Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
+  user      User @relation(fields:[userId],references:[id],onDelete:Cascade)
+
+  rating    Int
+  comment   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model FieldSet {
@@ -474,4 +517,17 @@ model VendorFieldValue {
   @@index([vendorId])
   @@index([fieldId])
 
+}
+
+model VendorStatusHistory {
+  id          String @id @default(uuid())
+  vendorId    String
+
+  vendor      Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
+
+  previousStatus VendorStatus?
+  newStatus   VendorStatus
+  reason String?
+  changedBy String
+  changedAt DateTime @default(now())
 }
