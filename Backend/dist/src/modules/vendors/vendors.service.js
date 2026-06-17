@@ -237,6 +237,16 @@ let VendorsService = class VendorsService {
                 mode: 'insensitive',
             };
         }
+        if (dto.fields && dto.fields.length > 0) {
+            where.fields = {
+                some: {
+                    OR: dto.fields.map(field => ({
+                        fieldId: field.fieldId,
+                        value: field.value,
+                    }))
+                }
+            };
+        }
         const [data, total] = await this.prisma.$transaction([
             this.prisma.vendor.findMany({
                 where,

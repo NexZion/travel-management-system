@@ -7,22 +7,32 @@ export declare class VendorsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(dto: CreateVendorDto, userId: string): Promise<{
-        categoryId: string;
-        name: string;
         id: string;
+        name: string;
         description: string | null;
+        status: import("@prisma/client").$Enums.VendorStatus;
         isActive: boolean;
+        statusReason: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("@prisma/client").$Enums.VendorStatus;
-        statusReason: string | null;
         userId: string;
+        categoryId: string;
     }>;
     findAll(): Promise<({
+        category: {
+            id: string;
+            name: string;
+            description: string | null;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            code: string;
+            fieldSetId: string;
+        };
         fields: ({
             field: {
-                name: string;
                 id: string;
+                name: string;
                 isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
@@ -35,31 +45,21 @@ export declare class VendorsService {
         } & {
             id: string;
             createdAt: Date;
-            fieldId: string;
             vendorId: string;
+            fieldId: string;
             value: string;
         })[];
-        category: {
-            name: string;
-            id: string;
-            code: string;
-            description: string | null;
-            fieldSetId: string;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
-        };
     } & {
-        categoryId: string;
-        name: string;
         id: string;
+        name: string;
         description: string | null;
+        status: import("@prisma/client").$Enums.VendorStatus;
         isActive: boolean;
+        statusReason: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("@prisma/client").$Enums.VendorStatus;
-        statusReason: string | null;
         userId: string;
+        categoryId: string;
     })[]>;
     findOne(id: string): Promise<{
         fields: {
@@ -70,43 +70,43 @@ export declare class VendorsService {
             value: string;
         }[];
         category: {
-            name: string;
             id: string;
-            code: string;
+            name: string;
             description: string | null;
-            fieldSetId: string;
             isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
+            code: string;
+            fieldSetId: string;
         };
-        categoryId: string;
-        name: string;
         id: string;
+        name: string;
         description: string | null;
+        status: import("@prisma/client").$Enums.VendorStatus;
         isActive: boolean;
+        statusReason: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("@prisma/client").$Enums.VendorStatus;
-        statusReason: string | null;
         userId: string;
+        categoryId: string;
     }>;
     updateStatus(id: string, dto: UpdateVendorStatusDto): Promise<{
-        categoryId: string;
-        name: string;
         id: string;
+        name: string;
         description: string | null;
+        status: import("@prisma/client").$Enums.VendorStatus;
         isActive: boolean;
+        statusReason: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("@prisma/client").$Enums.VendorStatus;
-        statusReason: string | null;
         userId: string;
+        categoryId: string;
     }>;
     update(id: string, dto: UpdateVendorDto): Promise<({
         fields: ({
             field: {
-                name: string;
                 id: string;
+                name: string;
                 isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
@@ -119,28 +119,38 @@ export declare class VendorsService {
         } & {
             id: string;
             createdAt: Date;
-            fieldId: string;
             vendorId: string;
+            fieldId: string;
             value: string;
         })[];
     } & {
-        categoryId: string;
-        name: string;
         id: string;
+        name: string;
         description: string | null;
+        status: import("@prisma/client").$Enums.VendorStatus;
         isActive: boolean;
+        statusReason: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import("@prisma/client").$Enums.VendorStatus;
-        statusReason: string | null;
         userId: string;
+        categoryId: string;
     }) | null>;
     search(dto: SearchVendorDto): Promise<{
         data: ({
+            category: {
+                id: string;
+                name: string;
+                description: string | null;
+                isActive: boolean;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                fieldSetId: string;
+            };
             fields: ({
                 field: {
-                    name: string;
                     id: string;
+                    name: string;
                     isActive: boolean;
                     createdAt: Date;
                     updatedAt: Date;
@@ -153,31 +163,21 @@ export declare class VendorsService {
             } & {
                 id: string;
                 createdAt: Date;
-                fieldId: string;
                 vendorId: string;
+                fieldId: string;
                 value: string;
             })[];
-            category: {
-                name: string;
-                id: string;
-                code: string;
-                description: string | null;
-                fieldSetId: string;
-                isActive: boolean;
-                createdAt: Date;
-                updatedAt: Date;
-            };
         } & {
-            categoryId: string;
-            name: string;
             id: string;
+            name: string;
             description: string | null;
+            status: import("@prisma/client").$Enums.VendorStatus;
             isActive: boolean;
+            statusReason: string | null;
             createdAt: Date;
             updatedAt: Date;
-            status: import("@prisma/client").$Enums.VendorStatus;
-            statusReason: string | null;
             userId: string;
+            categoryId: string;
         })[];
         page: number;
         limit: number;
