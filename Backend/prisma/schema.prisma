@@ -466,10 +466,10 @@ model Field {
   options           FieldOption[]
   vendorValues      VendorFieldValue[]
   packageTypeFields PackageTypeField[]
+  packageValues     VendorPackageFieldValue[]
 
-  createdAt                DateTime                  @default(now())
-  updatedAt                DateTime                  @updatedAt
-  vendorPackageFieldValues VendorPackageFieldValue[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model FieldSetField {
@@ -575,19 +575,19 @@ model PackageTypeField {
 }
 
 model VendorPackage {
-  id       String @id @default(uuid())
-  vendorId String
+  id          String @id @default(uuid())
+  vendorId    String
 
-  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  vendor Vendor @relation(fields: [vendorId],references: [id],onDelete: Cascade)
 
   packageTypeId String
 
-  packageType PackageType @relation(fields: [packageTypeId], references: [id], onDelete: Cascade)
+  packageType PackageType @relation(fields: [packageTypeId],references: [id],onDelete: Cascade)
 
   title       String
   description String?
   basePrice   Float
-  isActive    Boolean  @default(true)
+  isActive    Boolean @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -598,11 +598,11 @@ model VendorPackageFieldValue {
   id        String @id @default(uuid())
   packageId String
 
-  package VendorPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  package VendorPackage @relation(fields: [packageId],references: [id],onDelete: Cascade)
 
-  fieldId String
+  fieldId   String
 
-  field Field @relation(fields: [fieldId], references: [id])
+  field Field @relation(fields: [fieldId],references: [id])
 
-  value String
+  value     String
 }
