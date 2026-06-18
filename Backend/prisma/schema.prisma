@@ -112,7 +112,7 @@ model User {
   vendors           Vendor[]
   emailVerification EmailVerification[]
   trips             Trip[]
-  reviews VendorReview[]
+  reviews           VendorReview[]
 }
 
 model Trip {
@@ -359,33 +359,34 @@ model AuditLog {
 }
 
 model Vendor {
-  id         String @id @default(uuid())
-  userId     String
-  categoryId String
-  name       String
+  id           String       @id @default(uuid())
+  userId       String
+  categoryId   String
+  name         String
   description  String?
-  fieldSetId String?
-  status     VendorStatus @default(PENDING)
-  isActive   Boolean @default(true)
+  fieldSetId   String?
+  status       VendorStatus @default(PENDING)
+  isActive     Boolean      @default(true)
   statusReason String?
 
-  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
-  category VendorCategory @relation(fields:[categoryId],references:[id],onDelete:Cascade)
-  fieldSet FieldSet? @relation(fields:[fieldSetId],references:[id],onDelete:Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category VendorCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  fieldSet FieldSet?      @relation(fields: [fieldSetId], references: [id], onDelete: Cascade)
 
-  fields VendorFieldValue[]
-  media  VendorMedia[]
+  fields        VendorFieldValue[]
+  media         VendorMedia[]
   statusHistory VendorStatusHistory[]
-  reviews VendorReview[]
+  reviews       VendorReview[]
+  packages      VendorPackage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  reviewCount Int @default(0)
+  reviewCount   Int   @default(0)
   averageRating Float @default(0)
+
   @@index([userId])
   @@index([categoryId])
-
 }
 
 model VendorCategory {
@@ -401,35 +402,36 @@ model VendorCategory {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  vendors     Vendor[]
+  vendors      Vendor[]
+  packageTypes PackageType[]
 
   @@index([fieldSetId])
 }
 
 model VendorMedia {
-  id        String @id @default(uuid())
-  vendorId  String
+  id       String @id @default(uuid())
+  vendorId String
 
-  vendor Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   type      VendorMediaType
   url       String
   fileName  String?
-  isActive  Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 }
 
 model VendorReview {
-  id        String @id @default(uuid())
-  vendorId  String
-  userId    String
+  id       String @id @default(uuid())
+  vendorId String
+  userId   String
 
-  vendor    Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
-  user      User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  rating    Int
-  comment   String?
+  rating  Int
+  comment String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -460,12 +462,14 @@ model Field {
   defaultValue String?
   isActive     Boolean       @default(true)
 
-  fieldSets FieldSetField[]
-  options   FieldOption[]
-  vendorValues VendorFieldValue[]
+  fieldSets         FieldSetField[]
+  options           FieldOption[]
+  vendorValues      VendorFieldValue[]
+  packageTypeFields PackageTypeField[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  vendorPackageFieldValues VendorPackageFieldValue[]
 }
 
 model FieldSetField {
@@ -508,26 +512,97 @@ model VendorFieldValue {
   fieldId  String
   value    String
 
-  vendor Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
-  field Field @relation(fields:[fieldId],references:[id])
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  field  Field  @relation(fields: [fieldId], references: [id])
 
   createdAt DateTime @default(now())
 
   @@unique([vendorId, fieldId])
   @@index([vendorId])
   @@index([fieldId])
-
 }
 
 model VendorStatusHistory {
-  id          String @id @default(uuid())
-  vendorId    String
+  id       String @id @default(uuid())
+  vendorId String
 
-  vendor      Vendor @relation(fields:[vendorId],references:[id],onDelete:Cascade)
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   previousStatus VendorStatus?
-  newStatus   VendorStatus
-  reason String?
-  changedBy String
-  changedAt DateTime @default(now())
+  newStatus      VendorStatus
+  reason         String?
+  changedBy      String
+  changedAt      DateTime      @default(now())
+}
+
+model PackageType {
+  id         String @id @default(uuid())
+  categoryId String
+
+  category VendorCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  fieldSet    PackageTypeFieldSet?
+  isActive    Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  vendorPackages VendorPackage[]
+}
+
+model PackageTypeFieldSet {
+  id            String @id @default(uuid())
+  packageTypeId String @unique
+
+  packageType PackageType @relation(fields: [packageTypeId], references: [id], onDelete: Cascade)
+
+  fields PackageTypeField[]
+}
+
+model PackageTypeField {
+  id         String @id @default(uuid())
+  fieldSetId String
+
+  fieldSet PackageTypeFieldSet @relation(fields: [fieldSetId], references: [id], onDelete: Cascade)
+
+  fieldId String
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  isRequired   Boolean @default(false)
+  displayOrder Int     @default(0)
+}
+
+model VendorPackage {
+  id       String @id @default(uuid())
+  vendorId String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  packageTypeId String
+
+  packageType PackageType @relation(fields: [packageTypeId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  basePrice   Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fieldValues VendorPackageFieldValue[]
+}
+
+model VendorPackageFieldValue {
+  id        String @id @default(uuid())
+  packageId String
+
+  package VendorPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  fieldId String
+
+  field Field @relation(fields: [fieldId], references: [id])
+
+  value String
 }
