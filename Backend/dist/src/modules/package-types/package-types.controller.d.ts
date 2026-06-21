@@ -1,5 +1,6 @@
 import { PackageTypesService } from './package-types.service';
 import { CreatePackageTypeDto } from './dto/create-package-types.dto';
+import { AssignPackageFieldsDto } from './dto/assign-fields.dto';
 export declare class PackageTypesController {
     private readonly service;
     constructor(service: PackageTypesService);
@@ -82,4 +83,29 @@ export declare class PackageTypesController {
         isActive: boolean;
         categoryId: string;
     }>;
+    assignFields(id: string, dto: AssignPackageFieldsDto): Promise<({
+        fields: ({
+            field: {
+                id: string;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                isActive: boolean;
+                label: string;
+                dataType: import("@prisma/client").$Enums.FieldDataType;
+                placeholder: string | null;
+                helpText: string | null;
+                defaultValue: string | null;
+            };
+        } & {
+            id: string;
+            fieldSetId: string;
+            displayOrder: number;
+            fieldId: string;
+            isRequired: boolean;
+        })[];
+    } & {
+        id: string;
+        packageTypeId: string;
+    }) | null>;
 }

@@ -68,6 +68,43 @@ let PackageTypesService = class PackageTypesService {
         }
         return packageType;
     }
+    async assignFields(packageTypeId, dto) {
+        const packageType = await this.prisma.packageType.findUnique({
+            where: {
+                id: packageTypeId,
+            },
+        });
+        if (!packageType) {
+            throw new common_1.NotFoundException('Package type not found');
+        }
+        return this.prisma.$transaction(async (tx) => {
+            const fieldSet = await tx.packageTypeFieldSet.create({
+                data: {
+                    packageTypeId,
+                },
+            });
+            await tx.packageTypeField.createMany({
+                data: dto.fields.map((field) => ({
+                    fieldSetId: fieldSet.id,
+                    fieldId: field.fieldId,
+                    isRequired: field.isRequired,
+                    displayOrder: field.displayOrder ?? 0,
+                })),
+            });
+            return tx.packageTypeFieldSet.findUnique({
+                where: {
+                    id: fieldSet.id,
+                },
+                include: {
+                    fields: {
+                        include: {
+                            field: true,
+                        },
+                    },
+                },
+            });
+        });
+    }
 };
 exports.PackageTypesService = PackageTypesService;
 exports.PackageTypesService = PackageTypesService = __decorate([

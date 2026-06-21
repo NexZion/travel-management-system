@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
 import { PackageTypesService } from './package-types.service';
 import { CreatePackageTypeDto } from './dto/create-package-types.dto';
+import { AssignPackageFieldsDto } from './dto/assign-fields.dto';
 
 @Controller('package-types')
 export class PackageTypesController {
@@ -19,5 +20,14 @@ export class PackageTypesController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
+  }
+
+  @Patch(':id/fields')
+  assignFields(
+    @Param('id') id: string,
+
+    @Body() dto: AssignPackageFieldsDto,
+  ) {
+    return this.service.assignFields(id, dto);
   }
 }

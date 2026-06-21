@@ -1,36 +1,26 @@
 import { CreateVendorPackageDto } from './dto/create-vendor-package.dto';
 import { VendorPackagesService } from './vendor-packages.service';
+import { UpdateVendorPackageDto } from './dto/update-vendor-package.dto';
 export declare class VendorPackagesController {
     private readonly service;
     constructor(service: VendorPackagesService);
-    create(dto: CreateVendorPackageDto): Promise<{
-        id: string;
-        title: string;
-        description: string | null;
-        basePrice: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        vendorId: string;
-        packageTypeId: string;
-    }>;
-    findByVendor(vendorId: string): Promise<({
+    create(dto: CreateVendorPackageDto, user: any): Promise<({
         packageType: {
             id: string;
-            description: string | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
             name: string;
+            createdAt: Date;
+            description: string | null;
+            updatedAt: Date;
+            isActive: boolean;
             categoryId: string;
         };
         fieldValues: ({
             field: {
                 id: string;
-                isActive: boolean;
+                name: string;
                 createdAt: Date;
                 updatedAt: Date;
-                name: string;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -39,35 +29,115 @@ export declare class VendorPackagesController {
             };
         } & {
             id: string;
-            packageId: string;
             fieldId: string;
             value: string;
+            packageId: string;
         })[];
     } & {
         id: string;
-        title: string;
-        description: string | null;
-        basePrice: number;
-        isActive: boolean;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
+        title: string;
+        isActive: boolean;
         vendorId: string;
         packageTypeId: string;
+        basePrice: number;
+    }) | null>;
+    findByVendor(vendorId: string): Promise<({
+        packageType: {
+            id: string;
+            name: string;
+            createdAt: Date;
+            description: string | null;
+            updatedAt: Date;
+            isActive: boolean;
+            categoryId: string;
+        };
+        fieldValues: ({
+            field: {
+                id: string;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                isActive: boolean;
+                label: string;
+                dataType: import("@prisma/client").$Enums.FieldDataType;
+                placeholder: string | null;
+                helpText: string | null;
+                defaultValue: string | null;
+            };
+        } & {
+            id: string;
+            fieldId: string;
+            value: string;
+            packageId: string;
+        })[];
+    } & {
+        id: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        title: string;
+        isActive: boolean;
+        vendorId: string;
+        packageTypeId: string;
+        basePrice: number;
     })[]>;
-    findOne(id: string): Promise<({
+    findMyPackages(req: any): Promise<({
+        packageType: {
+            id: string;
+            name: string;
+            createdAt: Date;
+            description: string | null;
+            updatedAt: Date;
+            isActive: boolean;
+            categoryId: string;
+        };
+        fieldValues: ({
+            field: {
+                id: string;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                isActive: boolean;
+                label: string;
+                dataType: import("@prisma/client").$Enums.FieldDataType;
+                placeholder: string | null;
+                helpText: string | null;
+                defaultValue: string | null;
+            };
+        } & {
+            id: string;
+            fieldId: string;
+            value: string;
+            packageId: string;
+        })[];
+    } & {
+        id: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        title: string;
+        isActive: boolean;
+        vendorId: string;
+        packageTypeId: string;
+        basePrice: number;
+    })[]>;
+    findOne(id: string): Promise<{
         vendor: {
             id: string;
-            description: string | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
-            name: string;
-            categoryId: string;
-            userId: string;
-            fieldSetId: string | null;
             status: import("@prisma/client").$Enums.VendorStatus;
-            statusReason: string | null;
+            name: string;
+            userId: string;
+            createdAt: Date;
+            description: string | null;
+            updatedAt: Date;
+            isActive: boolean;
             reviewCount: number;
+            categoryId: string;
+            fieldSetId: string | null;
+            statusReason: string | null;
             averageRating: number;
         };
         packageType: {
@@ -75,10 +145,10 @@ export declare class VendorPackagesController {
                 fields: ({
                     field: {
                         id: string;
-                        isActive: boolean;
+                        name: string;
                         createdAt: Date;
                         updatedAt: Date;
-                        name: string;
+                        isActive: boolean;
                         label: string;
                         dataType: import("@prisma/client").$Enums.FieldDataType;
                         placeholder: string | null;
@@ -87,10 +157,10 @@ export declare class VendorPackagesController {
                     };
                 } & {
                     id: string;
-                    fieldId: string;
                     fieldSetId: string;
-                    isRequired: boolean;
                     displayOrder: number;
+                    fieldId: string;
+                    isRequired: boolean;
                 })[];
             } & {
                 id: string;
@@ -98,20 +168,20 @@ export declare class VendorPackagesController {
             }) | null;
         } & {
             id: string;
-            description: string | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
             name: string;
+            createdAt: Date;
+            description: string | null;
+            updatedAt: Date;
+            isActive: boolean;
             categoryId: string;
         };
         fieldValues: ({
             field: {
                 id: string;
-                isActive: boolean;
+                name: string;
                 createdAt: Date;
                 updatedAt: Date;
-                name: string;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -120,19 +190,41 @@ export declare class VendorPackagesController {
             };
         } & {
             id: string;
-            packageId: string;
             fieldId: string;
             value: string;
+            packageId: string;
         })[];
     } & {
         id: string;
-        title: string;
-        description: string | null;
-        basePrice: number;
-        isActive: boolean;
         createdAt: Date;
+        description: string | null;
         updatedAt: Date;
+        title: string;
+        isActive: boolean;
         vendorId: string;
         packageTypeId: string;
-    }) | null>;
+        basePrice: number;
+    }>;
+    update(id: string, dto: UpdateVendorPackageDto, req: any): Promise<{
+        id: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        title: string;
+        isActive: boolean;
+        vendorId: string;
+        packageTypeId: string;
+        basePrice: number;
+    }>;
+    remove(id: string, req: any): Promise<{
+        id: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        title: string;
+        isActive: boolean;
+        vendorId: string;
+        packageTypeId: string;
+        basePrice: number;
+    }>;
 }

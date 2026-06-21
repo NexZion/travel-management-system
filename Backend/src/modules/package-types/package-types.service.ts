@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePackageTypeDto } from './dto/create-package-types.dto';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { AssignPackageFieldsDto } from './dto/assign-fields.dto';
 
 @Injectable()
 export class PackageTypesService {
@@ -62,5 +63,55 @@ export class PackageTypesService {
     }
 
     return packageType;
+  }
+
+  async assignFields(packageTypeId: string, dto: AssignPackageFieldsDto) {
+    const packageType = await this.prisma.packageType.findUnique({
+      where: {
+        id: packageTypeId,
+      },
+    });
+
+    if (!packageType) {
+      throw new NotFoundException('Package type not found');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Create FieldSet
+
+      const fieldSet = await tx.packageTypeFieldSet.create({
+        data: {
+          packageTypeId,
+        },
+      });
+
+      // 2. Create fields
+
+      await tx.packageTypeField.createMany({
+        data: dto.fields.map((field) => ({
+          fieldSetId: fieldSet.id,
+
+          fieldId: field.fieldId,
+
+          isRequired: field.isRequired,
+
+          displayOrder: field.displayOrder ?? 0,
+        })),
+      });
+
+      return tx.packageTypeFieldSet.findUnique({
+        where: {
+          id: fieldSet.id,
+        },
+
+        include: {
+          fields: {
+            include: {
+              field: true,
+            },
+          },
+        },
+      });
+    });
   }
 }

@@ -12,14 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VendorPackagesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
+const package_field_validator_1 = require("./helpers/package-field-validator");
 let VendorPackagesService = class VendorPackagesService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(dto) {
-        const vendor = await this.prisma.vendor.findUnique({
-            where: { id: dto.vendorId },
+    async create(dto, userId) {
+        const vendor = await this.prisma.vendor.findFirst({
+            where: { userId: userId },
         });
         if (!vendor)
             throw new common_1.NotFoundException('Vendor not found');
@@ -39,10 +40,16 @@ let VendorPackagesService = class VendorPackagesService {
         if (!packageType) {
             throw new common_1.NotFoundException('PackageType not found');
         }
+        if (packageType.categoryId !== vendor.categoryId) {
+            throw new common_1.BadRequestException('Invalid package type for this vendor category');
+        }
+        if (!packageType.fieldSet) {
+            throw new common_1.BadRequestException('Package type has no fields configured');
+        }
+        (0, package_field_validator_1.validatePackageFields)(packageType.fieldSet.fields, dto.fields);
         return this.prisma.$transaction(async (tx) => {
             const pkg = await tx.vendorPackage.create({
                 data: {
-                    vendorId: dto.vendorId,
                     packageTypeId: dto.packageTypeId,
                     title: dto.title,
                     description: dto.description,
@@ -56,12 +63,26 @@ let VendorPackagesService = class VendorPackagesService {
                     value: f.value,
                 })),
             });
-            return pkg;
+            return tx.vendorPackage.findUnique({
+                where: {
+                    id: pkg.id,
+                },
+                include: {
+                    packageType: true,
+                    fieldValues: {
+                        include: {
+                            field: true,
+                        },
+                    },
+                },
+            });
         });
     }
     async findOne(id) {
-        return this.prisma.vendorPackage.findUnique({
-            where: { id },
+        const pkg = await this.prisma.vendorPackage.findUnique({
+            where: {
+                id,
+            },
             include: {
                 vendor: true,
                 packageType: {
@@ -84,10 +105,24 @@ let VendorPackagesService = class VendorPackagesService {
                 },
             },
         });
+        if (!pkg) {
+            throw new common_1.NotFoundException('Package not found');
+        }
+        return pkg;
     }
-    async findByVendor(vendorId) {
+    async findByVendor(userId) {
+        const vendor = await this.prisma.vendor.findFirst({
+            where: {
+                userId,
+            },
+        });
+        if (!vendor) {
+            throw new common_1.NotFoundException('Vendor not found');
+        }
         return this.prisma.vendorPackage.findMany({
-            where: { vendorId },
+            where: {
+                vendorId: vendor.id,
+            },
             include: {
                 packageType: true,
                 fieldValues: {
@@ -98,6 +133,56 @@ let VendorPackagesService = class VendorPackagesService {
             },
             orderBy: {
                 createdAt: 'desc',
+            },
+        });
+    }
+    async update(id, userId, dto) {
+        const vendor = await this.prisma.vendor.findFirst({
+            where: {
+                userId,
+            },
+        });
+        if (!vendor) {
+            throw new common_1.NotFoundException('Vendor not found');
+        }
+        const pkg = await this.prisma.vendorPackage.findFirst({
+            where: {
+                id,
+                vendorId: vendor.id,
+            },
+        });
+        if (!pkg) {
+            throw new common_1.ForbiddenException('You cannot update this package');
+        }
+        return this.prisma.vendorPackage.update({
+            where: {
+                id,
+            },
+            data: {
+                title: dto.title,
+                description: dto.description,
+                basePrice: dto.basePrice,
+            },
+        });
+    }
+    async remove(id, userId) {
+        const vendor = await this.prisma.vendor.findFirst({
+            where: {
+                userId,
+            },
+        });
+        const pkg = await this.prisma.vendorPackage.findFirst({
+            where: {
+                id,
+                vendorId: vendor?.id,
+            },
+        });
+        if (!pkg) {
+            throw new common_1.ForbiddenException('You cannot delete this package');
+        }
+        return this.prisma.vendorPackage.delete({
+            where: {
+                id,
             },
         });
     }

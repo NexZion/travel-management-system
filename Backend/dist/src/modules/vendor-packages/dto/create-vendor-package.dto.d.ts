@@ -3,7 +3,6 @@ declare class PackageFieldValueDto {
     value: string;
 }
 export declare class CreateVendorPackageDto {
-    vendorId: string;
     packageTypeId: string;
     title: string;
     description?: string;

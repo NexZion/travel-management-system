@@ -16,6 +16,7 @@ exports.PackageTypesController = void 0;
 const common_1 = require("@nestjs/common");
 const package_types_service_1 = require("./package-types.service");
 const create_package_types_dto_1 = require("./dto/create-package-types.dto");
+const assign_fields_dto_1 = require("./dto/assign-fields.dto");
 let PackageTypesController = class PackageTypesController {
     service;
     constructor(service) {
@@ -29,6 +30,9 @@ let PackageTypesController = class PackageTypesController {
     }
     findOne(id) {
         return this.service.findOne(id);
+    }
+    assignFields(id, dto) {
+        return this.service.assignFields(id, dto);
     }
 };
 exports.PackageTypesController = PackageTypesController;
@@ -53,6 +57,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PackageTypesController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Patch)(':id/fields'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, assign_fields_dto_1.AssignPackageFieldsDto]),
+    __metadata("design:returntype", void 0)
+], PackageTypesController.prototype, "assignFields", null);
 exports.PackageTypesController = PackageTypesController = __decorate([
     (0, common_1.Controller)('package-types'),
     __metadata("design:paramtypes", [package_types_service_1.PackageTypesService])

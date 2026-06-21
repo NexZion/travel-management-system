@@ -2,17 +2,20 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateVendorPackageDto } from './dto/create-vendor-package.dto';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { validatePackageFields } from './helpers/package-field-validator';
+import { UpdateVendorPackageDto } from './dto/update-vendor-package.dto';
 
 @Injectable()
 export class VendorPackagesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: CreateVendorPackageDto) {
-    const vendor = await this.prisma.vendor.findUnique({
-      where: { id: dto.vendorId },
+  async create(dto: CreateVendorPackageDto, userId: string) {
+    const vendor = await this.prisma.vendor.findFirst({
+      where: { userId: userId },
     });
 
     if (!vendor) throw new NotFoundException('Vendor not found');
@@ -37,11 +40,26 @@ export class VendorPackagesService {
       throw new NotFoundException('PackageType not found');
     }
 
+    if (packageType.categoryId !== vendor.categoryId) {
+      throw new BadRequestException(
+        'Invalid package type for this vendor category',
+      );
+    }
+
+    if (!packageType.fieldSet) {
+      throw new BadRequestException('Package type has no fields configured');
+    }
+
+    validatePackageFields(
+      packageType.fieldSet.fields,
+
+      dto.fields,
+    );
+
     return this.prisma.$transaction(async (tx) => {
       // 1. Create package
       const pkg = await tx.vendorPackage.create({
         data: {
-          vendorId: dto.vendorId,
           packageTypeId: dto.packageTypeId,
           title: dto.title,
           description: dto.description,
@@ -58,13 +76,29 @@ export class VendorPackagesService {
         })),
       });
 
-      return pkg;
+      return tx.vendorPackage.findUnique({
+        where: {
+          id: pkg.id,
+        },
+
+        include: {
+          packageType: true,
+
+          fieldValues: {
+            include: {
+              field: true,
+            },
+          },
+        },
+      });
     });
   }
 
   async findOne(id: string) {
-    return this.prisma.vendorPackage.findUnique({
-      where: { id },
+    const pkg = await this.prisma.vendorPackage.findUnique({
+      where: {
+        id,
+      },
 
       include: {
         vendor: true,
@@ -90,14 +124,33 @@ export class VendorPackagesService {
         },
       },
     });
+
+    if (!pkg) {
+      throw new NotFoundException('Package not found');
+    }
+
+    return pkg;
   }
 
-  async findByVendor(vendorId: string) {
+  async findByVendor(userId: string) {
+    const vendor = await this.prisma.vendor.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
+    }
+
     return this.prisma.vendorPackage.findMany({
-      where: { vendorId },
+      where: {
+        vendorId: vendor.id,
+      },
 
       include: {
         packageType: true,
+
         fieldValues: {
           include: {
             field: true,
@@ -107,6 +160,68 @@ export class VendorPackagesService {
 
       orderBy: {
         createdAt: 'desc',
+      },
+    });
+  }
+
+  async update(id: string, userId: string, dto: UpdateVendorPackageDto) {
+    const vendor = await this.prisma.vendor.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
+    }
+
+    const pkg = await this.prisma.vendorPackage.findFirst({
+      where: {
+        id,
+        vendorId: vendor.id,
+      },
+    });
+
+    if (!pkg) {
+      throw new ForbiddenException('You cannot update this package');
+    }
+
+    return this.prisma.vendorPackage.update({
+      where: {
+        id,
+      },
+
+      data: {
+        title: dto.title,
+
+        description: dto.description,
+
+        basePrice: dto.basePrice,
+      },
+    });
+  }
+
+  async remove(id: string, userId: string) {
+    const vendor = await this.prisma.vendor.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    const pkg = await this.prisma.vendorPackage.findFirst({
+      where: {
+        id,
+        vendorId: vendor?.id,
+      },
+    });
+
+    if (!pkg) {
+      throw new ForbiddenException('You cannot delete this package');
+    }
+
+    return this.prisma.vendorPackage.delete({
+      where: {
+        id,
       },
     });
   }

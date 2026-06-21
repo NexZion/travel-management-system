@@ -1,5 +1,6 @@
 import { CreatePackageTypeDto } from './dto/create-package-types.dto';
 import { PrismaService } from "../../database/prisma/prisma.service";
+import { AssignPackageFieldsDto } from './dto/assign-fields.dto';
 export declare class PackageTypesService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -82,4 +83,29 @@ export declare class PackageTypesService {
         isActive: boolean;
         categoryId: string;
     }>;
+    assignFields(packageTypeId: string, dto: AssignPackageFieldsDto): Promise<({
+        fields: ({
+            field: {
+                id: string;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                isActive: boolean;
+                label: string;
+                dataType: import("@prisma/client").$Enums.FieldDataType;
+                placeholder: string | null;
+                helpText: string | null;
+                defaultValue: string | null;
+            };
+        } & {
+            id: string;
+            fieldSetId: string;
+            displayOrder: number;
+            fieldId: string;
+            isRequired: boolean;
+        })[];
+    } & {
+        id: string;
+        packageTypeId: string;
+    }) | null>;
 }

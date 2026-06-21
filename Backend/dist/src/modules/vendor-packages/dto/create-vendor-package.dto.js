@@ -24,7 +24,7 @@ __decorate([
     __metadata("design:type", String)
 ], PackageFieldValueDto.prototype, "value", void 0);
 class CreateVendorPackageDto {
-    vendorId;
+    ;
     packageTypeId;
     title;
     description;
@@ -32,10 +32,6 @@ class CreateVendorPackageDto {
     fields;
 }
 exports.CreateVendorPackageDto = CreateVendorPackageDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateVendorPackageDto.prototype, "vendorId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -51,10 +47,12 @@ __decorate([
 ], CreateVendorPackageDto.prototype, "description", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
 ], CreateVendorPackageDto.prototype, "basePrice", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayNotEmpty)(),
     __metadata("design:type", Array)
 ], CreateVendorPackageDto.prototype, "fields", void 0);
 //# sourceMappingURL=create-vendor-package.dto.js.map

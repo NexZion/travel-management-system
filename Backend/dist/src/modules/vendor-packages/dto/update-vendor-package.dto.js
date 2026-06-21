@@ -9,52 +9,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateVendorPackageDto = void 0;
+exports.UpdateVendorPackageDto = void 0;
 const class_validator_1 = require("class-validator");
-class PackageFieldValueDto {
+class PackageFieldUpdateDto {
     fieldId;
     value;
 }
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], PackageFieldValueDto.prototype, "fieldId", void 0);
+], PackageFieldUpdateDto.prototype, "fieldId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], PackageFieldValueDto.prototype, "value", void 0);
-class CreateVendorPackageDto {
-    vendorId;
-    packageTypeId;
+], PackageFieldUpdateDto.prototype, "value", void 0);
+class UpdateVendorPackageDto {
     title;
     description;
     basePrice;
     fields;
 }
-exports.CreateVendorPackageDto = CreateVendorPackageDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateVendorPackageDto.prototype, "vendorId", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateVendorPackageDto.prototype, "packageTypeId", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateVendorPackageDto.prototype, "title", void 0);
+exports.UpdateVendorPackageDto = UpdateVendorPackageDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateVendorPackageDto.prototype, "description", void 0);
+], UpdateVendorPackageDto.prototype, "title", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateVendorPackageDto.prototype, "description", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], CreateVendorPackageDto.prototype, "basePrice", void 0);
+], UpdateVendorPackageDto.prototype, "basePrice", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
-], CreateVendorPackageDto.prototype, "fields", void 0);
-//# sourceMappingURL=create-package.dto.js.map
+], UpdateVendorPackageDto.prototype, "fields", void 0);
+//# sourceMappingURL=update-vendor-package.dto.js.map
