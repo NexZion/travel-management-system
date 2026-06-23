@@ -5,16 +5,16 @@ export declare class PackageFieldsService {
     private prisma;
     constructor(prisma: PrismaService);
     create(dto: CreatePackageFieldDto): Promise<{
-        id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        isActive: boolean;
         label: string;
         dataType: import("@prisma/client").$Enums.FieldDataType;
         placeholder: string | null;
         helpText: string | null;
+        id: string;
         defaultValue: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     assignFields(packageTypeId: string, dto: AssignPackageFieldsDto): Promise<{
         id: string;
