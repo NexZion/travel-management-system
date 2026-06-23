@@ -41,6 +41,7 @@ const fields_module_1 = require("./modules/fields/fields.module");
 const vendors_module_1 = require("./modules/vendors/vendors.module");
 const package_types_module_1 = require("./modules/package-types/package-types.module");
 const vendor_packages_module_1 = require("./modules/vendor-packages/vendor-packages.module");
+const package_fields_module_1 = require("./modules/package-fields/package-fields.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -69,7 +70,7 @@ exports.AppModule = AppModule = __decorate([
                     host: process.env.REDIS_HOST,
                     port: parseInt(process.env.REDIS_PORT || '6379'),
                 },
-            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule, travel_styles_module_1.TravelStylesModule, vibes_module_1.VibesModule, destination_categories_module_1.DestinationCategoriesModule, vendor_categories_module_1.VendorCategoriesModule, field_sets_module_1.FieldSetsModule, fields_module_1.FieldsModule, vendors_module_1.VendorsModule, package_types_module_1.PackageTypesModule, vendor_packages_module_1.VendorPackagesModule
+            }), queues_module_1.QueuesModule, destinations_module_1.DestinationsModule, travel_styles_module_1.TravelStylesModule, vibes_module_1.VibesModule, destination_categories_module_1.DestinationCategoriesModule, vendor_categories_module_1.VendorCategoriesModule, field_sets_module_1.FieldSetsModule, fields_module_1.FieldsModule, vendors_module_1.VendorsModule, package_types_module_1.PackageTypesModule, vendor_packages_module_1.VendorPackagesModule, package_fields_module_1.PackageFieldsModule
         ],
         controllers: [app_controller_1.AppController, destinations_controller_1.DestinationsController],
         providers: [app_service_1.AppService, roles_guard_1.RolesGuard, {

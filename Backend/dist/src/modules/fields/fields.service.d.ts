@@ -44,9 +44,9 @@ export declare class FieldsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        value: string;
         displayOrder: number;
         fieldId: string;
         label: string;
-        value: string;
     }>;
 }

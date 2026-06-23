@@ -53,8 +53,8 @@ export declare class VendorsController {
         } & {
             id: string;
             createdAt: Date;
-            fieldId: string;
             value: string;
+            fieldId: string;
             vendorId: string;
         })[];
     } & {
@@ -100,8 +100,8 @@ export declare class VendorsController {
             } & {
                 id: string;
                 createdAt: Date;
-                fieldId: string;
                 value: string;
+                fieldId: string;
                 vendorId: string;
             })[];
         } & {
@@ -134,10 +134,10 @@ export declare class VendorsController {
                     id: string;
                     createdAt: Date;
                     updatedAt: Date;
+                    value: string;
                     displayOrder: number;
                     fieldId: string;
                     label: string;
-                    value: string;
                 }[];
             } & {
                 id: string;
@@ -177,8 +177,8 @@ export declare class VendorsController {
         } & {
             id: string;
             createdAt: Date;
-            fieldId: string;
             value: string;
+            fieldId: string;
             vendorId: string;
         })[];
     }>;
@@ -223,8 +223,8 @@ export declare class VendorsController {
         } & {
             id: string;
             createdAt: Date;
-            fieldId: string;
             value: string;
+            fieldId: string;
             vendorId: string;
         })[];
     } & {
@@ -280,22 +280,22 @@ export declare class VendorsController {
         readOnly: boolean;
     }>;
     addMedia(id: string, dto: CreateVendorMediaDto): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        isActive: boolean;
-        url: string;
         type: import("@prisma/client").$Enums.VendorMediaType;
+        isActive: boolean;
         fileName: string | null;
         vendorId: string;
     }>;
     deleteMedia(mediaId: string): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        isActive: boolean;
-        url: string;
         type: import("@prisma/client").$Enums.VendorMediaType;
+        isActive: boolean;
         fileName: string | null;
         vendorId: string;
     }>;
@@ -305,8 +305,8 @@ export declare class VendorsController {
         createdAt: Date;
         updatedAt: Date;
         rating: number;
-        vendorId: string;
         comment: string | null;
+        vendorId: string;
     }>;
     getReviews(id: string): Promise<({
         user: {
@@ -320,7 +320,7 @@ export declare class VendorsController {
         createdAt: Date;
         updatedAt: Date;
         rating: number;
-        vendorId: string;
         comment: string | null;
+        vendorId: string;
     })[]>;
 }

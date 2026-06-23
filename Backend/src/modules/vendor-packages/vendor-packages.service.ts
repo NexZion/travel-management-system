@@ -30,7 +30,15 @@ export class VendorPackagesService {
       include: {
         fieldSet: {
           include: {
-            fields: true,
+            fields: {
+              include: {
+                field: {
+                  include: {
+                    options: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -50,11 +58,22 @@ export class VendorPackagesService {
       throw new BadRequestException('Package type has no fields configured');
     }
 
-    validatePackageFields(
-      packageType.fieldSet.fields,
+    // Map Prisma PackageTypeField -> PackageSchemaField expected by validator
+    const schemaFields = packageType.fieldSet.fields.map((f) => ({
+      isRequired: f.isRequired,
+      packageField: {
+        id: f.field.id,
+        label: f.field.label,
+        name: f.field.name,
+        dataType: f.field.dataType,
+        options: (f.field.options || []).map((o) => ({
+          value: o.value,
+          label: o.label,
+        })),
+      },
+    }));
 
-      dto.fields,
-    );
+    validatePackageFields(schemaFields, dto.fields);
 
     return this.prisma.$transaction(async (tx) => {
       // 1. Create package

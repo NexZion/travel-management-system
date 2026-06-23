@@ -1,77 +1,105 @@
 import { BadRequestException } from '@nestjs/common';
+import {
+  PackageSchemaField,
+  SubmittedPackageField,
+} from '../interfaces/package-field.interface';
 
 export function validatePackageFields(
-  schemaFields: any[],
-  submittedFields: any[],
-) {
-  const submittedMap = new Map();
-  const validFieldIds = new Set();
+  schemaFields: PackageSchemaField[],
 
-  // Build set of valid field IDs from schema
-  for (const schemaField of schemaFields) {
-    const fieldId = schemaField.field.id;
-    validFieldIds.add(fieldId);
+  submittedFields: SubmittedPackageField[],
+) {
+  if (!submittedFields || submittedFields.length === 0) {
+    throw new BadRequestException('Package fields are required');
   }
 
-  for (const field of submittedFields) {
-    submittedMap.set(field.fieldId, field.value);
+  const submittedMap = new Map<string, string>();
 
-    // Validate that submitted fieldId is in the schema
+  const validFieldIds = new Set<string>();
+
+  const submittedIds = new Set<string>();
+
+  // Build valid schema fields
+
+  for (const schemaField of schemaFields) {
+    validFieldIds.add(schemaField.packageField.id);
+  }
+
+  // Validate submitted fields
+
+  for (const field of submittedFields) {
+    // Duplicate check
+
+    if (submittedIds.has(field.fieldId)) {
+      throw new BadRequestException(`Duplicate field ${field.fieldId}`);
+    }
+
+    submittedIds.add(field.fieldId);
+
+    // Unknown field check
+
     if (!validFieldIds.has(field.fieldId)) {
       throw new BadRequestException(
         `Field ID ${field.fieldId} is not valid for this package type`,
       );
     }
+
+    submittedMap.set(field.fieldId, field.value);
   }
 
+  // Required + datatype validation
+
   for (const schemaField of schemaFields) {
-    const fieldId = schemaField.field.id;
+    const packageField = schemaField.packageField;
 
-    const value = submittedMap.get(fieldId);
+    const value = submittedMap.get(packageField.id);
 
-    // Required validation
-
-    if (
-      schemaField.isRequired &&
-      (value === undefined || value === null || value === '')
-    ) {
-      throw new BadRequestException(`${schemaField.field.label} is required`);
+    if (schemaField.isRequired && (!value || value.trim() === '')) {
+      throw new BadRequestException(`${packageField.label} is required`);
     }
 
     if (value !== undefined) {
       validateDataType(
-        schemaField.field.dataType,
+        packageField.dataType,
+
         value,
-        schemaField.field.label,
+
+        packageField.label,
       );
     }
   }
+}
 
-  function validateDataType(type: string, value: string, label: string) {
-    switch (type) {
-      case 'NUMBER':
-        if (isNaN(Number(value))) {
-          throw new BadRequestException(`${label} must be a number`);
-        }
+function validateDataType(
+  type: string,
 
-        break;
+  value: string,
 
-      case 'BOOLEAN':
-        if (value !== 'true' && value !== 'false') {
-          throw new BadRequestException(`${label} must be true or false`);
-        }
+  label: string,
+) {
+  switch (type) {
+    case 'NUMBER':
+      if (isNaN(Number(value))) {
+        throw new BadRequestException(`${label} must be a number`);
+      }
 
-        break;
+      break;
 
-      case 'SELECT':
-        if (!value) {
-          throw new BadRequestException(`${label} is invalid`);
-        }
+    case 'BOOLEAN':
+      if (value !== 'true' && value !== 'false') {
+        throw new BadRequestException(`${label} must be true or false`);
+      }
 
-        break;
+      break;
 
-      default:
-        break;
-    }
+    case 'SELECT':
+      if (!value.trim()) {
+        throw new BadRequestException(`${label} is invalid`);
+      }
+
+      break;
+
+    default:
+      break;
   }
 }

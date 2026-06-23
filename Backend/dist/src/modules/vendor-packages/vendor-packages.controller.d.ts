@@ -29,8 +29,8 @@ export declare class VendorPackagesController {
             };
         } & {
             id: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
             packageId: string;
         })[];
     } & {
@@ -69,8 +69,8 @@ export declare class VendorPackagesController {
             };
         } & {
             id: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
             packageId: string;
         })[];
     } & {
@@ -109,8 +109,8 @@ export declare class VendorPackagesController {
             };
         } & {
             id: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
             packageId: string;
         })[];
     } & {
@@ -190,8 +190,8 @@ export declare class VendorPackagesController {
             };
         } & {
             id: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
             packageId: string;
         })[];
     } & {
