@@ -41,7 +41,7 @@ export default function TripPlanner() {
     "flex-1 py-3 px-4 rounded-full text-xs font-bold text-neutral-500 transition-all cursor-pointer text-center flex items-center justify-center gap-1.5";
 
   return (
-    <section id="search-bar" className="relative px-4 sm:px-6 lg:px-8 pb-28 z-20">
+    <section id="trip-planner" className="relative px-4 sm:px-6 lg:px-8 pb-28 z-20">
       <div className="max-w-5xl mx-auto premium-glass rounded-[2rem] shadow-2xl border p-6 sm:p-8 relative anim-fade-in-up">
         <div className="flex justify-center mb-8">
           <div className="bg-neutral-200/50 p-1.5 rounded-full flex max-w-md w-full">
