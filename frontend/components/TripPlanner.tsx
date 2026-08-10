@@ -2,188 +2,301 @@
 
 import { useState } from "react";
 import {
-  FaWandMagicSparkles,
-  FaMapLocationDot,
-  FaSliders,
-  FaQuoteLeft,
+  FaArrowRight,
+  FaCalendarDays,
   FaCircleNotch,
+  FaLocationDot,
+  FaSliders,
+  FaUsers,
+  FaWandMagicSparkles,
 } from "react-icons/fa6";
 
 const tripTypes = [
-  "🎉 Fun Trip",
-  "🌴 Dayouts",
-  "🏙️ City Visit",
-  "⛺ Camping",
-  "🏔️ Adventure & Nature",
+  { label: "Fun Trip", emoji: "🎉" },
+  { label: "Day Out", emoji: "🌴" },
+  { label: "City Visit", emoji: "🏙️" },
+  { label: "Camping", emoji: "⛺" },
+  { label: "Adventure & Nature", emoji: "🥾" },
+];
+
+const vibes = [
+  "Adventure",
+  "Relaxation",
+  "Nature",
+  "Culture",
+  "Family",
+  "Romantic",
 ];
 
 export default function TripPlanner() {
   const [mode, setMode] = useState<"automatic" | "manual">("automatic");
-  const [selectedType, setSelectedType] = useState(tripTypes[0]);
+  const [selectedType, setSelectedType] = useState("Fun Trip");
+  const [selectedVibe, setSelectedVibe] = useState("Adventure");
   const [submitting, setSubmitting] = useState(false);
 
   const isAutomatic = mode === "automatic";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setSubmitting(true);
+
     setTimeout(() => {
       alert(
         isAutomatic
-          ? "Intelligent generation module executed! Routing your optimized local travel suggestions..."
-          : "Manual exploration indexes filtered!"
+          ? "Your personalized trip planning request is ready!"
+          : "Your curated travel search is ready!",
       );
+
       setSubmitting(false);
-    }, 2200);
+    }, 1200);
   };
 
-  const tabBase =
-    "flex-1 py-3 px-4 rounded-full text-xs font-bold text-neutral-500 transition-all cursor-pointer text-center flex items-center justify-center gap-1.5";
-
   return (
-    <section id="trip-planner" className="relative px-4 sm:px-6 lg:px-8 pb-28 z-20">
-      <div className="max-w-5xl mx-auto premium-glass rounded-[2rem] shadow-2xl border p-6 sm:p-8 relative anim-fade-in-up">
-        <div className="flex justify-center mb-8">
-          <div className="bg-neutral-200/50 p-1.5 rounded-full flex max-w-md w-full">
+    <section
+      id="trip-planner"
+      className="relative py-20 sm:py-24"
+    >
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Section heading */}
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ac683f]/10 px-4 py-2 text-xs font-bold text-[#ac683f]">
+            <FaWandMagicSparkles />
+            Personalized Trip Planning
+          </div>
+
+          <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl">
+            Plan a journey made
+            <span className="text-[#ac683f]"> for you.</span>
+          </h2>
+
+          <p className="mt-4 text-sm leading-6 text-neutral-500 sm:text-base">
+            Tell us what kind of experience you want and let Xplore help
+            you discover the right destinations, vendors and experiences.
+          </p>
+        </div>
+
+        {/* Planner card */}
+        <div className="premium-glass mt-10 rounded-[2rem] border border-white/80 p-4 shadow-2xl shadow-black/5 sm:p-6 lg:p-8">
+          {/* Mode selector */}
+          <div className="mx-auto flex max-w-md rounded-full bg-neutral-100 p-1.5">
             <button
               type="button"
               onClick={() => setMode("automatic")}
-              className={`${tabBase} ${isAutomatic ? "tab-active" : ""}`}
+              className={`flex-1 rounded-full px-4 py-3 text-xs font-bold transition-all ${
+                isAutomatic
+                  ? "bg-white text-[#ac683f] shadow-md"
+                  : "text-neutral-500 hover:text-neutral-700"
+              }`}
             >
-              <FaWandMagicSparkles /> Automatic Suggestion
+              <span className="flex items-center justify-center gap-2">
+                <FaWandMagicSparkles />
+                AI Trip Planner
+              </span>
             </button>
+
             <button
               type="button"
               onClick={() => setMode("manual")}
-              className={`${tabBase} ${!isAutomatic ? "tab-active" : ""}`}
+              className={`flex-1 rounded-full px-4 py-3 text-xs font-bold transition-all ${
+                !isAutomatic
+                  ? "bg-white text-[#ac683f] shadow-md"
+                  : "text-neutral-500 hover:text-neutral-700"
+              }`}
             >
-              <FaMapLocationDot /> Manual Selection
+              <span className="flex items-center justify-center gap-2">
+                <FaSliders />
+                Explore Yourself
+              </span>
             </button>
           </div>
-        </div>
 
-        <h3 className="text-xl font-bold text-neutral-900 mb-6 flex items-center gap-2">
-          <FaSliders className="text-[#ac683f] text-base animate-pulse" /> Configure Trip
-          Specifications
-        </h3>
+          {/* Mode description */}
+          <div className="mt-6 text-center">
+            <p className="text-sm font-bold text-neutral-800">
+              {isAutomatic
+                ? "Let us build a personalized journey"
+                : "Choose your travel preferences"}
+            </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-2.5">
-              Select Trip Type Matrix
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {tripTypes.map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => setSelectedType(type)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-bold border border-neutral-200 bg-white text-neutral-700 transition-all transform hover:-translate-y-0.5 cursor-pointer ${
-                    selectedType === type ? "vibe-active" : ""
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
+            <p className="mt-1 text-xs text-neutral-400">
+              {isAutomatic
+                ? "Give us a few details and we'll help you discover suitable options."
+                : "Browse and filter destinations and experiences yourself."}
+            </p>
           </div>
 
-          {isAutomatic && (
-            <div className="transition-all duration-500 ease-out">
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1.5">
-                What kind of places or vibe do you want?
+          <form
+            onSubmit={handleSubmit}
+            className="mt-8 space-y-8"
+          >
+            {/* Trip type */}
+            <div>
+              <label className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400">
+                What type of trip?
               </label>
-              <div className="relative">
-                <span className="absolute left-4 top-3.5 text-neutral-400 text-xs">
-                  <FaQuoteLeft />
-                </span>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g., I want serene waterfalls with minimal trekking, or historical temples near coastal lines..."
-                  className="w-full pl-10 pr-4 py-3 text-xs font-medium modern-input rounded-full focus:outline-none"
-                />
+
+              <div className="flex flex-wrap gap-2">
+                {tripTypes.map((type) => (
+                  <button
+                    key={type.label}
+                    type="button"
+                    onClick={() => setSelectedType(type.label)}
+                    className={`rounded-full border px-4 py-2.5 text-xs font-bold transition-all hover:-translate-y-0.5 ${
+                      selectedType === type.label
+                        ? "border-[#ac683f] bg-[#ac683f] text-white shadow-md"
+                        : "border-neutral-200 bg-white text-neutral-600 hover:border-[#ac683f]/30 hover:text-[#ac683f]"
+                    }`}
+                  >
+                    <span className="mr-1.5">{type.emoji}</span>
+                    {type.label}
+                  </button>
+                ))}
               </div>
             </div>
-          )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1.5">
-                Starting Location
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g., Colombo, Galle, Kandy"
-                className="w-full px-4 py-3 text-xs font-medium modern-input rounded-full focus:outline-none"
-              />
+            {/* Main inputs */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {/* Destination */}
+              <div>
+                <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                  Destination
+                </label>
+
+                <div className="relative">
+                  <FaLocationDot className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ac683f]" />
+
+                  <input
+                    type="text"
+                    required
+                    placeholder="Where are you going?"
+                    className="modern-input w-full rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* From date */}
+              <div>
+                <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                  Start Date
+                </label>
+
+                <div className="relative">
+                  <FaCalendarDays className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ac683f]" />
+
+                  <input
+                    type="date"
+                    required
+                    className="modern-input w-full rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium text-neutral-600 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* End date */}
+              <div>
+                <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                  End Date
+                </label>
+
+                <div className="relative">
+                  <FaCalendarDays className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ac683f]" />
+
+                  <input
+                    type="date"
+                    required
+                    className="modern-input w-full rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium text-neutral-600 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Travelers */}
+              <div>
+                <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                  Travelers
+                </label>
+
+                <div className="relative">
+                  <FaUsers className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ac683f]" />
+
+                  <input
+                    type="number"
+                    min="1"
+                    defaultValue="2"
+                    required
+                    className="modern-input w-full rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium outline-none"
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* Vibe */}
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1.5">
-                From Date
+              <label className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400">
+                What's your travel vibe?
               </label>
-              <input
-                type="date"
-                required
-                className="w-full px-4 py-3 text-xs font-medium modern-input rounded-full focus:outline-none text-neutral-500"
-              />
+
+              <div className="flex flex-wrap gap-2">
+                {vibes.map((vibe) => (
+                  <button
+                    key={vibe}
+                    type="button"
+                    onClick={() => setSelectedVibe(vibe)}
+                    className={`rounded-full border px-4 py-2.5 text-xs font-semibold transition-all ${
+                      selectedVibe === vibe
+                        ? "border-[#ac683f] bg-[#ac683f]/10 text-[#ac683f]"
+                        : "border-neutral-200 bg-white text-neutral-500 hover:border-[#ac683f]/30 hover:text-[#ac683f]"
+                    }`}
+                  >
+                    {vibe}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Budget */}
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1.5">
-                To Date
+              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                Budget
               </label>
-              <input
-                type="date"
-                required
-                className="w-full px-4 py-3 text-xs font-medium modern-input rounded-full focus:outline-none text-neutral-500"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1.5">
-                Person Count
-              </label>
-              <input
-                type="number"
-                min="1"
-                required
-                placeholder="Number of guests"
-                className="w-full px-4 py-3 text-xs font-medium modern-input rounded-full focus:outline-none"
-              />
-            </div>
-            <div className="sm:col-span-2 lg:col-span-2">
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1.5">
-                Budget Range
-              </label>
-              <select className="w-full px-5 py-3 text-xs font-semibold modern-input rounded-full focus:outline-none text-neutral-600 bg-white cursor-pointer">
-                <option>Economy Explorer (Local Transport &amp; Backpacker Stays)</option>
-                <option>Moderate Framework (Comfort Private Vehicles &amp; Hotels)</option>
-                <option>Premium Luxury Elite (Luxury Resorts &amp; All-Inclusive Guides)</option>
+
+              <select
+                defaultValue=""
+                className="modern-input w-full rounded-2xl bg-white px-4 py-3.5 text-xs font-semibold text-neutral-600 outline-none"
+              >
+                <option value="" disabled>
+                  Select your budget range
+                </option>
+                <option value="ECONOMY">Economy</option>
+                <option value="MODERATE">Moderate</option>
+                <option value="PREMIUM">Premium</option>
               </select>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full bg-[#ac683f] hover:bg-[#925430] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-full shadow-lg hover:shadow-[#ac683f]/30 transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 group relative overflow-hidden disabled:opacity-80 disabled:pointer-events-none"
-          >
-            <span className="flex items-center gap-2">
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#ac683f] py-4 text-sm font-bold text-white shadow-lg shadow-[#ac683f]/20 transition-all hover:-translate-y-0.5 hover:bg-[#925430] hover:shadow-xl disabled:pointer-events-none disabled:opacity-70"
+            >
               {submitting ? (
-                <FaCircleNotch className="animate-spin" />
+                <>
+                  <FaCircleNotch className="animate-spin" />
+                  Preparing your journey...
+                </>
               ) : (
-                <FaWandMagicSparkles className="group-hover:rotate-12 transition-transform" />
+                <>
+                  <FaWandMagicSparkles className="transition-transform group-hover:rotate-12" />
+
+                  {isAutomatic
+                    ? "Create My Trip"
+                    : "Explore Destinations"}
+
+                  <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
+                </>
               )}
-            </span>
-            <span>
-              {submitting
-                ? "Calculating Coordinates..."
-                : isAutomatic
-                  ? "Process Suggestions"
-                  : "Search Curated Places"}
-            </span>
-          </button>
-        </form>
+            </button>
+          </form>
+        </div>
       </div>
     </section>
   );
