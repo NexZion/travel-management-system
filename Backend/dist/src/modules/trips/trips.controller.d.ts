@@ -30,13 +30,13 @@ export declare class TripsController {
     addDestination(tripId: string, dto: AddTripDestinationDto, user: any): Promise<{
         id: string;
         createdAt: Date;
+        arrivalDate: Date | null;
+        departureDate: Date | null;
+        notes: string | null;
         visitOrder: number;
         tripId: string;
         destinationId: string;
-        arrivalDate: Date | null;
-        departureDate: Date | null;
         nights: number | null;
-        notes: string | null;
     }>;
     reorder(tripId: string, body: {
         orderedIds: string[];
@@ -72,13 +72,13 @@ export declare class TripsController {
         } & {
             id: string;
             createdAt: Date;
+            arrivalDate: Date | null;
+            departureDate: Date | null;
+            notes: string | null;
             visitOrder: number;
             tripId: string;
             destinationId: string;
-            arrivalDate: Date | null;
-            departureDate: Date | null;
             nights: number | null;
-            notes: string | null;
         })[];
     } & {
         id: string;
@@ -122,13 +122,13 @@ export declare class TripsController {
     updateTripDestination(tripId: string, stopId: string, dto: UpdateTripDestinationDto, user: any): Promise<{
         id: string;
         createdAt: Date;
+        arrivalDate: Date | null;
+        departureDate: Date | null;
+        notes: string | null;
         visitOrder: number;
         tripId: string;
         destinationId: string;
-        arrivalDate: Date | null;
-        departureDate: Date | null;
         nights: number | null;
-        notes: string | null;
     }>;
     removeTripDestination(tripId: string, stopId: string, user: any): Promise<{
         message: string;

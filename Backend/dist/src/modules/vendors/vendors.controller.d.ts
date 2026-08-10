@@ -13,37 +13,37 @@ export declare class VendorsController {
     constructor(vendorsService: VendorsService);
     create(dto: CreateVendorDto, user: any): Promise<{
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        statusReason: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        reviewCount: number;
-        averageRating: number;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
+        reviewCount: number;
         categoryId: string;
         fieldSetId: string | null;
+        statusReason: string | null;
+        averageRating: number;
     }>;
     findAll(): Promise<({
         category: {
             id: string;
             name: string;
-            description: string | null;
-            isActive: boolean;
             createdAt: Date;
+            description: string | null;
             updatedAt: Date;
-            fieldSetId: string;
+            isActive: boolean;
             code: string;
+            fieldSetId: string;
         };
         fields: ({
             field: {
                 id: string;
                 name: string;
-                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -53,44 +53,44 @@ export declare class VendorsController {
         } & {
             id: string;
             createdAt: Date;
-            vendorId: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
+            vendorId: string;
         })[];
     } & {
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        statusReason: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        reviewCount: number;
-        averageRating: number;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
+        reviewCount: number;
         categoryId: string;
         fieldSetId: string | null;
+        statusReason: string | null;
+        averageRating: number;
     })[]>;
     search(dto: SearchVendorDto): Promise<{
         data: ({
             category: {
                 id: string;
                 name: string;
-                description: string | null;
-                isActive: boolean;
                 createdAt: Date;
+                description: string | null;
                 updatedAt: Date;
-                fieldSetId: string;
+                isActive: boolean;
                 code: string;
+                fieldSetId: string;
             };
             fields: ({
                 field: {
                     id: string;
                     name: string;
-                    isActive: boolean;
                     createdAt: Date;
                     updatedAt: Date;
+                    isActive: boolean;
                     label: string;
                     dataType: import("@prisma/client").$Enums.FieldDataType;
                     placeholder: string | null;
@@ -100,24 +100,24 @@ export declare class VendorsController {
             } & {
                 id: string;
                 createdAt: Date;
-                vendorId: string;
-                fieldId: string;
                 value: string;
+                fieldId: string;
+                vendorId: string;
             })[];
         } & {
             id: string;
-            name: string;
-            description: string | null;
             status: import("@prisma/client").$Enums.VendorStatus;
-            isActive: boolean;
-            statusReason: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            reviewCount: number;
-            averageRating: number;
+            name: string;
             userId: string;
+            createdAt: Date;
+            description: string | null;
+            updatedAt: Date;
+            isActive: boolean;
+            reviewCount: number;
             categoryId: string;
             fieldSetId: string | null;
+            statusReason: string | null;
+            averageRating: number;
         })[];
         page: number;
         limit: number;
@@ -134,17 +134,17 @@ export declare class VendorsController {
                     id: string;
                     createdAt: Date;
                     updatedAt: Date;
-                    fieldId: string;
                     value: string;
-                    label: string;
                     displayOrder: number;
+                    fieldId: string;
+                    label: string;
                 }[];
             } & {
                 id: string;
                 name: string;
-                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -156,8 +156,8 @@ export declare class VendorsController {
             createdAt: Date;
             updatedAt: Date;
             fieldSetId: string;
-            fieldId: string;
             displayOrder: number;
+            fieldId: string;
             isRequired: boolean;
             readOnly: boolean;
         })[];
@@ -165,9 +165,9 @@ export declare class VendorsController {
             field: {
                 id: string;
                 name: string;
-                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -177,32 +177,32 @@ export declare class VendorsController {
         } & {
             id: string;
             createdAt: Date;
-            vendorId: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
+            vendorId: string;
         })[];
     }>;
     updateStatus(id: string, dto: UpdateVendorStatusDto, user: any): Promise<{
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        statusReason: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        reviewCount: number;
-        averageRating: number;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
+        reviewCount: number;
         categoryId: string;
         fieldSetId: string | null;
+        statusReason: string | null;
+        averageRating: number;
     }>;
     getStatusHistory(id: string): Promise<{
         id: string;
+        reason: string | null;
         vendorId: string;
         previousStatus: import("@prisma/client").$Enums.VendorStatus | null;
         newStatus: import("@prisma/client").$Enums.VendorStatus;
-        reason: string | null;
         changedBy: string;
         changedAt: Date;
     }[]>;
@@ -211,9 +211,9 @@ export declare class VendorsController {
             field: {
                 id: string;
                 name: string;
-                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
+                isActive: boolean;
                 label: string;
                 dataType: import("@prisma/client").$Enums.FieldDataType;
                 placeholder: string | null;
@@ -223,31 +223,31 @@ export declare class VendorsController {
         } & {
             id: string;
             createdAt: Date;
-            vendorId: string;
-            fieldId: string;
             value: string;
+            fieldId: string;
+            vendorId: string;
         })[];
     } & {
         id: string;
-        name: string;
-        description: string | null;
         status: import("@prisma/client").$Enums.VendorStatus;
-        isActive: boolean;
-        statusReason: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        reviewCount: number;
-        averageRating: number;
+        name: string;
         userId: string;
+        createdAt: Date;
+        description: string | null;
+        updatedAt: Date;
+        isActive: boolean;
+        reviewCount: number;
         categoryId: string;
         fieldSetId: string | null;
+        statusReason: string | null;
+        averageRating: number;
     }) | null>;
     addCustomField(id: string, dto: AddVendorFieldDto): Promise<{
         id: string;
         name: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
         label: string;
         dataType: import("@prisma/client").$Enums.FieldDataType;
         placeholder: string | null;
@@ -257,9 +257,9 @@ export declare class VendorsController {
     updateCustomField(vendorId: string, fieldId: string, dto: UpdateVendorFieldDto): Promise<{
         id: string;
         name: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
         label: string;
         dataType: import("@prisma/client").$Enums.FieldDataType;
         placeholder: string | null;
@@ -274,39 +274,39 @@ export declare class VendorsController {
         createdAt: Date;
         updatedAt: Date;
         fieldSetId: string;
-        fieldId: string;
         displayOrder: number;
+        fieldId: string;
         isRequired: boolean;
         readOnly: boolean;
     }>;
     addMedia(id: string, dto: CreateVendorMediaDto): Promise<{
+        url: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        vendorId: string;
         type: import("@prisma/client").$Enums.VendorMediaType;
-        url: string;
+        isActive: boolean;
         fileName: string | null;
+        vendorId: string;
     }>;
     deleteMedia(mediaId: string): Promise<{
+        url: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        vendorId: string;
         type: import("@prisma/client").$Enums.VendorMediaType;
-        url: string;
+        isActive: boolean;
         fileName: string | null;
+        vendorId: string;
     }>;
     createReview(id: string, user: any, dto: CreateReviewDto): Promise<{
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        vendorId: string;
         rating: number;
         comment: string | null;
+        vendorId: string;
     }>;
     getReviews(id: string): Promise<({
         user: {
@@ -316,11 +316,11 @@ export declare class VendorsController {
         };
     } & {
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        vendorId: string;
         rating: number;
         comment: string | null;
+        vendorId: string;
     })[]>;
 }

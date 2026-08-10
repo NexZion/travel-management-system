@@ -30,13 +30,13 @@ export declare class TripsService {
     addDestination(tripId: string, userId: string, dto: any): Promise<{
         id: string;
         createdAt: Date;
+        arrivalDate: Date | null;
+        departureDate: Date | null;
+        notes: string | null;
         visitOrder: number;
         tripId: string;
         destinationId: string;
-        arrivalDate: Date | null;
-        departureDate: Date | null;
         nights: number | null;
-        notes: string | null;
     }>;
     reorder(tripId: string, orderedIds: string[], userId: string): Promise<void>;
     duplicateTrip(tripId: string, userId: string): Promise<{
@@ -70,13 +70,13 @@ export declare class TripsService {
         } & {
             id: string;
             createdAt: Date;
+            arrivalDate: Date | null;
+            departureDate: Date | null;
+            notes: string | null;
             visitOrder: number;
             tripId: string;
             destinationId: string;
-            arrivalDate: Date | null;
-            departureDate: Date | null;
             nights: number | null;
-            notes: string | null;
         })[];
     } & {
         id: string;
@@ -120,13 +120,13 @@ export declare class TripsService {
     updateTripDestination(tripId: string, stopId: string, dto: UpdateTripDestinationDto, userId: string): Promise<{
         id: string;
         createdAt: Date;
+        arrivalDate: Date | null;
+        departureDate: Date | null;
+        notes: string | null;
         visitOrder: number;
         tripId: string;
         destinationId: string;
-        arrivalDate: Date | null;
-        departureDate: Date | null;
         nights: number | null;
-        notes: string | null;
     }>;
     removeTripDestination(tripId: string, stopId: string, userId: string): Promise<{
         message: string;
