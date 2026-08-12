@@ -1,11 +1,14 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TripPlanner from "@/components/TripPlanner";
+import Categories from "@/components/Categories";
 import WhyXplore from "@/components/WhyXplore";
 import AICompanion from "@/components/AICompanion";
 import Destinations from "@/components/Destinations";
 import Experiences from "@/components/Experiences";
 import Vendors from "@/components/Vendors";
+import Packages from "@/components/Packages";
+import TravelMap from "@/components/TravelMap";
 import HowItWorks from "@/components/HowItWorks";
 import SocialProof from "@/components/SocialProof";
 import FutureVision from "@/components/FutureVision";
@@ -19,13 +22,16 @@ export default function Home() {
       <main>
         <Hero />
         <TripPlanner />
+        <Categories />
         <WhyXplore />
         <AICompanion />
         <Destinations />
         <Experiences />
         <Vendors />
+        <Packages />
         <HowItWorks />
         <SocialProof />
+        <TravelMap />
         <FutureVision />
         <FinalCta />
       </main>
