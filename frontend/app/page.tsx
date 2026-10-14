@@ -1,19 +1,17 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import TripPlanner from "@/components/TripPlanner";
-import Categories from "@/components/Categories";
-import WhyXplore from "@/components/WhyXplore";
-import AICompanion from "@/components/AICompanion";
-import Destinations from "@/components/Destinations";
-import Experiences from "@/components/Experiences";
-import Vendors from "@/components/Vendors";
-import Packages from "@/components/Packages";
-import TravelMap from "@/components/TravelMap";
-import HowItWorks from "@/components/HowItWorks";
-import SocialProof from "@/components/SocialProof";
-import FutureVision from "@/components/FutureVision";
-import FinalCta from "@/components/FinalCta";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import CallToAction from "@/components/landing/CallToAction";
+import Destinations from "@/components/landing/Destinations";
+import Experiences from "@/components/landing/Experiences";
+import Features from "@/components/landing/Features";
+import FutureOfTravel from "@/components/landing/FutureOfTravel";
+import Hero from "@/components/landing/Hero";
+import HowItWorks from "@/components/landing/HowItWorks";
+import ItineraryPreview from "@/components/landing/ItineraryPreview";
+import Statistics from "@/components/landing/Statistics";
+import Testimonials from "@/components/landing/Testimonials";
+import TripPlanner from "@/components/landing/TripPlanner";
+import TrustedProviders from "@/components/landing/TrustedProviders";
 
 export default function Home() {
   return (
@@ -22,18 +20,16 @@ export default function Home() {
       <main>
         <Hero />
         <TripPlanner />
-        <Categories />
-        <WhyXplore />
-        <AICompanion />
+        <Features />
+        <ItineraryPreview />
         <Destinations />
         <Experiences />
-        <Vendors />
-        <Packages />
+        <TrustedProviders />
         <HowItWorks />
-        <SocialProof />
-        <TravelMap />
-        <FutureVision />
-        <FinalCta />
+        <Testimonials />
+        <Statistics />
+        <FutureOfTravel />
+        <CallToAction />
       </main>
       <Footer />
     </>
