@@ -234,3 +234,30 @@ export const itineraryImage =
   "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=85";
 
 export const mapIcon = FaMap;
+
+export const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Discover", href: "/destinations" },
+  { label: "Experiences", href: "/#experiences" },
+  { label: "Vendors", href: "/#vendors" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
+];
+
+export const DESTINATIONS = [
+  { title: "Mountains & Nature", text: "Hike through misty hills, discover waterfalls, and experience the island's most scenic routes.", img: "/images/destinations/mountains.jpg" },
+  { title: "Beaches & Islands", text: "Relax on the coast, explore island hideaways, and soak up the laid-back rhythm of the ocean.", img: "/images/destinations/beaches.jpg" },
+  { title: "Wildlife & Adventure", text: "Go on safari, trek through forests, and encounter the wild beauty of Sri Lanka's national parks.", img: "/images/destinations/wildlife.jpg" },
+  { title: "Heritage & Culture", text: "Visit ancient sites, learn local traditions, and connect with the stories behind every landmark.", img: "/images/destinations/heritage.jpg" },
+];
+
+export const EXPERIENCES = [
+  ["Village Experiences", "village"], ["Food Trails", "food"], ["Wildlife Safaris", "safari"], ["Camping Experiences", "camping"],
+  ["Waterfall Adventures", "waterfall"], ["Cultural Tours", "cultural"], ["Hiking Expeditions", "hiking"], ["Photography Tours", "photography"],
+].map(([title, k]) => ({ title, img: `/images/experiences/${k}.jpg` }));
+
+export const TESTIMONIALS = [
+  { quote: "Planning our trip became incredibly easy. We discovered places we never knew existed.", name: "Sarah M.", img: "/images/vendors/sarah.jpg" },
+  { quote: "The itinerary recommendations matched our budget perfectly.", name: "Nuwan P.", img: "/images/vendors/nuwan.jpg" },
+  { quote: "A genuinely glowing review.", name: "Ayesha R.", img: "/images/vendors/ayesha.jpg" },
+];

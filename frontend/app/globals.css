@@ -6,6 +6,9 @@
   --color-primary: #0ea5e9;
   --color-primary-dark: #0284c7;
   --color-muted: #64748b;
+  --color-bg: var(--page-bg);
+  --color-line: var(--border);
+  --color-ink: var(--heading);
   --font-sans: var(--font-jakarta);
 }
 
@@ -62,11 +65,13 @@ button {
   color: #172b43;
 }
 
+.container-x,
 .container-xplore {
   width: min(100% - 48px, 1280px);
   margin-inline: auto;
 }
 
+.section,
 .section-space {
   padding-block: 64px;
 }
@@ -98,6 +103,7 @@ button {
   line-height: 1.8;
 }
 
+.card,
 .surface-card {
   border: 1px solid rgba(225, 237, 242, 0.9);
   border-radius: 16px;
@@ -147,10 +153,12 @@ button {
 }
 
 @media (max-width: 640px) {
+  .container-x,
   .container-xplore {
     width: min(100% - 28px, 1280px);
   }
 
+  .section,
   .section-space {
     padding-block: 44px;
   }

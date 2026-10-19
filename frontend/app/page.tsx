@@ -1,35 +1,29 @@
-import Navbar from "@/components/layout/Navbar";
+import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import CallToAction from "@/components/landing/CallToAction";
-import Destinations from "@/components/landing/Destinations";
-import Experiences from "@/components/landing/Experiences";
-import Features from "@/components/landing/Features";
-import FutureOfTravel from "@/components/landing/FutureOfTravel";
-import Hero from "@/components/landing/Hero";
-import HowItWorks from "@/components/landing/HowItWorks";
-import ItineraryPreview from "@/components/landing/ItineraryPreview";
-import Statistics from "@/components/landing/Statistics";
-import Testimonials from "@/components/landing/Testimonials";
-import TripPlanner from "@/components/landing/TripPlanner";
-import TrustedProviders from "@/components/landing/TrustedProviders";
+import Hero from "@/components/landing-v2/Hero";
+import TripPlanner from "@/components/landing-v2/TripPlanner";
+import { WhyXplore, AICompanion, Future } from "@/components/landing-v2/FeatureSections";
+import { Destinations, Experiences } from "@/components/landing-v2/ImageGrids";
+import { Partners, HowItWorks, Testimonials, Stats } from "@/components/landing-v2/TrustSections";
+import FinalCTA from "@/components/landing-v2/FinalCTA";
 
-export default function Home() {
+export default function LandingPage() {
   return (
     <>
-      <Navbar />
+      <Header />
       <main>
         <Hero />
         <TripPlanner />
-        <Features />
-        <ItineraryPreview />
+        <WhyXplore />
+        <AICompanion />
         <Destinations />
         <Experiences />
-        <TrustedProviders />
+        <Partners />
         <HowItWorks />
         <Testimonials />
-        <Statistics />
-        <FutureOfTravel />
-        <CallToAction />
+        <Stats />
+        <Future />
+        <FinalCTA />
       </main>
       <Footer />
     </>

@@ -1,78 +1,43 @@
 import Link from "next/link";
-import { FaCompass } from "react-icons/fa6";
-import Container from "@/components/ui/Container";
+import Image from "next/image";
+import { FaFacebookF, FaLinkedinIn, FaInstagram, FaYoutube } from "react-icons/fa";
 
-const footerGroups = [
-  {
-    title: "Explore",
-    links: [
-      { label: "Destinations", href: "#discover" },
-      { label: "Experiences", href: "#experiences" },
-      { label: "Trip planner", href: "#trip-planner" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", href: "#about" },
-      { label: "How it works", href: "#how-it-works" },
-      { label: "Contact", href: "mailto:hello@xplore.lk" },
-    ],
-  },
+const cols = [
+  { title: "Quick links", links: ["Home", "Discover", "Experiences", "Vendors"] },
+  { title: "Company", links: ["About", "Contact", "Become a Vendor"] },
 ];
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t border-[#e1edf2] bg-white">
-      <Container>
-        <div className="grid gap-8 py-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.5fr]">
-          <div>
-            <Link
-              href="#home"
-              className="inline-flex items-center gap-2 text-base font-extrabold tracking-tight text-[#172b43]"
-            >
-              <span className="flex size-8 items-center justify-center rounded-xl bg-sky-500 text-white">
-                <FaCompass aria-hidden="true" />
-              </span>
-              Xplore
-            </Link>
-            <p className="mt-3 max-w-xs text-[11px] leading-5 text-[#526579]">
-              Discover more of Sri Lanka with local inspiration and thoughtful
-              travel planning.
-            </p>
-          </div>
-          {footerGroups.map(({ title, links }) => (
-            <nav key={title} aria-label={title}>
-              <h2 className="text-[11px] font-bold text-[#172b43]">{title}</h2>
-              <ul className="mt-3 space-y-2">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className="text-[10px] font-medium text-[#526579] transition hover:text-sky-600"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
-          <div>
-            <h2 className="text-[11px] font-bold text-[#172b43]">Newsletter</h2>
-            <p className="mt-3 text-[10px] leading-5 text-[#526579]">Get destination ideas, new experiences, and travel tips delivered to your inbox.</p>
-            <div className="mt-3 flex">
-              <label className="sr-only" htmlFor="newsletter-email">Email address</label>
-              <input id="newsletter-email" type="email" placeholder="Email address" className="min-w-0 flex-1 rounded-l-lg border border-[#e1edf2] px-3 py-2 text-[10px] outline-none focus:border-sky-400" />
-              <button type="submit" className="rounded-r-lg bg-sky-500 px-3 py-2 text-[10px] font-bold text-white">Subscribe</button>
-            </div>
-          </div>
+    <footer id="contact" className="border-t border-line bg-white">
+      <div className="container-x grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1.6fr]">
+        <div>
+          <p className="flex items-center gap-2 text-lg font-bold"><Image src="/logo.svg" alt="" width={28} height={28} /> Xplore</p>
+          <p className="mt-3 max-w-xs text-sm text-muted">Intelligent Sri Lankan travel planning for travelers who want more discovery, less friction, and better itineraries.</p>
         </div>
-        <div className="flex flex-col gap-2 border-t border-[#e1edf2] py-4 text-[10px] text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Xplore. Made for discovering Sri Lanka.</p>
-          <p>Demo content and metrics are for illustration only.</p>
+        {cols.map((c) => (
+          <div key={c.title}>
+            <h3 className="text-sm font-semibold">{c.title}</h3>
+            <ul className="mt-3 space-y-2 text-sm text-muted">
+              {c.links.map((l) => <li key={l}><Link href="#" className="hover:text-ink">{l}</Link></li>)}
+            </ul>
+          </div>
+        ))}
+        <div>
+          <h3 className="text-sm font-semibold">Newsletter</h3>
+          <p className="mt-3 text-sm text-muted">Get destination ideas, new experiences, and travel tips delivered to your inbox.</p>
+          <form className="mt-3 flex gap-2">
+            <input type="email" aria-label="Email address" placeholder="Email address" className="field" />
+            <button className="h-10 shrink-0 rounded-lg bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-dark">Subscribe</button>
+          </form>
         </div>
-      </Container>
+      </div>
+      <div className="container-x flex items-center justify-between border-t border-line py-5 text-xs text-muted">
+        <p>© {new Date().getFullYear()} Xplore</p>
+        <div className="flex gap-4">
+          {[FaFacebookF, FaLinkedinIn, FaYoutube, FaInstagram].map((I, i) => <I key={i} size={16} aria-hidden />)}
+        </div>
+      </div>
     </footer>
   );
 }
