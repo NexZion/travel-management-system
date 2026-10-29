@@ -79,6 +79,7 @@ export class VendorPackagesService {
       // 1. Create package
       const pkg = await tx.vendorPackage.create({
         data: {
+          vendorId: vendor.id,
           packageTypeId: dto.packageTypeId,
           title: dto.title,
           description: dto.description,
