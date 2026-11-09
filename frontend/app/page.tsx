@@ -1,21 +1,16 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import TripPlanner from "@/components/TripPlanner";
-import WhyXplore from "@/components/WhyXplore";
-import AICompanion from "@/components/AICompanion";
-import Destinations from "@/components/Destinations";
-import Experiences from "@/components/Experiences";
-import Vendors from "@/components/Vendors";
-import HowItWorks from "@/components/HowItWorks";
-import SocialProof from "@/components/SocialProof";
-import FutureVision from "@/components/FutureVision";
-import FinalCta from "@/components/FinalCta";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Hero from "@/components/landing-v2/Hero";
+import TripPlanner from "@/components/landing-v2/TripPlanner";
+import { WhyXplore, AICompanion, Future } from "@/components/landing-v2/FeatureSections";
+import { Destinations, Experiences } from "@/components/landing-v2/ImageGrids";
+import { Partners, HowItWorks, Testimonials, Stats } from "@/components/landing-v2/TrustSections";
+import FinalCTA from "@/components/landing-v2/FinalCTA";
 
-export default function Home() {
+export default function LandingPage() {
   return (
     <>
-      <Navbar />
+      <Header />
       <main>
         <Hero />
         <TripPlanner />
@@ -23,11 +18,12 @@ export default function Home() {
         <AICompanion />
         <Destinations />
         <Experiences />
-        <Vendors />
+        <Partners />
         <HowItWorks />
-        <SocialProof />
-        <FutureVision />
-        <FinalCta />
+        <Testimonials />
+        <Stats />
+        <Future />
+        <FinalCTA />
       </main>
       <Footer />
     </>
