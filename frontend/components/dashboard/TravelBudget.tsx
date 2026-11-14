@@ -21,10 +21,10 @@ export default function TravelBudget() {
         {/* Top summary row */}
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">
+            <span className="text-xs font-semibold text-slate-500">
               Estimated trip cost
             </span>
-            <span className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+            <span className="bg-emerald-50 text-emerald-700 text-xs font-bold px-2.5 py-0.5 rounded-full">
               On budget
             </span>
           </div>
@@ -33,7 +33,7 @@ export default function TravelBudget() {
             <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
               LKR 70,000
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-400 font-medium mt-0.5">
               of your LKR 90,000 budget · for 2 travelers
             </p>
           </div>
@@ -43,9 +43,9 @@ export default function TravelBudget() {
         <div className="space-y-4">
           {budgetItems.map((item, index) => (
             <div key={index} className="space-y-1.5">
-              <div className="flex justify-between text-xs">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-600 font-medium">{item.label}</span>
-                <span className="text-slate-900 font-semibold">{item.amount}</span>
+                <span className="text-slate-900 font-bold">{item.amount}</span>
               </div>
               <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div className={`h-full bg-sky-500 rounded-full ${item.percentage}`} />
@@ -55,9 +55,11 @@ export default function TravelBudget() {
         </div>
 
         {/* Bottom extras note */}
-        <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-600">
+        <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
-          <span>LKR 20,000 left for little extras.</span>
+          <span className="text-xs font-semibold text-slate-700">
+            LKR 20,000 left for little extras.
+          </span>
         </div>
 
       </div>

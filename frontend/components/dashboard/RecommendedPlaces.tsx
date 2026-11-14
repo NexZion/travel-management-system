@@ -37,16 +37,18 @@ export default function RecommendedPlaces() {
           <h2 className="text-lg font-bold text-slate-900">
             A little more your kind of Sri Lanka
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-400 font-medium mt-0.5">
             Handpicked for your love of nature, culture and quiet escapes.
           </p>
         </div>
         <Link
-          href="#"
-          className="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1 shrink-0"
+          href="/places"
+          className="flex items-center gap-1 group shrink-0"
         >
-          <span className="text-sky-600">Explore places</span>
-          <ArrowRight className="w-3.5 h-3.5 text-sky-600" />
+          <span className="text-xs font-bold text-sky-600 group-hover:text-sky-700 transition">
+            Explore places
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 stroke-[2.5] text-sky-600 group-hover:text-sky-700 transition" />
         </Link>
       </div>
 
@@ -55,7 +57,7 @@ export default function RecommendedPlaces() {
         {recommendations.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-2xl border border-sky-100 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between"
+            className="bg-white rounded-2xl border border-sky-100 overflow-hidden shadow-2xs hover:shadow-sm transition flex flex-col justify-between"
           >
             {/* Image container */}
             <div className="relative h-40 w-full overflow-hidden">
@@ -65,11 +67,11 @@ export default function RecommendedPlaces() {
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               />
               {/* Match badge */}
-              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-semibold text-slate-800 shadow-xs">
+              <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold text-slate-800 shadow-2xs">
                 {item.match}
               </div>
               {/* Favorite button */}
-              <button className="absolute top-3 right-3 w-7 h-7 bg-white/90 backdrop-blur-xs rounded-full flex items-center justify-center text-slate-600 hover:text-rose-500 transition shadow-xs">
+              <button className="absolute top-3 right-3 w-7 h-7 bg-white/90 backdrop-blur-xs rounded-full flex items-center justify-center text-slate-600 hover:text-rose-500 transition shadow-2xs cursor-pointer">
                 <Heart className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -77,24 +79,24 @@ export default function RecommendedPlaces() {
             {/* Content area */}
             <div className="p-4 flex flex-col flex-1 justify-between space-y-3">
               <div>
-                <span className="text-[11px] font-medium text-slate-400">
+                <span className="text-[11px] font-semibold text-slate-400">
                   {item.category}
                 </span>
                 <h3 className="text-sm font-bold text-slate-900 mt-0.5">
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                <p className="text-xs text-slate-500 font-medium mt-1 line-clamp-2">
                   {item.description}
                 </p>
               </div>
 
               {/* Tag and Arrow icon */}
               <div className="flex items-center justify-between pt-2 border-t border-slate-50">
-                <span className="bg-sky-50 text-sky-600 text-[10px] font-medium px-2 py-0.5 rounded-md">
+                <span className="bg-sky-50 text-sky-600 text-[10px] font-bold px-2 py-0.5 rounded-md">
                   {item.tag}
                 </span>
-                <button className="text-sky-500 hover:text-sky-600 transition">
-                  <ArrowUpRight className="w-4 h-4" />
+                <button className="text-sky-500 hover:text-sky-600 transition cursor-pointer">
+                  <ArrowUpRight className="w-4 h-4 stroke-[2.2]" />
                 </button>
               </div>
             </div>
@@ -103,9 +105,9 @@ export default function RecommendedPlaces() {
       </div>
 
       {/* Footer inspiration note */}
-      <div className="flex items-center gap-2 text-xs text-slate-500 pt-1">
-        <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
-        <span>
+      <div className="flex items-center gap-2 pt-1">
+        <Sparkles className="w-4 h-4 text-sky-500 shrink-0 stroke-[2]" />
+        <span className="text-xs font-medium text-slate-500">
           Inspired by your travel preferences. Your next discovery gets smarter with every trip.
         </span>
       </div>

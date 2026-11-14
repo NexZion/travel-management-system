@@ -22,7 +22,7 @@ export default function LoginPage() {
           <LoginForm />
 
           <p className="text-center text-xs leading-5 text-slate-400">
-            By continuing, you agree to Xplore's Terms of Service and
+            By continuing, you agree to Xplore&apos;s Terms of Service and
             Privacy Policy.
           </p>
         </div>

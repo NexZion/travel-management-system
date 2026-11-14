@@ -41,23 +41,25 @@ export default function TravelCompanion() {
     <div className="space-y-4">
       {/* 1. AI Travel Companion Card */}
       <div className="bg-white rounded-2xl border border-sky-100 p-5 shadow-xs space-y-3">
-        <div className="flex items-center gap-2 text-sky-500">
-          <Sparkles className="w-4 h-4" />
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-sky-500 stroke-[2.2]" />
           <h3 className="text-sm font-bold text-slate-900">
             Your AI travel companion
           </h3>
         </div>
 
-        <p className="text-xs text-slate-600 leading-relaxed">
+        <p className="text-xs text-slate-600 leading-relaxed font-medium">
           Love scenic routes? Let&apos;s find a quieter sunrise walk and a tea stop for your Ella escape.
         </p>
 
         <Link
           href="#"
-          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:text-sky-700 transition"
+          className="inline-flex items-center gap-1 group"
         >
-          <span>Ask Xplore AI</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <span className="text-xs font-bold text-sky-600 group-hover:text-sky-700 transition">
+            Ask Xplore AI
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 stroke-[2.2] text-sky-600 group-hover:text-sky-700 transition" />
         </Link>
       </div>
 
@@ -66,7 +68,7 @@ export default function TravelCompanion() {
         {/* Checklist header */}
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900">Before you go</h3>
-          <span className="text-xs font-semibold text-sky-600">1 thing left</span>
+          <span className="text-xs font-bold text-sky-600">1 thing left</span>
         </div>
 
         {/* Checklist list */}
@@ -81,13 +83,13 @@ export default function TravelCompanion() {
                 {/* Left: Icon and title */}
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600 shrink-0">
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-4 h-4 stroke-[2]" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-800">
+                    <h4 className="text-xs font-bold text-slate-800">
                       {item.title}
                     </h4>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] font-medium text-slate-400 mt-0.5">
                       {item.subtitle}
                     </p>
                   </div>
@@ -96,10 +98,12 @@ export default function TravelCompanion() {
                 {/* Right: Completed check or Action button */}
                 <div>
                   {item.completed ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 stroke-[2.2]" />
                   ) : (
-                    <button className="text-[11px] font-semibold text-sky-600 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2.5 py-1 rounded-md transition cursor-pointer">
-                      To book
+                    <button className="bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2.5 py-1 rounded-md transition cursor-pointer">
+                      <span className="text-[11px] font-bold text-sky-600">
+                        To book
+                      </span>
                     </button>
                   )}
                 </div>
