@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import {
-  Sparkles,
   Search,
   Calendar,
   Wallet,
   ArrowDownWideNarrow,
   ChevronDown,
 } from "lucide-react";
+import PlanTripButton from "@/components/ui/PlanTripButton";
 
 export default function TripsFilterBar() {
   const [activeTab, setActiveTab] = useState("all");
@@ -27,7 +27,7 @@ export default function TripsFilterBar() {
           <span className="text-[11px] font-bold tracking-wider text-sky-500 uppercase">
             YOUR TRAVEL SPACE
           </span>
-          <h1 className="text-3xl font-bold text-slate-900 mt-0.5 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mt-0.5 tracking-tight">
             Your journeys, all in one place.
           </h1>
           <p className="text-xs text-slate-500 font-medium mt-1">
@@ -37,10 +37,7 @@ export default function TripsFilterBar() {
 
         {/* Plan new trip button */}
         <div>
-          <button className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 px-4 py-2 rounded-xl shadow-xs transition cursor-pointer whitespace-nowrap">
-            <Sparkles className="w-3.5 h-3.5 stroke-[2.2] text-white" />
-            <span className="text-xs font-bold text-white">Plan new trip</span>
-          </button>
+          <PlanTripButton />
         </div>
       </div>
 

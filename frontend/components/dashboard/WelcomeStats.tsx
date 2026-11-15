@@ -1,4 +1,5 @@
-import { Sparkles, Route, MapPin, Sun, Heart } from "lucide-react";
+import { Route, MapPin, Sun, Heart } from "lucide-react";
+import PlanTripButton from "@/components/ui/PlanTripButton";
 
 export default function WelcomeStats() {
   const stats = [
@@ -44,14 +45,9 @@ export default function WelcomeStats() {
           </p>
         </div>
 
-        {/* Plan a new trip button */}
+        {/* Plan new trip button */}
         <div>
-          <button className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 px-4.5 py-2.5 rounded-2xl shadow-xs transition cursor-pointer whitespace-nowrap">
-            <Sparkles className="w-3.5 h-3.5 stroke-[2.2] text-white" />
-            <span className="text-xs font-bold text-white">
-              Plan a new trip
-            </span>
-          </button>
+          <PlanTripButton />
         </div>
       </div>
 

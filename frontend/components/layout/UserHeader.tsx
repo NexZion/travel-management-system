@@ -12,7 +12,7 @@ export default function UserHeader() {
     { label: "Dashboard", href: "/dashboard" },
     { label: "Trips", href: "/trips" },
     { label: "Places", href: "/places" },
-    { label: "Vendors", href: "#" },
+    { label: "Vendors", href: "/vendors" },
     { label: "Experiences", href: "#" },
     { label: "Saved", href: "#" },
   ];

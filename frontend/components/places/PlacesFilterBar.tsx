@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  Sparkles,
   Search,
   MapPin,
   CreditCard,
@@ -10,6 +9,7 @@ import {
   ChevronDown,
   CheckCircle2,
 } from "lucide-react";
+import PlanTripButton from "@/components/ui/PlanTripButton";
 
 export default function PlacesFilterBar() {
   const [activeTab, setActiveTab] = useState("all");
@@ -40,10 +40,7 @@ export default function PlacesFilterBar() {
 
         {/* Plan new trip button */}
         <div>
-          <button className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 px-4.5 py-2.5 rounded-2xl shadow-xs transition cursor-pointer whitespace-nowrap">
-            <Sparkles className="w-3.5 h-3.5 stroke-[2.2] text-white" />
-            <span className="text-xs font-bold text-white">Plan new trip</span>
-          </button>
+          <PlanTripButton />
         </div>
       </div>
 
@@ -84,7 +81,7 @@ export default function PlacesFilterBar() {
         </div>
       </div>
 
-      {/* 3. Category Tabs & Visits Dropdown Row (Matching the screenshot) */}
+      {/* 3. Category Tabs & Visits Dropdown Row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 pb-4 border-b border-sky-100">
         {/* Category Tabs with 32px (gap-8) spacing */}
         <div className="flex items-center gap-8 overflow-x-auto pb-1 sm:pb-0">
