@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { FaFacebookF, FaLinkedinIn, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const cols = [
@@ -12,7 +11,7 @@ export default function Footer() {
     <footer id="contact" className="border-t border-line bg-white">
       <div className="container-x grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1.6fr]">
         <div>
-          <p className="flex items-center gap-2 text-lg font-bold"><Image src="/logo.svg" alt="" width={28} height={28} /> Xplore</p>
+          <p className="flex items-center gap-2 text-lg font-bold"><span aria-hidden className="grid h-7 w-7 place-items-center rounded-lg bg-primary text-xs font-extrabold text-white">X</span> Xplore</p>
           <p className="mt-3 max-w-xs text-sm text-muted">Intelligent Sri Lankan travel planning for travelers who want more discovery, less friction, and better itineraries.</p>
         </div>
         {cols.map((c) => (

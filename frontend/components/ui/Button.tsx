@@ -1,4 +1,5 @@
 
+import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export type ButtonVariant =
@@ -11,6 +12,7 @@ export type ButtonVariant =
 export type ButtonSize = "sm" | "md" | "lg";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  href?: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
@@ -49,22 +51,29 @@ export default function Button({
   type = "button",
   className = "",
   children,
+  href,
   ...props
 }: ButtonProps) {
+  const classes = [
+    baseStyles,
+    variantStyles[variant],
+    sizeStyles[size],
+    fullWidth ? "w-full" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (href) {
+    return <Link href={href} className={classes} aria-busy={loading || undefined}>{children}</Link>;
+  }
+
   return (
     <button
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={[
-        baseStyles,
-        variantStyles[variant],
-        sizeStyles[size],
-        fullWidth ? "w-full" : "",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      className={classes}
       {...props}
     >
       {loading && (

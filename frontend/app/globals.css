@@ -109,6 +109,31 @@ button {
   border-radius: 16px;
   background: var(--card-bg);
   box-shadow: 0 5px 20px rgba(31, 76, 99, 0.025);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.card:hover,
+.surface-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(31, 76, 99, 0.08);
+}
+
+.field {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #fff;
+  padding: 0 12px;
+  color: var(--heading);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
 }
 
 .btn-primary {

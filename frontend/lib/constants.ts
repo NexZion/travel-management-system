@@ -236,8 +236,8 @@ export const itineraryImage =
 export const mapIcon = FaMap;
 
 export const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Discover", href: "/destinations" },
+  { label: "Home", href: "/#top" },
+  { label: "Discover", href: "/#destinations" },
   { label: "Experiences", href: "/#experiences" },
   { label: "Vendors", href: "/#vendors" },
   { label: "About", href: "/#about" },
@@ -245,19 +245,19 @@ export const NAV_LINKS = [
 ];
 
 export const DESTINATIONS = [
-  { title: "Mountains & Nature", text: "Hike through misty hills, discover waterfalls, and experience the island's most scenic routes.", img: "/images/destinations/mountains.jpg" },
-  { title: "Beaches & Islands", text: "Relax on the coast, explore island hideaways, and soak up the laid-back rhythm of the ocean.", img: "/images/destinations/beaches.jpg" },
-  { title: "Wildlife & Adventure", text: "Go on safari, trek through forests, and encounter the wild beauty of Sri Lanka's national parks.", img: "/images/destinations/wildlife.jpg" },
-  { title: "Heritage & Culture", text: "Visit ancient sites, learn local traditions, and connect with the stories behind every landmark.", img: "/images/destinations/heritage.jpg" },
+  { title: "Mountains & Nature", text: "Hike through misty hills, discover waterfalls, and experience the island's most scenic routes.", img: "https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&w=900&q=85" },
+  { title: "Beaches & Islands", text: "Relax on the coast, explore island hideaways, and soak up the laid-back rhythm of the ocean.", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85" },
+  { title: "Wildlife & Adventure", text: "Go on safari, trek through forests, and encounter the wild beauty of Sri Lanka's national parks.", img: "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=900&q=85" },
+  { title: "Heritage & Culture", text: "Visit ancient sites, learn local traditions, and connect with the stories behind every landmark.", img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=85" },
 ];
 
 export const EXPERIENCES = [
-  ["Village Experiences", "village"], ["Food Trails", "food"], ["Wildlife Safaris", "safari"], ["Camping Experiences", "camping"],
-  ["Waterfall Adventures", "waterfall"], ["Cultural Tours", "cultural"], ["Hiking Expeditions", "hiking"], ["Photography Tours", "photography"],
-].map(([title, k]) => ({ title, img: `/images/experiences/${k}.jpg` }));
+  ["Village Experiences", "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=700&q=85"], ["Food Trails", "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=700&q=85"], ["Wildlife Safaris", "https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&w=700&q=85"], ["Camping Experiences", "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=700&q=85"],
+  ["Waterfall Adventures", "https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=700&q=85"], ["Cultural Tours", "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=700&q=85"], ["Hiking Expeditions", "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=85"], ["Photography Tours", "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=700&q=85"],
+].map(([title, img]) => ({ title, img }));
 
 export const TESTIMONIALS = [
-  { quote: "Planning our trip became incredibly easy. We discovered places we never knew existed.", name: "Sarah M.", img: "/images/vendors/sarah.jpg" },
-  { quote: "The itinerary recommendations matched our budget perfectly.", name: "Nuwan P.", img: "/images/vendors/nuwan.jpg" },
-  { quote: "A genuinely glowing review.", name: "Ayesha R.", img: "/images/vendors/ayesha.jpg" },
+  { quote: "Planning our trip became incredibly easy. We discovered places we never knew existed.", name: "Sarah M.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" },
+  { quote: "The itinerary recommendations matched our budget perfectly.", name: "Nuwan P.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" },
+  { quote: "A genuinely glowing review.", name: "Ayesha R.", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" },
 ];

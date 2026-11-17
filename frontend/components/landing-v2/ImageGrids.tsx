@@ -4,7 +4,7 @@ import { DESTINATIONS, EXPERIENCES } from "@/lib/constants";
 
 export function Destinations() {
   return (
-    <section className="container-x section">
+    <section id="destinations" className="container-x section">
       <SectionHead label="Destinations" title="Explore the best of Sri Lanka" text="From mountains and coastlines to wildlife and culture, discover the experiences that make every trip unforgettable." />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {DESTINATIONS.map((d) => (

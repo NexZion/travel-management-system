@@ -42,9 +42,9 @@ export function AICompanion() {
             <li key={t} className="flex items-center gap-2"><CircleCheck size={18} className="text-primary" aria-hidden />{t}</li>
           ))}
         </ul>
-        <Button href="/trips/new" className="mt-6">Try AI Trip Planning</Button>
+        <Button href="/trips/new" className="mt-6 text-white">Try AI Trip Planning</Button>
       </div>
-      <Image src="/images/destinations/ai-planner.jpg" alt="Laptop showing a Sri Lanka trip map" width={640} height={460} className="h-[320px] w-full rounded-2xl object-cover shadow-lg md:h-[380px]" />
+      <Image src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=85" alt="Laptop showing a Sri Lanka trip map" width={640} height={460} className="h-[320px] w-full rounded-2xl object-cover shadow-lg md:h-[380px]" />
     </section>
   );
 }

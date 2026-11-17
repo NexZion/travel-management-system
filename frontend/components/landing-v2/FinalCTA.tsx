@@ -8,8 +8,8 @@ export default function FinalCTA() {
         <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Your Next Adventure Starts Here</h2>
         <p className="mt-3 text-sm text-white/85">Start planning today and discover a smarter way to explore Sri Lanka.</p>
         <div className="mt-6 flex gap-3">
-          <Button href="/trips/new" variant="outline">Start Planning Today</Button>
-          <Button href="/register?role=vendor" variant="light">Become a Vendor</Button>
+          <Button href="/trips/new" className="border-white bg-white text-primary hover:bg-sky-50">Start Planning Today</Button>
+          <Button href="/register?role=vendor" className="border border-white/70 bg-transparent text-white hover:bg-white/10">Become a Vendor</Button>
         </div>
       </div>
     </section>

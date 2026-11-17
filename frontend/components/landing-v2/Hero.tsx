@@ -9,14 +9,14 @@ export default function Hero() {
         <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight md:text-5xl">Explore Sri Lanka Like Never Before</h1>
         <p className="mt-4 max-w-md text-sm text-muted md:text-base">Discover hidden waterfalls, beaches, and secret routes with trusted guides and personalized itineraries built around your vibe, budget, and travel style.</p>
         <div className="mt-6 flex gap-3">
-          <Button href="/trips/new">Start Planning</Button>
+          <Button href="/trips/new" className="text-white">Start Planning</Button>
           <Button href="/register?role=vendor" variant="outline">Become a Vendor</Button>
         </div>
         <ul className="mt-6 flex flex-wrap gap-2 text-[11px]">
           {["Verified vendors", "Budget-aware planning", "Hidden gems"].map((t) => <li key={t} className="rounded-full border border-line bg-white px-3 py-1">{t}</li>)}
         </ul>
       </div>
-      <Image src="/images/landing-hero.jpg" alt="Winding road through Sri Lankan tea hills" width={640} height={520} priority className="h-[320px] w-full rounded-2xl object-cover shadow-lg md:h-[420px]" />
+      <Image src="https://images.unsplash.com/photo-1581515903209-9722c3b21e57?auto=format&fit=crop&w=1200&q=85" alt="Winding road through Sri Lankan tea hills" width={640} height={520} priority className="h-[320px] w-full rounded-2xl object-cover shadow-lg md:h-[420px]" />
     </section>
   );
 }

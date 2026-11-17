@@ -19,7 +19,7 @@ export function Partners() {
           <h3 className="font-semibold">Become a Vendor</h3>
           <p className="mt-1 text-xs text-muted">Join a network of trusted accommodation, guide, transport, and experience providers helping travelers plan better trips.</p>
         </div>
-        <Button href="/register?role=vendor">Apply Now</Button>
+        <Button href="/register?role=vendor" className="text-white">Apply Now</Button>
       </div>
     </section>
   );
