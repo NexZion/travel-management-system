@@ -1,0 +1,671 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum TripStatus {
+  DRAFT
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum VendorMediaType {
+  LOGO
+  IMAGE
+  DOCUMENT
+  CERTIFICATE
+}
+
+enum FieldDataType {
+  TEXT
+  NUMBER
+  TEXTAREA
+  SELECT
+  RADIO
+  CHECKBOX
+  DATE
+  EMAIL
+  PHONE
+}
+
+enum BudgetRange {
+  BUDGET
+  MID
+  PREMIUM
+  LUXURY
+}
+
+model TravelStyle {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  trips     Trip[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vibe {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  trips     Trip[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DestinationCategory {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  destinations DestinationCategoryMapping[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id String @id @default(uuid())
+
+  full_name String
+  email     String @unique
+  phone     String @unique
+
+  password String
+  avatar   String?
+
+  is_verified Boolean @default(false)
+
+  status UserStatus @default(ACTIVE)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  travelerProfile TravelerProfile?
+
+  refreshTokens     RefreshToken[]
+  bookings          Booking[]
+  roles             UserRole[]
+  vendors           Vendor[]
+  emailVerification EmailVerification[]
+  trips             Trip[]
+  reviews           VendorReview[]
+}
+
+model Trip {
+  id            String      @id @default(uuid())
+  userId        String
+  title         String
+  description   String?
+  status        TripStatus  @default(DRAFT)
+  travelStyleId String
+  vibeId        String
+  budgetRange   BudgetRange
+  startDate     DateTime?
+  endDate       DateTime?
+  totalDays     Int?
+  travelerCount Int         @default(1)
+  isPublic      Boolean     @default(false)
+  shareToken    String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  bookings         Booking[]
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tripDestinations TripDestination[]
+  vibe             Vibe              @relation(fields: [vibeId], references: [id], onDelete: Restrict)
+  travelStyle      TravelStyle       @relation(fields: [travelStyleId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([travelStyleId])
+  @@index([vibeId])
+}
+
+model Destination {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  district    String
+  province    String
+  description String?
+  coverImage  String?
+  latitude    Float
+  longitude   Float
+  isActive    Boolean  @default(true)
+  placeId     String?  @unique // Google Places ID
+  address     String?
+  rating      Float?
+  reviewCount Int?
+  source      String   @default("manual") // google_places | manual
+  createdAt   DateTime @default(now())
+
+  categories       DestinationCategoryMapping[]
+  tripDestinations TripDestination[]
+  images           DestinationImage[]
+  tags             DestinationTag[]
+
+  @@index([district])
+  @@index([province])
+}
+
+model DestinationImage {
+  id            String  @id @default(uuid())
+  destinationId String
+  url           String
+  width         Int?
+  height        Int?
+  isPrimary     Boolean @default(false)
+  source        String  @default("google")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([destinationId])
+}
+
+model DestinationTag {
+  id            String @id @default(uuid())
+  destinationId String
+  tag           String
+  confidence    Float  @default(0.0)
+  source        String @default("ai")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([destinationId])
+  @@index([tag])
+}
+
+model UserDestinationInteraction {
+  id            String @id @default(uuid())
+  userId        String
+  destinationId String
+
+  action String // view | click | save | book
+  weight Int    @default(1)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([destinationId])
+}
+
+model TripDestination {
+  id            String    @id @default(uuid())
+  tripId        String
+  destinationId String
+  visitOrder    Int
+  arrivalDate   DateTime?
+  departureDate DateTime?
+  nights        Int?
+  notes         String?
+  createdAt     DateTime  @default(now())
+
+  trip        Trip        @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([tripId])
+  @@index([destinationId])
+}
+
+model DestinationCategoryMapping {
+  id            String @id @default(uuid())
+  destinationId String
+  categoryId    String
+
+  destination Destination         @relation(fields: [destinationId], references: [id])
+  category    DestinationCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([destinationId, categoryId])
+  @@index([destinationId])
+  @@index([categoryId])
+}
+
+model Booking {
+  id String @id @default(uuid())
+
+  userId String
+  tripId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model RefreshToken {
+  id String @id @default(uuid())
+
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Role {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  users       UserRole[]
+  permissions RolePermission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  roles RolePermission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserRole {
+  id String @id @default(uuid())
+
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model RolePermission {
+  id String @id @default(uuid())
+
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model EmailVerification {
+  id String @id @default(uuid())
+
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model PasswordReset {
+  id String @id @default(uuid())
+
+  email String
+  token String @unique
+
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+
+  action String
+  userId String?
+
+  ipAddress String?
+  userAgent String?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+}
+
+model Vendor {
+  id           String       @id @default(uuid())
+  userId       String
+  categoryId   String
+  name         String
+  description  String?
+  fieldSetId   String?
+  status       VendorStatus @default(PENDING)
+  isActive     Boolean      @default(true)
+  statusReason String?
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category VendorCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  fieldSet FieldSet?      @relation(fields: [fieldSetId], references: [id], onDelete: Cascade)
+
+  fields        VendorFieldValue[]
+  media         VendorMedia[]
+  statusHistory VendorStatusHistory[]
+  reviews       VendorReview[]
+  packages      VendorPackage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviewCount   Int   @default(0)
+  averageRating Float @default(0)
+
+  @@index([userId])
+  @@index([categoryId])
+}
+
+model VendorCategory {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  code        String  @unique
+  description String?
+  fieldSetId  String
+  isActive    Boolean @default(true)
+
+  fieldSet FieldSet @relation(fields: [fieldSetId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendors      Vendor[]
+  packageTypes PackageType[]
+
+  @@index([fieldSetId])
+}
+
+model VendorMedia {
+  id       String @id @default(uuid())
+  vendorId String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  type      VendorMediaType
+  url       String
+  fileName  String?
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model VendorReview {
+  id       String @id @default(uuid())
+  vendorId String
+  userId   String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  rating  Int
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FieldSet {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  isActive    Boolean @default(true)
+  isCustom    Boolean @default(false)
+
+  vendorCategories VendorCategory[]
+  fields           FieldSetField[]
+  vendors          Vendor[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Field {
+  id           String        @id @default(uuid())
+  name         String
+  label        String
+  dataType     FieldDataType
+  placeholder  String?
+  helpText     String?
+  defaultValue String?
+  isActive     Boolean       @default(true)
+
+  fieldSets    FieldSetField[]
+  options      FieldOption[]
+  vendorValues VendorFieldValue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FieldSetField {
+  id           String  @id @default(uuid())
+  fieldSetId   String
+  fieldId      String
+  displayOrder Int
+  isRequired   Boolean @default(false)
+  readOnly     Boolean @default(false)
+
+  fieldSet FieldSet @relation(fields: [fieldSetId], references: [id], onDelete: Cascade)
+  field    Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([fieldSetId, fieldId])
+  @@index([fieldSetId])
+  @@index([fieldId])
+}
+
+model FieldOption {
+  id           String @id @default(uuid())
+  fieldId      String
+  label        String
+  value        String
+  displayOrder Int    @default(0)
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fieldId])
+}
+
+model VendorFieldValue {
+  id       String @id @default(uuid())
+  vendorId String
+  fieldId  String
+  value    String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  field  Field  @relation(fields: [fieldId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([vendorId, fieldId])
+  @@index([vendorId])
+  @@index([fieldId])
+}
+
+model VendorStatusHistory {
+  id       String @id @default(uuid())
+  vendorId String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  previousStatus VendorStatus?
+  newStatus      VendorStatus
+  reason         String?
+  changedBy      String
+  changedAt      DateTime      @default(now())
+}
+
+model PackageType {
+  id         String @id @default(uuid())
+  categoryId String
+
+  category VendorCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  fieldSet    PackageTypeFieldSet?
+  isActive    Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  vendorPackages VendorPackage[]
+}
+
+model PackageTypeFieldSet {
+  id            String @id @default(uuid())
+  packageTypeId String @unique
+
+  packageType PackageType @relation(fields: [packageTypeId], references: [id], onDelete: Cascade)
+
+  fields PackageTypeField[]
+}
+
+model PackageTypeField {
+  id         String @id @default(uuid())
+  fieldSetId String
+
+  fieldSet PackageTypeFieldSet @relation(fields: [fieldSetId], references: [id], onDelete: Cascade)
+
+  fieldId String
+
+  field        PackageField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  isRequired   Boolean      @default(false)
+  displayOrder Int          @default(0)
+}
+
+model VendorPackage {
+  id       String @id @default(uuid())
+  vendorId String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  packageTypeId String
+
+  packageType PackageType @relation(fields: [packageTypeId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  basePrice   Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fieldValues VendorPackageFieldValue[]
+}
+
+model VendorPackageFieldValue {
+  id        String @id @default(uuid())
+  packageId String
+
+  package VendorPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  fieldId String
+
+  field PackageField @relation(fields: [fieldId], references: [id])
+
+  value String
+}
+
+model PackageField {
+  id           String        @id @default(uuid())
+  name         String
+  label        String
+  dataType     FieldDataType
+  placeholder  String?
+  helpText     String?
+  defaultValue String?
+  isActive     Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  packageTypeFields PackageTypeField[]
+  options           PackageFieldOption[]
+  packageValues     VendorPackageFieldValue[]
+}
+
+model PackageFieldOption {
+  id           String @id @default(uuid())
+  fieldId      String
+  label        String
+  value        String
+  displayOrder Int    @default(0)
+
+  field PackageField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fieldId])
+}
+
+model TravelerProfile {
+  id String @id @default(uuid())
+
+  userId String @unique
+
+  bio       String?
+  homeCity  String?
+  phone     String?
+
+  travelStyles      Json?
+  interests         Json?
+  languages         Json?
+  dietaryPreferences Json?
+
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
+  onboardingCompletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([homeCity])
+}

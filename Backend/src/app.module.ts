@@ -33,6 +33,7 @@ import { VendorsModule } from './modules/vendors/vendors.module';
 import { PackageTypesModule } from './modules/package-types/package-types.module';
 import { VendorPackagesModule } from './modules/vendor-packages/vendor-packages.module';
 import { PackageFieldsModule } from './modules/package-fields/package-fields.module';
+import { TravelerProfilesModule } from './modules/traveler-profiles/traveler-profiles.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ 
@@ -48,6 +49,7 @@ import { PackageFieldsModule } from './modules/package-fields/package-fields.mod
     ]),
     PrismaModule,
     AuthModule, 
+    TravelerProfilesModule,
     UsersModule, 
     PlacesModule,
     TripsModule,

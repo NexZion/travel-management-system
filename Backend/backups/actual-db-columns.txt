@@ -1,0 +1,272 @@
+         table_name         |     column_name     |          data_type          | is_nullable |      column_default       
+----------------------------+---------------------+-----------------------------+-------------+---------------------------
+ AuditLog                   | id                  | text                        | NO          | 
+ AuditLog                   | action              | text                        | NO          | 
+ AuditLog                   | userId              | text                        | YES         | 
+ AuditLog                   | ipAddress           | text                        | YES         | 
+ AuditLog                   | userAgent           | text                        | YES         | 
+ AuditLog                   | metadata            | jsonb                       | YES         | 
+ AuditLog                   | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Booking                    | id                  | text                        | NO          | 
+ Booking                    | userId              | text                        | NO          | 
+ Booking                    | tripId              | text                        | NO          | 
+ Booking                    | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Destination                | id                  | text                        | NO          | 
+ Destination                | name                | text                        | NO          | 
+ Destination                | slug                | text                        | NO          | 
+ Destination                | district            | text                        | NO          | 
+ Destination                | province            | text                        | NO          | 
+ Destination                | description         | text                        | YES         | 
+ Destination                | coverImage          | text                        | YES         | 
+ Destination                | latitude            | double precision            | NO          | 
+ Destination                | longitude           | double precision            | NO          | 
+ Destination                | isActive            | boolean                     | NO          | true
+ Destination                | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Destination                | address             | text                        | YES         | 
+ Destination                | placeId             | text                        | YES         | 
+ Destination                | rating              | double precision            | YES         | 
+ Destination                | reviewCount         | integer                     | YES         | 
+ Destination                | source              | text                        | NO          | 'manual'::text
+ DestinationCategory        | id                  | text                        | NO          | 
+ DestinationCategory        | name                | text                        | NO          | 
+ DestinationCategory        | description         | text                        | YES         | 
+ DestinationCategory        | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ DestinationCategory        | updatedAt           | timestamp without time zone | NO          | 
+ DestinationCategoryMapping | id                  | text                        | NO          | 
+ DestinationCategoryMapping | destinationId       | text                        | NO          | 
+ DestinationCategoryMapping | categoryId          | text                        | NO          | 
+ DestinationImage           | id                  | text                        | NO          | 
+ DestinationImage           | destinationId       | text                        | NO          | 
+ DestinationImage           | url                 | text                        | NO          | 
+ DestinationImage           | width               | integer                     | YES         | 
+ DestinationImage           | height              | integer                     | YES         | 
+ DestinationImage           | isPrimary           | boolean                     | NO          | false
+ DestinationImage           | source              | text                        | NO          | 'google'::text
+ DestinationImage           | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ DestinationTag             | id                  | text                        | NO          | 
+ DestinationTag             | destinationId       | text                        | NO          | 
+ DestinationTag             | tag                 | text                        | NO          | 
+ DestinationTag             | confidence          | double precision            | NO          | 0.0
+ DestinationTag             | source              | text                        | NO          | 'ai'::text
+ DestinationTag             | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ EmailVerification          | id                  | text                        | NO          | 
+ EmailVerification          | token               | text                        | NO          | 
+ EmailVerification          | userId              | text                        | NO          | 
+ EmailVerification          | expiresAt           | timestamp without time zone | NO          | 
+ EmailVerification          | verified            | boolean                     | NO          | false
+ EmailVerification          | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Field                      | id                  | text                        | NO          | 
+ Field                      | name                | text                        | NO          | 
+ Field                      | label               | text                        | NO          | 
+ Field                      | dataType            | USER-DEFINED                | NO          | 
+ Field                      | placeholder         | text                        | YES         | 
+ Field                      | helpText            | text                        | YES         | 
+ Field                      | defaultValue        | text                        | YES         | 
+ Field                      | isActive            | boolean                     | NO          | true
+ Field                      | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Field                      | updatedAt           | timestamp without time zone | NO          | 
+ FieldOption                | id                  | text                        | NO          | 
+ FieldOption                | fieldId             | text                        | NO          | 
+ FieldOption                | label               | text                        | NO          | 
+ FieldOption                | value               | text                        | NO          | 
+ FieldOption                | displayOrder        | integer                     | NO          | 0
+ FieldOption                | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ FieldOption                | updatedAt           | timestamp without time zone | NO          | 
+ FieldSet                   | id                  | text                        | NO          | 
+ FieldSet                   | name                | text                        | NO          | 
+ FieldSet                   | description         | text                        | YES         | 
+ FieldSet                   | isActive            | boolean                     | NO          | true
+ FieldSet                   | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ FieldSet                   | updatedAt           | timestamp without time zone | NO          | 
+ FieldSet                   | isCustom            | boolean                     | NO          | false
+ FieldSetField              | id                  | text                        | NO          | 
+ FieldSetField              | fieldSetId          | text                        | NO          | 
+ FieldSetField              | fieldId             | text                        | NO          | 
+ FieldSetField              | displayOrder        | integer                     | NO          | 
+ FieldSetField              | isRequired          | boolean                     | NO          | false
+ FieldSetField              | readOnly            | boolean                     | NO          | false
+ FieldSetField              | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ FieldSetField              | updatedAt           | timestamp without time zone | NO          | 
+ PackageField               | id                  | text                        | NO          | 
+ PackageField               | name                | text                        | NO          | 
+ PackageField               | label               | text                        | NO          | 
+ PackageField               | dataType            | USER-DEFINED                | NO          | 
+ PackageField               | placeholder         | text                        | YES         | 
+ PackageField               | helpText            | text                        | YES         | 
+ PackageField               | defaultValue        | text                        | YES         | 
+ PackageField               | isActive            | boolean                     | NO          | true
+ PackageField               | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ PackageField               | updatedAt           | timestamp without time zone | NO          | 
+ PackageFieldOption         | id                  | text                        | NO          | 
+ PackageFieldOption         | fieldId             | text                        | NO          | 
+ PackageFieldOption         | label               | text                        | NO          | 
+ PackageFieldOption         | value               | text                        | NO          | 
+ PackageFieldOption         | displayOrder        | integer                     | NO          | 0
+ PackageFieldOption         | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ PackageFieldOption         | updatedAt           | timestamp without time zone | NO          | 
+ PackageType                | id                  | text                        | NO          | 
+ PackageType                | categoryId          | text                        | NO          | 
+ PackageType                | name                | text                        | NO          | 
+ PackageType                | description         | text                        | YES         | 
+ PackageType                | isActive            | boolean                     | NO          | true
+ PackageType                | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ PackageType                | updatedAt           | timestamp without time zone | NO          | 
+ PackageTypeField           | id                  | text                        | NO          | 
+ PackageTypeField           | fieldSetId          | text                        | NO          | 
+ PackageTypeField           | fieldId             | text                        | NO          | 
+ PackageTypeField           | isRequired          | boolean                     | NO          | false
+ PackageTypeField           | displayOrder        | integer                     | NO          | 0
+ PackageTypeFieldSet        | id                  | text                        | NO          | 
+ PackageTypeFieldSet        | packageTypeId       | text                        | NO          | 
+ PasswordReset              | id                  | text                        | NO          | 
+ PasswordReset              | email               | text                        | NO          | 
+ PasswordReset              | token               | text                        | NO          | 
+ PasswordReset              | expiresAt           | timestamp without time zone | NO          | 
+ PasswordReset              | used                | boolean                     | NO          | false
+ PasswordReset              | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Permission                 | id                  | text                        | NO          | 
+ Permission                 | name                | text                        | NO          | 
+ Permission                 | description         | text                        | YES         | 
+ Permission                 | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Permission                 | updatedAt           | timestamp without time zone | NO          | 
+ RefreshToken               | id                  | text                        | NO          | 
+ RefreshToken               | token               | text                        | NO          | 
+ RefreshToken               | expiresAt           | timestamp without time zone | NO          | 
+ RefreshToken               | revoked             | boolean                     | NO          | false
+ RefreshToken               | userId              | text                        | NO          | 
+ RefreshToken               | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Role                       | id                  | text                        | NO          | 
+ Role                       | name                | text                        | NO          | 
+ Role                       | description         | text                        | YES         | 
+ Role                       | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Role                       | updatedAt           | timestamp without time zone | NO          | 
+ RolePermission             | id                  | text                        | NO          | 
+ RolePermission             | roleId              | text                        | NO          | 
+ RolePermission             | permissionId        | text                        | NO          | 
+ RolePermission             | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ TravelStyle                | id                  | text                        | NO          | 
+ TravelStyle                | name                | text                        | NO          | 
+ TravelStyle                | description         | text                        | YES         | 
+ TravelStyle                | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ TravelStyle                | updatedAt           | timestamp without time zone | NO          | 
+ Trip                       | title               | text                        | NO          | 
+ Trip                       | description         | text                        | YES         | 
+ Trip                       | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Trip                       | id                  | text                        | NO          | 
+ Trip                       | budgetRange         | USER-DEFINED                | NO          | 
+ Trip                       | endDate             | timestamp without time zone | YES         | 
+ Trip                       | isPublic            | boolean                     | NO          | false
+ Trip                       | shareToken          | text                        | YES         | 
+ Trip                       | startDate           | timestamp without time zone | YES         | 
+ Trip                       | status              | USER-DEFINED                | NO          | 'DRAFT'::"TripStatus"
+ Trip                       | totalDays           | integer                     | YES         | 
+ Trip                       | travelerCount       | integer                     | NO          | 1
+ Trip                       | updatedAt           | timestamp without time zone | NO          | 
+ Trip                       | userId              | text                        | NO          | 
+ Trip                       | travelStyleId       | text                        | NO          | 
+ Trip                       | vibeId              | text                        | NO          | 
+ TripDestination            | id                  | text                        | NO          | 
+ TripDestination            | tripId              | text                        | NO          | 
+ TripDestination            | destinationId       | text                        | NO          | 
+ TripDestination            | visitOrder          | integer                     | NO          | 
+ TripDestination            | arrivalDate         | timestamp without time zone | YES         | 
+ TripDestination            | departureDate       | timestamp without time zone | YES         | 
+ TripDestination            | nights              | integer                     | YES         | 
+ TripDestination            | notes               | text                        | YES         | 
+ TripDestination            | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ User                       | id                  | text                        | NO          | 
+ User                       | email               | text                        | NO          | 
+ User                       | password            | text                        | NO          | 
+ User                       | avatar              | text                        | YES         | 
+ User                       | created_at          | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ User                       | full_name           | text                        | NO          | 
+ User                       | is_verified         | boolean                     | NO          | false
+ User                       | phone               | text                        | NO          | 
+ User                       | status              | USER-DEFINED                | NO          | 'ACTIVE'::"UserStatus"
+ User                       | updated_at          | timestamp without time zone | NO          | 
+ UserDestinationInteraction | id                  | text                        | NO          | 
+ UserDestinationInteraction | userId              | text                        | NO          | 
+ UserDestinationInteraction | destinationId       | text                        | NO          | 
+ UserDestinationInteraction | action              | text                        | NO          | 
+ UserDestinationInteraction | weight              | integer                     | NO          | 1
+ UserDestinationInteraction | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ UserRole                   | id                  | text                        | NO          | 
+ UserRole                   | userId              | text                        | NO          | 
+ UserRole                   | roleId              | text                        | NO          | 
+ UserRole                   | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Vendor                     | id                  | text                        | NO          | 
+ Vendor                     | userId              | text                        | NO          | 
+ Vendor                     | categoryId          | text                        | NO          | 
+ Vendor                     | name                | text                        | NO          | 
+ Vendor                     | description         | text                        | YES         | 
+ Vendor                     | status              | USER-DEFINED                | NO          | 'PENDING'::"VendorStatus"
+ Vendor                     | isActive            | boolean                     | NO          | true
+ Vendor                     | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Vendor                     | updatedAt           | timestamp without time zone | NO          | 
+ Vendor                     | statusReason        | text                        | YES         | 
+ Vendor                     | fieldSetId          | text                        | YES         | 
+ Vendor                     | averageRating       | double precision            | NO          | 0
+ Vendor                     | reviewCount         | integer                     | NO          | 0
+ VendorCategory             | id                  | text                        | NO          | 
+ VendorCategory             | name                | text                        | NO          | 
+ VendorCategory             | code                | text                        | NO          | 
+ VendorCategory             | description         | text                        | YES         | 
+ VendorCategory             | fieldSetId          | text                        | NO          | 
+ VendorCategory             | isActive            | boolean                     | NO          | true
+ VendorCategory             | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ VendorCategory             | updatedAt           | timestamp without time zone | NO          | 
+ VendorFieldValue           | id                  | text                        | NO          | 
+ VendorFieldValue           | vendorId            | text                        | NO          | 
+ VendorFieldValue           | fieldId             | text                        | NO          | 
+ VendorFieldValue           | value               | text                        | NO          | 
+ VendorFieldValue           | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ VendorMedia                | id                  | text                        | NO          | 
+ VendorMedia                | vendorId            | text                        | NO          | 
+ VendorMedia                | type                | USER-DEFINED                | NO          | 
+ VendorMedia                | url                 | text                        | NO          | 
+ VendorMedia                | fileName            | text                        | YES         | 
+ VendorMedia                | isActive            | boolean                     | NO          | true
+ VendorMedia                | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ VendorMedia                | updatedAt           | timestamp without time zone | NO          | 
+ VendorPackage              | id                  | text                        | NO          | 
+ VendorPackage              | vendorId            | text                        | NO          | 
+ VendorPackage              | packageTypeId       | text                        | NO          | 
+ VendorPackage              | title               | text                        | NO          | 
+ VendorPackage              | description         | text                        | YES         | 
+ VendorPackage              | basePrice           | double precision            | NO          | 
+ VendorPackage              | isActive            | boolean                     | NO          | true
+ VendorPackage              | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ VendorPackage              | updatedAt           | timestamp without time zone | NO          | 
+ VendorPackageFieldValue    | id                  | text                        | NO          | 
+ VendorPackageFieldValue    | packageId           | text                        | NO          | 
+ VendorPackageFieldValue    | fieldId             | text                        | NO          | 
+ VendorPackageFieldValue    | value               | text                        | NO          | 
+ VendorReview               | id                  | text                        | NO          | 
+ VendorReview               | vendorId            | text                        | NO          | 
+ VendorReview               | userId              | text                        | NO          | 
+ VendorReview               | rating              | integer                     | NO          | 
+ VendorReview               | comment             | text                        | YES         | 
+ VendorReview               | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ VendorReview               | updatedAt           | timestamp without time zone | NO          | 
+ VendorStatusHistory        | id                  | text                        | NO          | 
+ VendorStatusHistory        | vendorId            | text                        | NO          | 
+ VendorStatusHistory        | previousStatus      | USER-DEFINED                | YES         | 
+ VendorStatusHistory        | newStatus           | USER-DEFINED                | NO          | 
+ VendorStatusHistory        | reason              | text                        | YES         | 
+ VendorStatusHistory        | changedBy           | text                        | NO          | 
+ VendorStatusHistory        | changedAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Vibe                       | id                  | text                        | NO          | 
+ Vibe                       | name                | text                        | NO          | 
+ Vibe                       | description         | text                        | YES         | 
+ Vibe                       | createdAt           | timestamp without time zone | NO          | CURRENT_TIMESTAMP
+ Vibe                       | updatedAt           | timestamp without time zone | NO          | 
+ _prisma_migrations         | id                  | character varying           | NO          | 
+ _prisma_migrations         | checksum            | character varying           | NO          | 
+ _prisma_migrations         | finished_at         | timestamp with time zone    | YES         | 
+ _prisma_migrations         | migration_name      | character varying           | NO          | 
+ _prisma_migrations         | logs                | text                        | YES         | 
+ _prisma_migrations         | rolled_back_at      | timestamp with time zone    | YES         | 
+ _prisma_migrations         | started_at          | timestamp with time zone    | NO          | now()
+ _prisma_migrations         | applied_steps_count | integer                     | NO          | 0
+(268 rows)
+

@@ -85,8 +85,22 @@ let GooglePlacesService = class GooglePlacesService {
                     slug: place.name
                         .toLowerCase()
                         .replace(/\s+/g, '-'),
-                    district: place.district,
-                    province: place.province,
+                    district: {
+                        connectOrCreate: {
+                            where: {
+                                slug: place.district
+                                    .toLowerCase()
+                                    .replace(/\s+/g, '-'),
+                            },
+                            create: {
+                                name: place.district,
+                                slug: place.district
+                                    .toLowerCase()
+                                    .replace(/\s+/g, '-'),
+                                province: place.province,
+                            },
+                        },
+                    },
                     description: place.description,
                     latitude: place.latitude,
                     longitude: place.longitude,

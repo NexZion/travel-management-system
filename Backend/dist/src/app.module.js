@@ -42,6 +42,7 @@ const vendors_module_1 = require("./modules/vendors/vendors.module");
 const package_types_module_1 = require("./modules/package-types/package-types.module");
 const vendor_packages_module_1 = require("./modules/vendor-packages/vendor-packages.module");
 const package_fields_module_1 = require("./modules/package-fields/package-fields.module");
+const traveler_profiles_module_1 = require("./modules/traveler-profiles/traveler-profiles.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -61,6 +62,7 @@ exports.AppModule = AppModule = __decorate([
             ]),
             prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
+            traveler_profiles_module_1.TravelerProfilesModule,
             users_module_1.UsersModule,
             places_module_1.PlacesModule,
             trips_module_1.TripsModule,

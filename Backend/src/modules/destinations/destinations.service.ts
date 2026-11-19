@@ -82,12 +82,15 @@ export class DestinationsService {
             },
             }),
 
-            ...(filters.district && {
-            district: filters.district,
-            }),
-
-            ...(filters.province && {
-            province: filters.province,
+            ...((filters.district || filters.province) && {
+            district: {
+                ...(filters.district && {
+                name: filters.district,
+                }),
+                ...(filters.province && {
+                province: filters.province,
+                }),
+            },
             }),
 
         },
@@ -206,8 +209,12 @@ export class DestinationsService {
         const data = await this.prisma.destination.findMany({
             where: {
             isActive: true,
-            province,
-            district,
+            ...((province || district) && {
+                district: {
+                    ...(district && { name: district }),
+                    ...(province && { province }),
+                },
+            }),
             rating: {
                 gte: minRating,
             },
@@ -221,6 +228,7 @@ export class DestinationsService {
             },
 
             include: {
+                district: true,
                 categories: {
                 include: {
                     category: true,
@@ -241,8 +249,8 @@ export class DestinationsService {
 
                 if (place.name.toLowerCase() === query) score += 100;
                 if (place.name.toLowerCase().includes(query)) score += 70;
-                if (place.district.toLowerCase().includes(query)) score += 30;
-                if (place.province.toLowerCase().includes(query)) score += 20;
+                if (place.district.name.toLowerCase().includes(query)) score += 30;
+                if (place.district.province.toLowerCase().includes(query)) score += 20;
                 if ((place.description || '').toLowerCase().includes(query))
                 score += 10;
 

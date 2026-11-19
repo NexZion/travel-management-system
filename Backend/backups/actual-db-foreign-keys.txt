@@ -1,0 +1,43 @@
+         table_name         |  column_name  |  referenced_table   | referenced_column |                constraint_name                
+----------------------------+---------------+---------------------+-------------------+-----------------------------------------------
+ Booking                    | tripId        | Trip                | id                | Booking_tripId_fkey
+ Booking                    | userId        | User                | id                | Booking_userId_fkey
+ DestinationCategoryMapping | categoryId    | DestinationCategory | id                | DestinationCategoryMapping_categoryId_fkey
+ DestinationCategoryMapping | destinationId | Destination         | id                | DestinationCategoryMapping_destinationId_fkey
+ DestinationImage           | destinationId | Destination         | id                | DestinationImage_destinationId_fkey
+ DestinationTag             | destinationId | Destination         | id                | DestinationTag_destinationId_fkey
+ EmailVerification          | userId        | User                | id                | EmailVerification_userId_fkey
+ FieldOption                | fieldId       | Field               | id                | FieldOption_fieldId_fkey
+ FieldSetField              | fieldId       | Field               | id                | FieldSetField_fieldId_fkey
+ FieldSetField              | fieldSetId    | FieldSet            | id                | FieldSetField_fieldSetId_fkey
+ PackageFieldOption         | fieldId       | PackageField        | id                | PackageFieldOption_fieldId_fkey
+ PackageType                | categoryId    | VendorCategory      | id                | PackageType_categoryId_fkey
+ PackageTypeField           | fieldId       | PackageField        | id                | PackageTypeField_fieldId_fkey
+ PackageTypeField           | fieldSetId    | PackageTypeFieldSet | id                | PackageTypeField_fieldSetId_fkey
+ PackageTypeFieldSet        | packageTypeId | PackageType         | id                | PackageTypeFieldSet_packageTypeId_fkey
+ RefreshToken               | userId        | User                | id                | RefreshToken_userId_fkey
+ RolePermission             | permissionId  | Permission          | id                | RolePermission_permissionId_fkey
+ RolePermission             | roleId        | Role                | id                | RolePermission_roleId_fkey
+ Trip                       | travelStyleId | TravelStyle         | id                | Trip_travelStyleId_fkey
+ Trip                       | userId        | User                | id                | Trip_userId_fkey
+ Trip                       | vibeId        | Vibe                | id                | Trip_vibeId_fkey
+ TripDestination            | destinationId | Destination         | id                | TripDestination_destinationId_fkey
+ TripDestination            | tripId        | Trip                | id                | TripDestination_tripId_fkey
+ UserRole                   | roleId        | Role                | id                | UserRole_roleId_fkey
+ UserRole                   | userId        | User                | id                | UserRole_userId_fkey
+ Vendor                     | categoryId    | VendorCategory      | id                | Vendor_categoryId_fkey
+ Vendor                     | fieldSetId    | FieldSet            | id                | Vendor_fieldSetId_fkey
+ Vendor                     | userId        | User                | id                | Vendor_userId_fkey
+ VendorCategory             | fieldSetId    | FieldSet            | id                | VendorCategory_fieldSetId_fkey
+ VendorFieldValue           | fieldId       | Field               | id                | VendorFieldValue_fieldId_fkey
+ VendorFieldValue           | vendorId      | Vendor              | id                | VendorFieldValue_vendorId_fkey
+ VendorMedia                | vendorId      | Vendor              | id                | VendorMedia_vendorId_fkey
+ VendorPackage              | packageTypeId | PackageType         | id                | VendorPackage_packageTypeId_fkey
+ VendorPackage              | vendorId      | Vendor              | id                | VendorPackage_vendorId_fkey
+ VendorPackageFieldValue    | fieldId       | PackageField        | id                | VendorPackageFieldValue_fieldId_fkey
+ VendorPackageFieldValue    | packageId     | VendorPackage       | id                | VendorPackageFieldValue_packageId_fkey
+ VendorReview               | userId        | User                | id                | VendorReview_userId_fkey
+ VendorReview               | vendorId      | Vendor              | id                | VendorReview_vendorId_fkey
+ VendorStatusHistory        | vendorId      | Vendor              | id                | VendorStatusHistory_vendorId_fkey
+(39 rows)
+

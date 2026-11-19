@@ -54,9 +54,9 @@ export declare class TripsService {
                 name: string;
                 createdAt: Date;
                 description: string | null;
-                district: string;
-                province: string;
+                updatedAt: Date;
                 slug: string;
+                districtId: string;
                 coverImage: string | null;
                 latitude: number;
                 longitude: number;
@@ -66,6 +66,12 @@ export declare class TripsService {
                 rating: number | null;
                 reviewCount: number | null;
                 source: string;
+                translations: import("@prisma/client/runtime/client").JsonValue | null;
+                averageVisitDurationMinutes: number;
+                entryFee: import("@prisma/client-runtime-utils").Decimal | null;
+                openingHours: import("@prisma/client/runtime/client").JsonValue | null;
+                bestSeason: import("@prisma/client/runtime/client").JsonValue | null;
+                popularityScore: number;
             };
         } & {
             id: string;

@@ -71,6 +71,7 @@ let VendorPackagesService = class VendorPackagesService {
         return this.prisma.$transaction(async (tx) => {
             const pkg = await tx.vendorPackage.create({
                 data: {
+                    vendorId: vendor.id,
                     packageTypeId: dto.packageTypeId,
                     title: dto.title,
                     description: dto.description,
