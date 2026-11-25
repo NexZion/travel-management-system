@@ -1,16 +1,7 @@
-/*
-  Warnings:
+-- Xplore Phase 3 Core Trip Planning migration SQL (reviewed cleanup)
+-- Duplicate column rename and duplicate constraint statements removed.
+-- Do not apply manually; Prisma schema/migration must be reconciled first.
 
-  - You are about to drop the column `roomCount` on the `TripAccommodation` table. All the data in the column will be lost.
-  - You are about to alter the column `name` on the `TripAccommodation` table. The data in that column could be lost. The data in that column will be cast from `Text` to `VarChar(160)`.
-  - You are about to alter the column `address` on the `TripAccommodation` table. The data in that column could be lost. The data in that column will be cast from `Text` to `VarChar(255)`.
-  - A unique constraint covering the columns `[slug]` on the table `Trip` will be added. If there are existing duplicate values, this will fail.
-  - Added the required column `slug` to the `Trip` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `rooms` to the `TripAccommodation` table without a default value. This is not possible if the table is not empty.
-  - Made the column `checkInDate` on table `TripAccommodation` required. This step will fail if there are existing NULL values in that column.
-  - Made the column `checkOutDate` on table `TripAccommodation` required. This step will fail if there are existing NULL values in that column.
-
-*/
 -- AlterEnum
 -- This migration adds more than one value to an enum.
 -- With PostgreSQL versions 11 and earlier, this is not possible
@@ -28,10 +19,21 @@ ADD COLUMN     "coverImage" VARCHAR(255),
 ADD COLUMN     "currency" CHAR(3) NOT NULL DEFAULT 'LKR',
 ADD COLUMN     "deletedAt" TIMESTAMP(3),
 ADD COLUMN     "notes" TEXT,
-ADD COLUMN     "slug" VARCHAR(190) NOT NULL,
 ADD COLUMN     "tripType" VARCHAR(20) NOT NULL DEFAULT 'SOLO';
 
--- AlterTable
+-- Add slug as nullable first
+ALTER TABLE "Trip"
+ADD COLUMN "slug" VARCHAR(190);
+
+-- Generate safe unique legacy slugs for existing records
+UPDATE "Trip"
+SET "slug" = 'legacy-' || REPLACE("id", '-', '')
+WHERE "slug" IS NULL;
+
+-- Make slug required after backfill
+ALTER TABLE "Trip"
+ALTER COLUMN "slug" SET NOT NULL;
+
 -- AlterTable
 ALTER TABLE "TripAccommodation"
 RENAME COLUMN "roomCount" TO "rooms";
@@ -468,3 +470,140 @@ WHERE "dayId" IS NULL;
 CREATE UNIQUE INDEX "RoutePlan_one_active_per_day_unique"
 ON "RoutePlan" ("tripId", "dayId")
 WHERE "status" IN ('PENDING', 'PROCESSING', 'READY', 'ACCEPTED');
+
+-- Align Trip column types with database design
+ALTER TABLE "Trip"
+ALTER COLUMN "title" TYPE VARCHAR(160),
+ALTER COLUMN "travelerCount" TYPE SMALLINT,
+ALTER COLUMN "startDate" TYPE DATE
+USING "startDate"::DATE,
+ALTER COLUMN "endDate" TYPE DATE
+USING "endDate"::DATE;
+
+-- Align TripAccommodation rooms type
+ALTER TABLE "TripAccommodation"
+ALTER COLUMN "rooms" TYPE SMALLINT;
+
+-- Trip type
+ALTER TABLE "Trip"
+ADD CONSTRAINT "Trip_tripType_check"
+CHECK ("tripType" IN ('SOLO', 'COUPLE', 'FAMILY', 'FRIENDS', 'GROUP'));
+
+-- Trip transport mode
+ALTER TABLE "TripTransport"
+ADD CONSTRAINT "TripTransport_mode_check"
+CHECK ("mode" IN (
+    'TRAIN', 'BUS', 'TUK_TUK', 'PRIVATE_CAR',
+    'VAN', 'TAXI', 'BIKE', 'WALK', 'FLIGHT'
+));
+
+-- Trip meal type and source
+ALTER TABLE "TripMeal"
+ADD CONSTRAINT "TripMeal_mealType_check"
+CHECK ("mealType" IN ('BREAKFAST', 'LUNCH', 'DINNER', 'SNACK'));
+
+ALTER TABLE "TripMeal"
+ADD CONSTRAINT "TripMeal_source_check"
+CHECK ("source" IN ('MANUAL', 'AI'));
+
+-- Trip activity source
+ALTER TABLE "TripActivity"
+ADD CONSTRAINT "TripActivity_source_check"
+CHECK ("source" IN ('MANUAL', 'AI'));
+
+-- Itinerary item type
+ALTER TABLE "ItineraryItem"
+ADD CONSTRAINT "ItineraryItem_itemType_check"
+CHECK ("itemType" IN (
+    'PLACE', 'ACCOMMODATION', 'TRANSPORT', 'MEAL', 'ACTIVITY'
+));
+
+-- Trip budget category
+ALTER TABLE "TripBudget"
+ADD CONSTRAINT "TripBudget_category_check"
+CHECK ("category" IN (
+    'ACCOMMODATION', 'TRANSPORT', 'MEALS', 'ACTIVITIES', 'OTHER'
+));
+
+-- Route plan status and travel mode
+ALTER TABLE "RoutePlan"
+ADD CONSTRAINT "RoutePlan_status_check"
+CHECK ("status" IN (
+    'PENDING', 'PROCESSING', 'READY', 'FAILED', 'ACCEPTED'
+));
+
+ALTER TABLE "RoutePlan"
+ADD CONSTRAINT "RoutePlan_travelMode_check"
+CHECK ("travelMode" IN ('DRIVING', 'WALKING', 'TRANSIT'));
+
+-- AI suggestion type and status
+ALTER TABLE "AISuggestion"
+ADD CONSTRAINT "AISuggestion_type_check"
+CHECK ("type" IN ('PLACES', 'ACTIVITIES', 'MEALS', 'INFO'));
+
+ALTER TABLE "AISuggestion"
+ADD CONSTRAINT "AISuggestion_status_check"
+CHECK ("status" IN (
+    'GENERATED', 'ACCEPTED', 'PARTIALLY_ACCEPTED',
+    'REJECTED', 'EXPIRED'
+));
+
+-- Plan warning code and severity
+ALTER TABLE "PlanWarning"
+ADD CONSTRAINT "PlanWarning_code_check"
+CHECK ("code" IN (
+    'OVERLOAD_TRAVEL', 'CLOSED_ON_DAY',
+    'TIME_CONFLICT', 'OVER_BUDGET'
+));
+
+ALTER TABLE "PlanWarning"
+ADD CONSTRAINT "PlanWarning_severity_check"
+CHECK ("severity" IN ('INFO', 'WARNING'));
+
+-- Trip share permission
+ALTER TABLE "TripShare"
+ADD CONSTRAINT "TripShare_permission_check"
+CHECK ("permission" IN ('VIEW'));
+
+
+
+ALTER TABLE "TripTransport"
+ADD CONSTRAINT "TripTransport_cost_check"
+CHECK ("estimatedCost" IS NULL OR "estimatedCost" >= 0);
+
+-- Accommodation cost
+ALTER TABLE "TripAccommodation"
+ADD CONSTRAINT "TripAccommodation_cost_check"
+CHECK ("estimatedCost" IS NULL OR "estimatedCost" >= 0);
+
+-- Itinerary time range
+ALTER TABLE "ItineraryItem"
+ADD CONSTRAINT "ItineraryItem_time_check"
+CHECK (
+    "startTime" IS NULL
+    OR "endTime" IS NULL
+    OR "endTime" > "startTime"
+);
+
+ALTER TABLE "TripPlace"
+ADD CONSTRAINT "TripPlace_source_check"
+CHECK ("source" IN ('MANUAL', 'AI'));
+
+ALTER TABLE "TripDay"
+ADD CONSTRAINT "TripDay_dayNumber_check"
+CHECK ("dayNumber" BETWEEN 1 AND 30);
+
+ALTER TABLE "PlaceInfoSnapshot"
+ADD CONSTRAINT "PlaceInfoSnapshot_expiry_check"
+CHECK (
+    "expiresAt" IS NULL
+    OR "expiresAt" > "fetchedAt"
+);
+
+ALTER TABLE "Trip"
+ADD CONSTRAINT "Trip_max_duration_check"
+CHECK (
+    "startDate" IS NULL
+    OR "endDate" IS NULL
+    OR ("endDate" - "startDate") <= 29
+);
